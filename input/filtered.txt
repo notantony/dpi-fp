@@ -1,0 +1,1 @@
+/^\s*\x7B[^\x7D]*d\.c\('input'\)[^\x7D]*form\.a\(p\)\s*\x7D/smiR

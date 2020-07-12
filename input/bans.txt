@@ -1,0 +1,9 @@
+/^\s*?[^(ID)]\d/R
+/^HELO\s+x[a-z]{31}[^@].*?^MAIL\s+FROM\x3a x[a-z]{31}[^@].*?^RCPT TO\x3a\s*x[a-z]{31}[^@]/smi
+/^OPTIONS.+\r\n\r\n(.+)?^Call-ID\x3A/smi
+/^OPTIONS.+\r\n\r\n(.+)?^Via\x3A/smi
+/^\S+\s+(uid\s+|)search\s+charset\s*\{\s/smi
+/^\S+\s+(uid\s+|)search\s+charset\s+[^\s]{250}/smi
+/^\S+\s+(uid\s+|)search\s[^\n]*(sent|)(on|before|since)\s*\{\s/smi
+/^Reply\-To\x3a[^\n]{512}.*^Reply\-To\x3a[^\n]{512}/ism
+/^\S+\s+(uid\s+|)search\s[^\n]*(sent|)(on|before|since)\s+[^\s]{64}/Osmi
