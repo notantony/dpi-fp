@@ -19,7 +19,7 @@ public class RangeTransition extends AbstractTransition {
 
     @Override
     public Collection<Character> getAccepted() {
-        List<Character> list = new ArrayList<>();
+        List<Character> list = new ArrayList<>(); // TODO: HashSet?
         for (char c = l; c <= r; c++) {
             list.add(c);
         }

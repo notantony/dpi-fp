@@ -29,17 +29,17 @@ public interface RegexVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitCharset(RegexParser.CharsetContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link RegexParser#charset_range}.
+	 * Visit a parse tree produced by {@link RegexParser#charsetRange}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitCharset_range(RegexParser.Charset_rangeContext ctx);
+	T visitCharsetRange(RegexParser.CharsetRangeContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link RegexParser#charset_values}.
+	 * Visit a parse tree produced by {@link RegexParser#charsetValues}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitCharset_values(RegexParser.Charset_valuesContext ctx);
+	T visitCharsetValues(RegexParser.CharsetValuesContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link RegexParser#expr}.
 	 * @param ctx the parse tree
@@ -47,11 +47,11 @@ public interface RegexVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitExpr(RegexParser.ExprContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link RegexParser#pure_expr}.
+	 * Visit a parse tree produced by {@link RegexParser#pureExpr}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitPure_expr(RegexParser.Pure_exprContext ctx);
+	T visitPureExpr(RegexParser.PureExprContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link RegexParser#character}.
 	 * @param ctx the parse tree
@@ -59,11 +59,11 @@ public interface RegexVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitCharacter(RegexParser.CharacterContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link RegexParser#repeated_expr}.
+	 * Visit a parse tree produced by {@link RegexParser#repeatedExpr}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitRepeated_expr(RegexParser.Repeated_exprContext ctx);
+	T visitRepeatedExpr(RegexParser.RepeatedExprContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link RegexParser#number}.
 	 * @param ctx the parse tree
@@ -71,15 +71,37 @@ public interface RegexVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitNumber(RegexParser.NumberContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link RegexParser#repeat_counter}.
+	 * Visit a parse tree produced by the {@code rangeCounter}
+	 * labeled alternative in {@link RegexParser#repeatCounter}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitRepeat_counter(RegexParser.Repeat_counterContext ctx);
+	T visitRangeCounter(RegexParser.RangeCounterContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link RegexParser#optional_expr}.
+	 * Visit a parse tree produced by the {@code rBorderCounter}
+	 * labeled alternative in {@link RegexParser#repeatCounter}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitOptional_expr(RegexParser.Optional_exprContext ctx);
+	T visitRBorderCounter(RegexParser.RBorderCounterContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code lBorderCounter}
+	 * labeled alternative in {@link RegexParser#repeatCounter}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitLBorderCounter(RegexParser.LBorderCounterContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code exactCounter}
+	 * labeled alternative in {@link RegexParser#repeatCounter}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitExactCounter(RegexParser.ExactCounterContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link RegexParser#optionalExpr}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitOptionalExpr(RegexParser.OptionalExprContext ctx);
 }

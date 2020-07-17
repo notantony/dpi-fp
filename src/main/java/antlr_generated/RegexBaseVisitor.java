@@ -38,14 +38,14 @@ public class RegexBaseVisitor<T> extends AbstractParseTreeVisitor<T> implements 
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitCharset_range(RegexParser.Charset_rangeContext ctx) { return visitChildren(ctx); }
+	@Override public T visitCharsetRange(RegexParser.CharsetRangeContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitCharset_values(RegexParser.Charset_valuesContext ctx) { return visitChildren(ctx); }
+	@Override public T visitCharsetValues(RegexParser.CharsetValuesContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -59,7 +59,7 @@ public class RegexBaseVisitor<T> extends AbstractParseTreeVisitor<T> implements 
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitPure_expr(RegexParser.Pure_exprContext ctx) { return visitChildren(ctx); }
+	@Override public T visitPureExpr(RegexParser.PureExprContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -73,7 +73,7 @@ public class RegexBaseVisitor<T> extends AbstractParseTreeVisitor<T> implements 
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitRepeated_expr(RegexParser.Repeated_exprContext ctx) { return visitChildren(ctx); }
+	@Override public T visitRepeatedExpr(RegexParser.RepeatedExprContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -87,12 +87,33 @@ public class RegexBaseVisitor<T> extends AbstractParseTreeVisitor<T> implements 
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitRepeat_counter(RegexParser.Repeat_counterContext ctx) { return visitChildren(ctx); }
+	@Override public T visitRangeCounter(RegexParser.RangeCounterContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitOptional_expr(RegexParser.Optional_exprContext ctx) { return visitChildren(ctx); }
+	@Override public T visitRBorderCounter(RegexParser.RBorderCounterContext ctx) { return visitChildren(ctx); }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation returns the result of calling
+	 * {@link #visitChildren} on {@code ctx}.</p>
+	 */
+	@Override public T visitLBorderCounter(RegexParser.LBorderCounterContext ctx) { return visitChildren(ctx); }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation returns the result of calling
+	 * {@link #visitChildren} on {@code ctx}.</p>
+	 */
+	@Override public T visitExactCounter(RegexParser.ExactCounterContext ctx) { return visitChildren(ctx); }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation returns the result of calling
+	 * {@link #visitChildren} on {@code ctx}.</p>
+	 */
+	@Override public T visitOptionalExpr(RegexParser.OptionalExprContext ctx) { return visitChildren(ctx); }
 }

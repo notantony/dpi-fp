@@ -52,25 +52,25 @@ public class RegexBaseListener implements RegexListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterCharset_range(RegexParser.Charset_rangeContext ctx) { }
+	@Override public void enterCharsetRange(RegexParser.CharsetRangeContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitCharset_range(RegexParser.Charset_rangeContext ctx) { }
+	@Override public void exitCharsetRange(RegexParser.CharsetRangeContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterCharset_values(RegexParser.Charset_valuesContext ctx) { }
+	@Override public void enterCharsetValues(RegexParser.CharsetValuesContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitCharset_values(RegexParser.Charset_valuesContext ctx) { }
+	@Override public void exitCharsetValues(RegexParser.CharsetValuesContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -88,13 +88,13 @@ public class RegexBaseListener implements RegexListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterPure_expr(RegexParser.Pure_exprContext ctx) { }
+	@Override public void enterPureExpr(RegexParser.PureExprContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitPure_expr(RegexParser.Pure_exprContext ctx) { }
+	@Override public void exitPureExpr(RegexParser.PureExprContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -112,13 +112,13 @@ public class RegexBaseListener implements RegexListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterRepeated_expr(RegexParser.Repeated_exprContext ctx) { }
+	@Override public void enterRepeatedExpr(RegexParser.RepeatedExprContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitRepeated_expr(RegexParser.Repeated_exprContext ctx) { }
+	@Override public void exitRepeatedExpr(RegexParser.RepeatedExprContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -136,25 +136,61 @@ public class RegexBaseListener implements RegexListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterRepeat_counter(RegexParser.Repeat_counterContext ctx) { }
+	@Override public void enterRangeCounter(RegexParser.RangeCounterContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitRepeat_counter(RegexParser.Repeat_counterContext ctx) { }
+	@Override public void exitRangeCounter(RegexParser.RangeCounterContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterOptional_expr(RegexParser.Optional_exprContext ctx) { }
+	@Override public void enterRBorderCounter(RegexParser.RBorderCounterContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitOptional_expr(RegexParser.Optional_exprContext ctx) { }
+	@Override public void exitRBorderCounter(RegexParser.RBorderCounterContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterLBorderCounter(RegexParser.LBorderCounterContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitLBorderCounter(RegexParser.LBorderCounterContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterExactCounter(RegexParser.ExactCounterContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitExactCounter(RegexParser.ExactCounterContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterOptionalExpr(RegexParser.OptionalExprContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitOptionalExpr(RegexParser.OptionalExprContext ctx) { }
 
 	/**
 	 * {@inheritDoc}

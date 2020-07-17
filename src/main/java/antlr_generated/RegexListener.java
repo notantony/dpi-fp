@@ -38,25 +38,25 @@ public interface RegexListener extends ParseTreeListener {
 	 */
 	void exitCharset(RegexParser.CharsetContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link RegexParser#charset_range}.
+	 * Enter a parse tree produced by {@link RegexParser#charsetRange}.
 	 * @param ctx the parse tree
 	 */
-	void enterCharset_range(RegexParser.Charset_rangeContext ctx);
+	void enterCharsetRange(RegexParser.CharsetRangeContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link RegexParser#charset_range}.
+	 * Exit a parse tree produced by {@link RegexParser#charsetRange}.
 	 * @param ctx the parse tree
 	 */
-	void exitCharset_range(RegexParser.Charset_rangeContext ctx);
+	void exitCharsetRange(RegexParser.CharsetRangeContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link RegexParser#charset_values}.
+	 * Enter a parse tree produced by {@link RegexParser#charsetValues}.
 	 * @param ctx the parse tree
 	 */
-	void enterCharset_values(RegexParser.Charset_valuesContext ctx);
+	void enterCharsetValues(RegexParser.CharsetValuesContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link RegexParser#charset_values}.
+	 * Exit a parse tree produced by {@link RegexParser#charsetValues}.
 	 * @param ctx the parse tree
 	 */
-	void exitCharset_values(RegexParser.Charset_valuesContext ctx);
+	void exitCharsetValues(RegexParser.CharsetValuesContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link RegexParser#expr}.
 	 * @param ctx the parse tree
@@ -68,15 +68,15 @@ public interface RegexListener extends ParseTreeListener {
 	 */
 	void exitExpr(RegexParser.ExprContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link RegexParser#pure_expr}.
+	 * Enter a parse tree produced by {@link RegexParser#pureExpr}.
 	 * @param ctx the parse tree
 	 */
-	void enterPure_expr(RegexParser.Pure_exprContext ctx);
+	void enterPureExpr(RegexParser.PureExprContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link RegexParser#pure_expr}.
+	 * Exit a parse tree produced by {@link RegexParser#pureExpr}.
 	 * @param ctx the parse tree
 	 */
-	void exitPure_expr(RegexParser.Pure_exprContext ctx);
+	void exitPureExpr(RegexParser.PureExprContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link RegexParser#character}.
 	 * @param ctx the parse tree
@@ -88,15 +88,15 @@ public interface RegexListener extends ParseTreeListener {
 	 */
 	void exitCharacter(RegexParser.CharacterContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link RegexParser#repeated_expr}.
+	 * Enter a parse tree produced by {@link RegexParser#repeatedExpr}.
 	 * @param ctx the parse tree
 	 */
-	void enterRepeated_expr(RegexParser.Repeated_exprContext ctx);
+	void enterRepeatedExpr(RegexParser.RepeatedExprContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link RegexParser#repeated_expr}.
+	 * Exit a parse tree produced by {@link RegexParser#repeatedExpr}.
 	 * @param ctx the parse tree
 	 */
-	void exitRepeated_expr(RegexParser.Repeated_exprContext ctx);
+	void exitRepeatedExpr(RegexParser.RepeatedExprContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link RegexParser#number}.
 	 * @param ctx the parse tree
@@ -108,23 +108,61 @@ public interface RegexListener extends ParseTreeListener {
 	 */
 	void exitNumber(RegexParser.NumberContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link RegexParser#repeat_counter}.
+	 * Enter a parse tree produced by the {@code rangeCounter}
+	 * labeled alternative in {@link RegexParser#repeatCounter}.
 	 * @param ctx the parse tree
 	 */
-	void enterRepeat_counter(RegexParser.Repeat_counterContext ctx);
+	void enterRangeCounter(RegexParser.RangeCounterContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link RegexParser#repeat_counter}.
+	 * Exit a parse tree produced by the {@code rangeCounter}
+	 * labeled alternative in {@link RegexParser#repeatCounter}.
 	 * @param ctx the parse tree
 	 */
-	void exitRepeat_counter(RegexParser.Repeat_counterContext ctx);
+	void exitRangeCounter(RegexParser.RangeCounterContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link RegexParser#optional_expr}.
+	 * Enter a parse tree produced by the {@code rBorderCounter}
+	 * labeled alternative in {@link RegexParser#repeatCounter}.
 	 * @param ctx the parse tree
 	 */
-	void enterOptional_expr(RegexParser.Optional_exprContext ctx);
+	void enterRBorderCounter(RegexParser.RBorderCounterContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link RegexParser#optional_expr}.
+	 * Exit a parse tree produced by the {@code rBorderCounter}
+	 * labeled alternative in {@link RegexParser#repeatCounter}.
 	 * @param ctx the parse tree
 	 */
-	void exitOptional_expr(RegexParser.Optional_exprContext ctx);
+	void exitRBorderCounter(RegexParser.RBorderCounterContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code lBorderCounter}
+	 * labeled alternative in {@link RegexParser#repeatCounter}.
+	 * @param ctx the parse tree
+	 */
+	void enterLBorderCounter(RegexParser.LBorderCounterContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code lBorderCounter}
+	 * labeled alternative in {@link RegexParser#repeatCounter}.
+	 * @param ctx the parse tree
+	 */
+	void exitLBorderCounter(RegexParser.LBorderCounterContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code exactCounter}
+	 * labeled alternative in {@link RegexParser#repeatCounter}.
+	 * @param ctx the parse tree
+	 */
+	void enterExactCounter(RegexParser.ExactCounterContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code exactCounter}
+	 * labeled alternative in {@link RegexParser#repeatCounter}.
+	 * @param ctx the parse tree
+	 */
+	void exitExactCounter(RegexParser.ExactCounterContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link RegexParser#optionalExpr}.
+	 * @param ctx the parse tree
+	 */
+	void enterOptionalExpr(RegexParser.OptionalExprContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link RegexParser#optionalExpr}.
+	 * @param ctx the parse tree
+	 */
+	void exitOptionalExpr(RegexParser.OptionalExprContext ctx);
 }
