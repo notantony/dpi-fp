@@ -1,15 +1,15 @@
 package parsing;
 
 public class RegexConfig {
-    private boolean caseSensitive = false;
+    private boolean caseInsensitive = false;
 
     public RegexConfig(String params) { // TODO: more config
-        if (params.contains("s")) {
-            caseSensitive = true;
+        if (params.contains("i")) {
+            caseInsensitive = true;
         }
     }
 
-    public boolean isCaseSensitive() {
-        return caseSensitive;
+    public boolean isCaseInsensitive() {
+        return caseInsensitive;
     }
 }

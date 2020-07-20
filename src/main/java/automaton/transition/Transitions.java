@@ -1,10 +1,8 @@
 package automaton.transition;
 
-import org.stringtemplate.v4.ST;
 import parsing.ParsingError;
 import parsing.RegexConfig;
 
-import java.lang.reflect.Array;
 import java.util.*;
 
 public class Transitions {
@@ -16,6 +14,8 @@ public class Transitions {
         transitionMap.put("\\t", new SingleElementTransition('\t'));
         transitionMap.put("\\r", new SingleElementTransition('\r'));
         transitionMap.put("\\f", new SingleElementTransition('\f'));
+        transitionMap.put("$", new EofTransition()); // TODO: special character
+        transitionMap.put("^", new StartTransition());
         char[] symbols = { '.', '/', '\\', '-', '?', '(', ')', ':', '^', '\'', ',', ';', '=', '<', '>', '*', '&', '{',
                 '}', '|', '+', '%', '!', '_', '[', ']' };
         for (char symbol: symbols) {
@@ -50,9 +50,12 @@ public class Transitions {
         if (s.equals(".")) {
             return new RangeTransition((char) 0, (char) 255);
         }
+        if (transitionMap.containsKey(s)) {
+            return transitionMap.get(s);
+        }
         if (s.length() == 1) {
             char c = s.charAt(0);
-            if (config.isCaseSensitive() && Character.isAlphabetic(c)) {
+            if (config.isCaseInsensitive() && Character.isAlphabetic(c)) {
                 List<Character> list = List.of(Character.toUpperCase(c), Character.toLowerCase(c));
                 return new CollectionTransition(list);
             }
@@ -60,9 +63,6 @@ public class Transitions {
         }
         if (s.startsWith("\\x")) {
             return new SingleElementTransition((char) Integer.parseInt(s.substring(2), 16));
-        }
-        if (transitionMap.containsKey(s)) {
-            return transitionMap.get(s);
         }
         throw new ParsingError("Unexpected character sequence for transition: `" + s + "`");
     }

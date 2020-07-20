@@ -19,6 +19,12 @@ public class CollectionTransition extends AbstractTransition {
                 .collect(Collectors.toCollection(HashSet::new));
     }
 
+    public static CollectionTransition merge(Collection<Transition> transitions) {
+        return new CollectionTransition(transitions.stream()
+                .flatMap(transition -> transition.getAccepted().stream())
+                .collect(Collectors.toCollection(HashSet::new)));
+    }
+
     public void addMore(Transition other) {
         collection = Stream.concat(
                 collection.stream(),
@@ -27,7 +33,7 @@ public class CollectionTransition extends AbstractTransition {
     }
 
     @Override
-    public boolean test(Character b) {
+    public boolean testImpl(Character b) {
         return collection.contains(b);
     }
 

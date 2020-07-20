@@ -15,7 +15,7 @@ public class UnionTransition extends AbstractTransition {
     }
 
     @Override
-    public boolean test(Character c) {
+    public boolean testImpl(Character c) {
         return a.test(c) | b.test(c);
     }
 

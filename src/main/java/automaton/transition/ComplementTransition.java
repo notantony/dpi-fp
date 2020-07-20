@@ -12,7 +12,7 @@ public class ComplementTransition extends AbstractTransition {
     }
 
     @Override
-    public boolean test(Character c) {
+    public boolean testImpl(Character c) {
         return !orig.test(c);
     }
 

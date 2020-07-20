@@ -27,24 +27,28 @@ R_BRACE                 : '}' ;
 COMMA                   : ',' ;
 
 
-start                   : SLASH CAP? expr+ SLASH params ;
+start                   : SLASH expr* SLASH params ;
 params                  : LETTER* ;
 
-charset                 : L_SQBRACKET CAP? charsetValues R_SQBRACKET ;
+charset                 : L_SQBRACKET CAP? (charsetValues)+ R_SQBRACKET ;
 charsetRange            : (DIGIT | LETTER | BYTESYMBOL) HYPHEN (LETTER | DIGIT | BYTESYMBOL);
-//charset_values          : (charset_range | SYMBOL | METACHAR | LETTER | ESCAPED_CHAR | DIGIT | BYTESYMBOL | COMMA)+ ;
-charsetValues           : (charsetRange | character | PLUS )+ ;
+charsetValues           : charsetRange | character | PLUS ;
 
-expr                    : pureExpr
-                        | optionalExpr
-                        | expr OR expr
-                        | repeatedExpr ;
+expr                    : expr1+ OR expr*
+                        | expr1 ;
 
-pureExpr                : character+
-                        | L_PAR expr+ R_PAR
-                        | charset ;
+expr1                   : optionalExpr
+                        | repeatedExpr
+                        | pureExpr ;
 
-character               : BYTESYMBOL | LETTER | SYMBOL | DIGIT | ESCAPED_CHAR | METACHAR | HYPHEN | COMMA | QUESTIONMARK | DOLLAR;
+pureExpr                : character
+                        | L_PAR expr* R_PAR
+                        | charset
+                        | special ;
+
+character               : BYTESYMBOL | LETTER | SYMBOL | DIGIT | ESCAPED_CHAR | METACHAR | HYPHEN | COMMA | QUESTIONMARK | SLASH;
+
+special                 : DOLLAR | CAP ;
 
 repeatedExpr            : pureExpr PLUS QUESTIONMARK?
                         | pureExpr STAR QUESTIONMARK?
@@ -52,10 +56,9 @@ repeatedExpr            : pureExpr PLUS QUESTIONMARK?
 
 number                  : DIGIT+ ;
 repeatCounter           : L_BRACE number COMMA number R_BRACE   #rangeCounter
-                        | L_BRACE number COMMA R_BRACE          #rBorderCounter
-                        | L_BRACE COMMA number R_BRACE          #lBorderCounter
+                        | L_BRACE number COMMA R_BRACE          #lBorderCounter
+                        | L_BRACE COMMA number R_BRACE          #rBorderCounter
                         | L_BRACE number R_BRACE                #exactCounter
                         ;
 
-
-optionalExpr            : pureExpr QUESTIONMARK ;
+optionalExpr            : pureExpr QUESTIONMARK QUESTIONMARK? ;

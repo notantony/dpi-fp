@@ -1,4 +1,13 @@
 package automaton.transition;
 
-public class SpecialTransition {
+import java.util.Collection;
+import java.util.function.Predicate;
+
+public abstract class SpecialTransition implements Transition {
+
+    @Override
+    public abstract boolean test(Character character);
+
+    @Override
+    public abstract Collection<Character> getAccepted();
 }

@@ -1,5 +1,5 @@
 // Generated from F:/repo/java/dpi-fp/src/main/grammar\Regex.g4 by ANTLR 4.8
-package antlr_generated;
+package antlr;
 import org.antlr.v4.runtime.tree.ParseTreeListener;
 
 /**
@@ -68,6 +68,16 @@ public interface RegexListener extends ParseTreeListener {
 	 */
 	void exitExpr(RegexParser.ExprContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link RegexParser#expr1}.
+	 * @param ctx the parse tree
+	 */
+	void enterExpr1(RegexParser.Expr1Context ctx);
+	/**
+	 * Exit a parse tree produced by {@link RegexParser#expr1}.
+	 * @param ctx the parse tree
+	 */
+	void exitExpr1(RegexParser.Expr1Context ctx);
+	/**
 	 * Enter a parse tree produced by {@link RegexParser#pureExpr}.
 	 * @param ctx the parse tree
 	 */
@@ -87,6 +97,16 @@ public interface RegexListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitCharacter(RegexParser.CharacterContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link RegexParser#special}.
+	 * @param ctx the parse tree
+	 */
+	void enterSpecial(RegexParser.SpecialContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link RegexParser#special}.
+	 * @param ctx the parse tree
+	 */
+	void exitSpecial(RegexParser.SpecialContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link RegexParser#repeatedExpr}.
 	 * @param ctx the parse tree
@@ -120,18 +140,6 @@ public interface RegexListener extends ParseTreeListener {
 	 */
 	void exitRangeCounter(RegexParser.RangeCounterContext ctx);
 	/**
-	 * Enter a parse tree produced by the {@code rBorderCounter}
-	 * labeled alternative in {@link RegexParser#repeatCounter}.
-	 * @param ctx the parse tree
-	 */
-	void enterRBorderCounter(RegexParser.RBorderCounterContext ctx);
-	/**
-	 * Exit a parse tree produced by the {@code rBorderCounter}
-	 * labeled alternative in {@link RegexParser#repeatCounter}.
-	 * @param ctx the parse tree
-	 */
-	void exitRBorderCounter(RegexParser.RBorderCounterContext ctx);
-	/**
 	 * Enter a parse tree produced by the {@code lBorderCounter}
 	 * labeled alternative in {@link RegexParser#repeatCounter}.
 	 * @param ctx the parse tree
@@ -143,6 +151,18 @@ public interface RegexListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitLBorderCounter(RegexParser.LBorderCounterContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code rBorderCounter}
+	 * labeled alternative in {@link RegexParser#repeatCounter}.
+	 * @param ctx the parse tree
+	 */
+	void enterRBorderCounter(RegexParser.RBorderCounterContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code rBorderCounter}
+	 * labeled alternative in {@link RegexParser#repeatCounter}.
+	 * @param ctx the parse tree
+	 */
+	void exitRBorderCounter(RegexParser.RBorderCounterContext ctx);
 	/**
 	 * Enter a parse tree produced by the {@code exactCounter}
 	 * labeled alternative in {@link RegexParser#repeatCounter}.

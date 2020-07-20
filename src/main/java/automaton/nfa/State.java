@@ -8,10 +8,9 @@ import java.util.List;
 
 public class State {
     private int terminal = -1;
-    private List<Pair<Transition, State>> edges = new ArrayList<>();
+    private final List<Pair<Transition, State>> edges = new ArrayList<>();
 
-    public State() {
-    }
+    public State() {}
 
     public State(int terminal) {
         this.terminal = terminal;
@@ -22,10 +21,14 @@ public class State {
     }
 
     boolean isTerminal() {
-        return terminal == -1;
+        return terminal != -1;
     }
 
     List<Pair<Transition, State>> getEdges() {
         return edges;
+    }
+
+    public void setTerminal(int terminal) {
+        this.terminal = terminal;
     }
 }

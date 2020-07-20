@@ -1,5 +1,5 @@
 // Generated from F:/repo/java/dpi-fp/src/main/grammar\Regex.g4 by ANTLR 4.8
-package antlr_generated;
+package antlr;
 import org.antlr.v4.runtime.tree.ParseTreeVisitor;
 
 /**
@@ -47,6 +47,12 @@ public interface RegexVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitExpr(RegexParser.ExprContext ctx);
 	/**
+	 * Visit a parse tree produced by {@link RegexParser#expr1}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitExpr1(RegexParser.Expr1Context ctx);
+	/**
 	 * Visit a parse tree produced by {@link RegexParser#pureExpr}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
@@ -58,6 +64,12 @@ public interface RegexVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitCharacter(RegexParser.CharacterContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link RegexParser#special}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitSpecial(RegexParser.SpecialContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link RegexParser#repeatedExpr}.
 	 * @param ctx the parse tree
@@ -78,19 +90,19 @@ public interface RegexVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitRangeCounter(RegexParser.RangeCounterContext ctx);
 	/**
-	 * Visit a parse tree produced by the {@code rBorderCounter}
-	 * labeled alternative in {@link RegexParser#repeatCounter}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitRBorderCounter(RegexParser.RBorderCounterContext ctx);
-	/**
 	 * Visit a parse tree produced by the {@code lBorderCounter}
 	 * labeled alternative in {@link RegexParser#repeatCounter}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
 	T visitLBorderCounter(RegexParser.LBorderCounterContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code rBorderCounter}
+	 * labeled alternative in {@link RegexParser#repeatCounter}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitRBorderCounter(RegexParser.RBorderCounterContext ctx);
 	/**
 	 * Visit a parse tree produced by the {@code exactCounter}
 	 * labeled alternative in {@link RegexParser#repeatCounter}.

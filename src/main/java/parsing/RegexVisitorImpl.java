@@ -1,14 +1,14 @@
 package parsing;
 
-import antlr_generated.RegexBaseVisitor;
-import antlr_generated.RegexParser;
+import antlr.RegexBaseVisitor;
+import antlr.RegexParser;
 import automaton.nfa.Nfa;
-import automaton.nfa.State;
-import automaton.transition.Transition;
-import automaton.transition.Transitions;
+import automaton.transition.*;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class RegexVisitorImpl extends RegexBaseVisitor<Nfa> {
     private RegexConfig regexConfig;
@@ -18,68 +18,100 @@ public class RegexVisitorImpl extends RegexBaseVisitor<Nfa> {
         return Nfa.concat(expressions.stream().map(this::visitExpr).collect(Collectors.toList()));
     }
 
+    private Nfa parseMany1(Collection<RegexParser.Expr1Context> expressions) {
+        return Nfa.concat(expressions.stream().map(this::visitExpr1).collect(Collectors.toList()));
+    }
+
     @Override
     public Nfa visitStart(RegexParser.StartContext ctx) {
         regexConfig = new RegexConfig(ctx.params().getText());
-        return parseMany(ctx.expr());
-    }
-
-
-    @Override
-    public Nfa visitParams(RegexParser.ParamsContext ctx) {
-        return super.visitParams(ctx);
+        Nfa result = parseMany(ctx.expr());
+        result.close();
+        return result;
     }
 
     @Override
     public Nfa visitCharset(RegexParser.CharsetContext ctx) {
-        return super.visitCharset(ctx);
+        Transition transition = CollectionTransition.merge(
+                ctx.charsetValues().stream().map(this::parseCharsetValues).collect(Collectors.toList()));
+        if (ctx.CAP() != null) {
+            transition = new ComplementTransition(transition);
+        }
+        return new Nfa(transition);
     }
 
-    @Override
-    public Nfa visitCharsetRange(RegexParser.CharsetRangeContext ctx) {
-        return super.visitCharsetRange(ctx);
+    public Transition parseCharsetRange(RegexParser.CharsetRangeContext ctx) { // TODO: rework for visit charset
+        String text = ctx.getText();
+        int hyphenPos = text.indexOf('-');
+        Transition transition = new RangeTransition(text.substring(0, hyphenPos), text.substring(hyphenPos + 1));
+        if (regexConfig.isCaseInsensitive()) {
+            transition = new CollectionTransition(Stream.concat(
+                transition.getAccepted().stream(),
+                Stream.concat(
+                        transition.getAccepted().stream().filter(Character::isAlphabetic).map(Character::toLowerCase),
+                        transition.getAccepted().stream().filter(Character::isAlphabetic).map(Character::toUpperCase)
+                )
+            ).collect(Collectors.toSet()));
+        }
+        return transition;
     }
 
-    @Override
-    public Nfa visitCharsetValues(RegexParser.CharsetValuesContext ctx) {
-        return super.visitCharsetValues(ctx);
+    public Transition parseCharsetValues(RegexParser.CharsetValuesContext ctx) {
+        if (ctx.charsetRange() != null) {
+            return parseCharsetRange(ctx.charsetRange());
+        } else if (ctx.character() != null) {
+            return parseCharacter(ctx.character());
+        }
+        return Transitions.ofString(ctx.getText(), regexConfig);
     }
 
     @Override
     public Nfa visitExpr(RegexParser.ExprContext ctx) {
+        if (ctx.OR() != null) {
+            Nfa nfa1 = parseMany1(ctx.expr1());
+            Nfa nfa2 = parseMany(ctx.expr());
+            return Nfa.union(List.of(nfa1, nfa2));
+        }
+        return visit(ctx.expr1(0));
+    }
+
+    @Override
+    public Nfa visitExpr1(RegexParser.Expr1Context ctx) {
         if (ctx.pureExpr() != null) {
             return visit(ctx.pureExpr());
         }
         if (ctx.optionalExpr() != null) {
-            throw new RuntimeException();
+            return visit(ctx.optionalExpr());
         }
-        if (ctx.repeatedExpr() != null) { // TODO
-            return visit(ctx.repeatedExpr());
-        }
-        throw new RuntimeException(); // OR
-//        visit()
+        return visit(ctx.repeatedExpr());
     }
 
     @Override
     public Nfa visitPureExpr(RegexParser.PureExprContext ctx) {
         if (ctx.charset() != null) {
-            throw new RuntimeException();
+            return visit(ctx.charset());
         }
         if (ctx.L_PAR() != null) {
             return parseMany(ctx.expr());
         }
+        if (ctx.special() != null) {
+            return new Nfa(parseSpecial(ctx.special()));
+        }
+        return new Nfa(parseCharacter(ctx.character()));
+    }
 
-        return super.visitPureExpr(ctx);
+    public Transition parseCharacter(RegexParser.CharacterContext ctx) {
+        return Transitions.ofString(ctx.getText(), regexConfig);
+    }
+
+    public Transition parseSpecial(RegexParser.SpecialContext ctx) {
+        return Transitions.ofString(ctx.getText(), regexConfig);
     }
 
     @Override
     public Nfa visitCharacter(RegexParser.CharacterContext ctx) {
-        Transition transition = Transitions.ofString(ctx.getText(), regexConfig);
-        Nfa nfa = new Nfa(false);
-        State finish = new State();
-        nfa.getStart().addEdge(transition, finish);
-        nfa.getTerminals().add(finish);
-        return nfa;
+        Transition transition = parseCharacter(ctx);
+        return new Nfa(transition);
     }
 
     private static class Range {
@@ -96,7 +128,7 @@ public class RegexVisitorImpl extends RegexBaseVisitor<Nfa> {
             this.l = l;
             this.r = r;
             if (r != null && r < l) {
-                throw new IllegalArgumentException("Unexpected range parameters");
+                throw new ParsingError("Unexpected range parameters");
             }
         }
 
@@ -116,19 +148,22 @@ public class RegexVisitorImpl extends RegexBaseVisitor<Nfa> {
     @Override
     public Nfa visitRepeatedExpr(RegexParser.RepeatedExprContext ctx) {
         Nfa nfa = visit(ctx.pureExpr());
+        Range range;
         if (ctx.repeatCounter() != null) {
             visit(ctx.repeatCounter());
             if (storage instanceof Range) {
-                nfa = ((Range) storage).apply(nfa);
+                range = (Range) storage;
+                storage = null;
             } else {
-                throw new IllegalArgumentException("Expected range");
+                throw new ParsingError("Expected range");
             }
+        } else if (ctx.PLUS() != null) {
+            range = new Range(1, null);
         } else {
-            throw new RuntimeException();
+            range = new Range(0, null);
         }
-        return nfa;
+        return range.apply(nfa);
     }
-
 
     public int parseNumber(RegexParser.NumberContext ctx) {
         return Integer.parseInt(ctx.getText());
@@ -165,6 +200,8 @@ public class RegexVisitorImpl extends RegexBaseVisitor<Nfa> {
 
     @Override
     public Nfa visitOptionalExpr(RegexParser.OptionalExprContext ctx) {
-        return super.visitOptionalExpr(ctx);
+        Nfa pure = visit(ctx.pureExpr());
+        pure.makeOptional();
+        return pure;
     }
 }

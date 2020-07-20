@@ -1,5 +1,5 @@
 // Generated from F:/repo/java/dpi-fp/src/main/grammar\Regex.g4 by ANTLR 4.8
-package antlr_generated;
+package antlr;
 
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.tree.ErrorNode;
@@ -88,6 +88,18 @@ public class RegexBaseListener implements RegexListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
+	@Override public void enterExpr1(RegexParser.Expr1Context ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitExpr1(RegexParser.Expr1Context ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
 	@Override public void enterPureExpr(RegexParser.PureExprContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -107,6 +119,18 @@ public class RegexBaseListener implements RegexListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitCharacter(RegexParser.CharacterContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterSpecial(RegexParser.SpecialContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitSpecial(RegexParser.SpecialContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -148,18 +172,6 @@ public class RegexBaseListener implements RegexListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterRBorderCounter(RegexParser.RBorderCounterContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitRBorderCounter(RegexParser.RBorderCounterContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
 	@Override public void enterLBorderCounter(RegexParser.LBorderCounterContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -167,6 +179,18 @@ public class RegexBaseListener implements RegexListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitLBorderCounter(RegexParser.LBorderCounterContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterRBorderCounter(RegexParser.RBorderCounterContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitRBorderCounter(RegexParser.RBorderCounterContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *

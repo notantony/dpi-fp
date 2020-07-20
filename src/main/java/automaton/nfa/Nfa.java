@@ -24,9 +24,17 @@ public class Nfa {
         this.terminals = terminals;
     }
 
+    public Nfa(Transition t) {
+        terminals = new ArrayList<>(4);
+        start = new State();
+        State fin = new State();
+        start.addEdge(t, fin);
+        terminals.add(fin);
+    }
+
     public void append(Nfa other) {
         if (this == other) {
-            throw new IllegalArgumentException("Cannot connect dfa with itself");
+            throw new IllegalArgumentException("Cannot connect nfa with itself");
         }
         for (State terminal : terminals) {
             terminal.addEdge(new EpsilonTransition(), other.start);
@@ -42,22 +50,16 @@ public class Nfa {
         return result;
     }
 
-    public void union(Nfa other) {
-        if (this == other) {
-            throw new IllegalArgumentException("Cannot connect dfa with itself");
-        }
+    public static Nfa union(Collection<Nfa> other) {
         State newStart = new State();
         State newTerminal = new State();
-        newStart.addEdge(new EpsilonTransition(), start);
-        newStart.addEdge(new EpsilonTransition(), other.start);
-        for (State terminal : terminals) {
-            terminal.addEdge(new EpsilonTransition(), newTerminal);
-        }
-        for (State terminal : other.getTerminals()) {
-            terminal.addEdge(new EpsilonTransition(), newTerminal);
-        }
-        start = newStart;
-        terminals = Collections.singletonList(newTerminal);
+        other.forEach(nfa -> newStart.addEdge(EpsilonTransition.epsilonTransition, nfa.start));
+        other.forEach(nfa ->
+                nfa.terminals.forEach(terminal ->
+                        terminal.addEdge(EpsilonTransition.epsilonTransition, newTerminal)
+                )
+        );
+        return new Nfa(newStart, Collections.singletonList(newTerminal));
     }
 
     public void closure() {
@@ -65,7 +67,7 @@ public class Nfa {
         State newTerminal = new State();
         newStart.addEdge(new EpsilonTransition(), start);
         start.addEdge(new EpsilonTransition(), newTerminal);
-        newStart.addEdge(new EpsilonTransition(), newTerminal);
+        terminals.forEach(terminal -> terminal.addEdge(EpsilonTransition.epsilonTransition, newTerminal));
         newTerminal.addEdge(new EpsilonTransition(), newStart);
         start = newStart;
         terminals = Collections.singletonList(newTerminal);
@@ -136,13 +138,24 @@ public class Nfa {
     }
 
     public boolean test(String s) {
+        return testHeader(s, true);
+    }
+
+    public boolean testHeader(String s, boolean addHeader) {
+        if (addHeader) {
+            s = (char) 257 + s + (char) 256;
+        }
+        // TODO: better solution
+        boolean success = false;
+
         Set<State> states = new HashSet<>();
         states.add(start);
 
         Queue<State> checkEpsilons = new ArrayDeque<>(states);
         traverseEpsilons(checkEpsilons, states);
+        success |= states.stream().anyMatch(State::isTerminal);
 
-        for (int i = 0; i < s.length(); i++) {
+        for (int i = 0; !success && i < s.length(); i++) {
             HashSet<State> newStates = new HashSet<>();
 
             for (State state : states) {
@@ -161,7 +174,20 @@ public class Nfa {
             traverseEpsilons(checkEpsilons, newStates);
 
             states = newStates;
+            success |= states.stream().anyMatch(State::isTerminal);
         }
-        return terminals.stream().anyMatch(states::contains);
+//        return terminals.stream().anyMatch(states::contains);
+        if (!success && s.length() > 0) {
+            return testHeader(s.substring(1), false);
+        }
+        return success;
+    }
+
+    public void close(int id) {
+        terminals.forEach(terminal -> terminal.setTerminal(id));
+    }
+
+    public void close() {
+        close(1);
     }
 }

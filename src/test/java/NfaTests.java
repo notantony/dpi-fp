@@ -1,4 +1,5 @@
 import automaton.nfa.Nfa;
+import main.Main;
 import org.junit.Test;
 
 import java.util.List;

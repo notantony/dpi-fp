@@ -1,3 +1,5 @@
+package main;
+
 import antlr.RegexLexer;
 import antlr.RegexParser;
 import automaton.nfa.Nfa;
@@ -17,11 +19,22 @@ public class Main {
 //        byte x = (byte) ((char) 255);// Byte.parseByte("52", 16);
 //        char x = (char) Integer.parseInt("3a", 16);// (Integer.valueOf("3a"));
 //        char x = Character.codePointOf("\n");
-//        System.out.println(x);
+//        System.out.println((char) 256);
 //        Character.
 
-        BufferedReader rulesReader = Files.newBufferedReader(Paths.get("./input/filtered.txt"));
-        rulesReader.lines().forEach(Main::processRule);
+//        BufferedReader rulesReader = Files.newBufferedReader(Paths.get("./input/filtered.txt"));
+//        rulesReader.lines().forEach(Main::processRule);
+
+//        new RegexTest("#318", "/abc/i", "ABC", 0),
+//        new RegexTest("#319", "/abc/i", "XBC", 1),
+//        new RegexTest("#320", "/abc/i", "AXC", 1),
+//        new RegexTest("#321", "/abc/i", "ABX", 1),
+//        new RegexTest("#322", "/abc/i", "XABCY", 0),
+
+        String regex = "/a[ ]*?\\ (\\d+).*/";
+        String string = "a    10";
+        Nfa nfa = buildNfa(regex);
+        System.out.println(nfa.test(string));
     }
 
     public static Nfa buildNfa(String rule) {
@@ -33,11 +46,12 @@ public class Main {
             }
         };
         RegexLexer lexer = new RegexLexer(CharStreams.fromString(rule));
+        lexer.removeErrorListeners();
         lexer.addErrorListener(parsingErrorListener);
         CommonTokenStream tokenStream = new CommonTokenStream(lexer);
         RegexParser parser = new RegexParser(tokenStream);
+        parser.removeErrorListeners();
         parser.addErrorListener(parsingErrorListener);
-        parser.addErrorListener(new BaseErrorListener());
 
         RegexParser.StartContext start = parser.start();
         RegexVisitorImpl visitor = new RegexVisitorImpl();

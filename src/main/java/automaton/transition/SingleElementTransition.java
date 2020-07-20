@@ -11,7 +11,7 @@ public class SingleElementTransition extends AbstractTransition {
     }
 
     @Override
-    public boolean test(Character c) {
+    public boolean testImpl(Character c) {
         return c == this.c;
     }
 
