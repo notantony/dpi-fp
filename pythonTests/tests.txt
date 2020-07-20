@@ -1,1948 +1,432 @@
-#10
-/\\1/
-a
-2
-#11
-/[\\1]/
-\x01
-0
-#12
-/\\09/
-\x009
-0
-#13
-/\\141/
-a
-0
-#14
-/(a)(b)(c)(d)(e)(f)(g)(h)(i)(j)(k)(l)\\119/
-abcdefghijklk9
-0
-#15
-/\\0/
-\x00
-0
-#16
-/[\\0a]/
-\x00
-0
-#17
-/[a\\0]/
-\x00
-0
-#18
-/[^a\\0]/
-\x00
-1
-#19
-/\\a[\\b]\\f\\n\\r\\t\\v/
-\x07\x08\x0c\n\r\t\x0b
-0
-#20
-/[\\a][\\b][\\f][\\n][\\r][\\t][\\v]/
-\x07\x08\x0c\n\r\t\x0b
-0
-#21
-/\\u/
-
-2
-#24
-/\\x00f/
-\x0f
-1
-#26
-/^\\w+=(\\\\[\\000-\\277]|[^\\n\\\\])*/
-SRC=eval.c g.c blah blah blah \\\\\n\tapes.c
-0
-#27
-/a.b/
-acb
-0
-#28
-/a.b/
-a\nb
-1
-#29
-/a.*b/
-acc\nccb
-1
-#30
-/a.{4,5}b/
-acc\nccb
-1
-#31
-/a.b/
-a\rb
-0
-#32
-/(?s)a.b/
-a\nb
-0
-#33
-/(?s)a.*b/
-acc\nccb
-0
-#34
-/(?s)a.{4,5}b/
-acc\nccb
-0
-#35
-/(?s)a.b/
-a\nb
-0
-#36
-/)/
-
-2
-#37
-//
-
-0
-#38
-/abc/
-abc
-0
-#39
-/abc/
-xbc
-1
-#40
-/abc/
-axc
-1
-#41
-/abc/
-abx
-1
-#42
-/abc/
-xabcy
-0
-#43
-/abc/
-ababc
-0
-#44
-/ab*c/
-abc
-0
-#45
-/ab*bc/
-abc
-0
-#46
-/ab*bc/
-abbc
-0
-#47
-/ab*bc/
-abbbbc
-0
-#48
-/ab+bc/
-abbc
-0
-#49
-/ab+bc/
-abc
-1
-#50
-/ab+bc/
-abq
-1
-#51
-/ab+bc/
-abbbbc
-0
-#52
-/ab?bc/
-abbc
-0
-#53
-/ab?bc/
-abc
-0
-#54
-/ab?bc/
-abbbbc
-1
-#55
-/ab?c/
-abc
-0
-#56
-/^abc$/
-abc
-0
-#57
-/^abc$/
-abcc
-1
-#58
-/^abc/
-abcc
-0
-#59
-/^abc$/
-aabc
-1
-#60
-/abc$/
-aabc
-0
-#61
-/^/
-abc
-0
-#62
-/$/
-abc
-0
-#63
-/a.c/
-abc
-0
-#64
-/a.c/
-axc
-0
-#65
-/a.*c/
-axyzc
-0
-#66
-/a.*c/
-axyzd
-1
-#67
-/a[bc]d/
-abc
-1
-#68
-/a[bc]d/
-abd
-0
-#69
-/a[b-d]e/
-abd
-1
-#70
-/a[b-d]e/
-ace
-0
-#71
-/a[b-d]/
-aac
-0
-#72
-/a[-b]/
-a-
-0
-#73
-/a[\\-b]/
-a-
-0
-#74
-/a[]b/
--
-2
-#75
-/a[/
--
-2
-#76
-/a\\/
--
-2
-#77
-/abc)/
--
-2
-#78
-/(abc/
--
-2
-#79
-/a]/
-a]
-0
-#80
-/a[]]b/
-a]b
-0
-#81
-/a[\\]]b/
-a]b
-0
-#82
-/a[^bc]d/
-aed
-0
-#83
-/a[^bc]d/
-abd
-1
-#84
-/a[^-b]c/
-adc
-0
-#85
-/a[^-b]c/
-a-c
-1
-#86
-/a[^]b]c/
-a]c
-1
-#87
-/a[^]b]c/
-adc
-0
-#88
-/\\ba\\b/
-a-
-0
-#89
-/\\ba\\b/
--a
-0
-#90
-/\\ba\\b/
--a-
-0
-#91
-/\\by\\b/
-xy
-1
-#92
-/\\by\\b/
-yz
-1
-#93
-/\\by\\b/
-xyz
-1
-#94
-/x\\b/
-xyz
-1
-#95
-/x\\B/
-xyz
-0
-#96
-/\\Bz/
-xyz
-0
-#97
-/z\\B/
-xyz
-1
-#98
-/\\Bx/
-xyz
-1
-#99
-/\\Ba\\B/
-a-
-1
-#100
-/\\Ba\\B/
--a
-1
-#101
-/\\Ba\\B/
--a-
-1
-#102
-/\\By\\B/
-xy
-1
-#103
-/\\By\\B/
-yz
-1
-#104
-/\\By\\b/
-xy
-0
-#105
-/\\by\\B/
-yz
-0
-#106
-/\\By\\B/
-xyz
-0
-#107
-/ab|cd/
-abc
-0
-#108
-/ab|cd/
-abcd
-0
-#109
-/()ef/
-def
-0
-#110
-/$b/
-b
-1
-#111
-/a\\(b/
-a(b
-0
-#112
-/a\\(*b/
-ab
-0
-#113
-/a\\(*b/
-a((b
-0
-#114
-/a\\\\b/
-a\\b
-0
-#115
-/((a))/
-abc
-0
-#116
-/(a)b(c)/
-abc
-0
-#117
-/a+b+c/
-aabbabc
-0
-#118
-/(a+|b)*/
-ab
-0
-#119
-/(a+|b)+/
-ab
-0
-#120
-/(a+|b)?/
-ab
-0
-#121
-/)(/
--
-2
-#122
-/[^ab]*/
-cde
-0
-#123
-/abc/
-
-1
-#124
-/a*/
-
-0
-#125
-/a|b|c|d|e/
-e
-0
-#126
-/(a|b|c|d|e)f/
-ef
-0
-#127
-/abcd*efg/
-abcdefg
-0
-#128
-/ab*/
-xabyabbbz
-0
-#129
-/ab*/
-xayabbbz
-0
-#130
-/(ab|cd)e/
-abcde
-0
-#131
-/[abhgefdc]ij/
-hij
-0
-#132
-/^(ab|cd)e/
-abcde
-1
-#133
-/(abc|)ef/
-abcdef
-0
-#134
-/(a|b)c*d/
-abcd
-0
-#135
-/(ab|ab*)bc/
-abc
-0
-#136
-/a([bc]*)c*/
-abc
-0
-#137
-/a([bc]*)(c*d)/
-abcd
-0
-#138
-/a([bc]+)(c*d)/
-abcd
-0
-#139
-/a([bc]*)(c+d)/
-abcd
-0
-#140
-/a[bcd]*dcdcde/
-adcdcde
-0
-#141
-/a[bcd]+dcdcde/
-adcdcde
-1
-#142
-/(ab|a)b*c/
-abc
-0
-#143
-/((a)(b)c)(d)/
-abcd
-0
-#144
-/[a-zA-Z_][a-zA-Z0-9_]*/
-alpha
-0
-#145
-/^a(bc+|b[eh])g|.h$/
-abh
-0
-#146
-/(bc+d$|ef*g.|h?i(j|k))/
-effgz
-0
-#147
-/(bc+d$|ef*g.|h?i(j|k))/
-ij
-0
-#148
-/(bc+d$|ef*g.|h?i(j|k))/
-effg
-1
-#149
-/(bc+d$|ef*g.|h?i(j|k))/
-bcdd
-1
-#150
-/(bc+d$|ef*g.|h?i(j|k))/
-reffgz
-0
-#151
-/(((((((((a)))))))))/
-a
-0
-#152
-/multiple words of text/
-uh-uh
-1
-#153
-/multiple words/
-multiple words, yeah
-0
-#154
-/(.*)c(.*)/
-abcde
-0
-#155
-/\\((.*), (.*)\\)/
-(a, b)
-0
-#156
-/[k]/
-ab
-1
-#157
-/a[-]?c/
-ac
-0
-#158
-/(abc)\\1/
-abcabc
-0
-#159
-/([a-c]*)\\1/
-abcabc
-0
-#160
-/^(.+)?B/
-AB
-0
-#161
-/(a+).\\1$/
-aaaaa
-0
-#162
-/^(a+).\\1$/
-aaaa
-1
-#163
-/(abc)\\1/
-abcabc
-0
-#164
-/([a-c]+)\\1/
-abcabc
-0
-#165
-/(a)\\1/
-aa
-0
-#166
-/(a+)\\1/
-aa
-0
-#167
-/(a+)+\\1/
-aa
-0
-#168
-/(a).+\\1/
-aba
-0
-#169
-/(a)ba*\\1/
-aba
-0
-#170
-/(aa|a)a\\1$/
-aaa
-0
-#171
-/(a|aa)a\\1$/
-aaa
-0
-#172
-/(a+)a\\1$/
-aaa
-0
-#173
-/([abc]*)\\1/
-abcabc
-0
-#174
-/(a)(b)c|ab/
-ab
-0
-#175
-/(a)+x/
-aaax
-0
-#176
-/([ac])+x/
-aacx
-0
-#177
-/([^/]*/)*sub1//
-d:msgs/tdir/sub1/trial/away.cpp
-0
-#178
-/([^.]*)\\.([^:]*):[T ]+(.*)/
-track1.title:TBlah blah blah
-0
-#179
-/([^N]*N)+/
-abNNxyzN
-0
-#180
-/([^N]*N)+/
-abNNxyz
-0
-#181
-/([abc]*)x/
-abcx
-0
-#182
-/([abc]*)x/
-abc
-1
-#183
-/([xyz]*)x/
-abcx
-0
-#184
-/(a)+b|aac/
-aac
-0
-#189
-/\\1/
-a
-2
-#190
-/\\09/
-\x009
-0
-#191
-/\\141/
-a
-0
-#192
-/(a)(b)(c)(d)(e)(f)(g)(h)(i)(j)(k)(l)\\119/
-abcdefghijklk9
-0
-#193
-/abc/
-abc
-0
-#194
-/abc/
-xbc
-1
-#195
-/abc/
-axc
-1
-#196
-/abc/
-abx
-1
-#197
-/abc/
-xabcy
-0
-#198
-/abc/
-ababc
-0
-#199
-/ab*c/
-abc
-0
-#200
-/ab*bc/
-abc
-0
-#201
-/ab*bc/
-abbc
-0
-#202
-/ab*bc/
-abbbbc
-0
-#203
-/ab{0,}bc/
-abbbbc
-0
-#204
-/ab+bc/
-abbc
-0
-#205
-/ab+bc/
-abc
-1
-#206
-/ab+bc/
-abq
-1
-#207
-/ab{1,}bc/
-abq
-1
-#208
-/ab+bc/
-abbbbc
-0
-#209
-/ab{1,}bc/
-abbbbc
-0
-#210
-/ab{1,3}bc/
-abbbbc
-0
-#211
-/ab{3,4}bc/
-abbbbc
-0
-#212
-/ab{4,5}bc/
-abbbbc
-1
-#213
-/ab?bc/
-abbc
-0
-#214
-/ab?bc/
-abc
-0
-#215
-/ab{0,1}bc/
-abc
-0
-#216
-/ab?bc/
-abbbbc
-1
-#217
-/ab?c/
-abc
-0
-#218
-/ab{0,1}c/
-abc
-0
-#219
-/^abc$/
-abc
-0
-#220
-/^abc$/
-abcc
-1
-#221
-/^abc/
-abcc
-0
-#222
-/^abc$/
-aabc
-1
-#223
-/abc$/
-aabc
-0
-#224
-/^/
-abc
-0
-#225
-/$/
-abc
-0
-#226
-/a.c/
-abc
-0
-#227
-/a.c/
-axc
-0
-#228
-/a.*c/
-axyzc
-0
-#229
-/a.*c/
-axyzd
-1
-#230
-/a[bc]d/
-abc
-1
-#231
-/a[bc]d/
-abd
-0
-#232
-/a[b-d]e/
-abd
-1
-#233
-/a[b-d]e/
-ace
-0
-#234
-/a[b-d]/
-aac
-0
-#235
-/a[-b]/
-a-
-0
-#236
-/a[b-]/
-a-
-0
-#237
-/a[b-a]/
--
-2
-#238
-/a[]b/
--
-2
-#239
-/a[/
--
-2
-#240
-/a]/
-a]
-0
-#241
-/a[]]b/
-a]b
-0
-#242
-/a[^bc]d/
-aed
-0
-#243
-/a[^bc]d/
-abd
-1
-#244
-/a[^-b]c/
-adc
-0
-#245
-/a[^-b]c/
-a-c
-1
-#246
-/a[^]b]c/
-a]c
-1
-#247
-/a[^]b]c/
-adc
-0
-#248
-/ab|cd/
-abc
-0
-#249
-/ab|cd/
-abcd
-0
-#250
-/()ef/
-def
-0
-#251
-/*a/
--
-2
-#252
-/(*)b/
--
-2
-#253
-/$b/
-b
-1
-#254
-/a\\/
--
-2
-#255
-/a\\(b/
-a(b
-0
-#256
-/a\\(*b/
-ab
-0
-#257
-/a\\(*b/
-a((b
-0
-#258
-/a\\\\b/
-a\\b
-0
-#259
-/abc)/
--
-2
-#260
-/(abc/
--
-2
-#261
-/((a))/
-abc
-0
-#262
-/(a)b(c)/
-abc
-0
-#263
-/a+b+c/
-aabbabc
-0
-#264
-/a{1,}b{1,}c/
-aabbabc
-0
-#265
-/a**/
--
-2
-#266
-/a.+?c/
-abcabc
-0
-#267
-/(a+|b)*/
-ab
-0
-#268
-/(a+|b){0,}/
-ab
-0
-#269
-/(a+|b)+/
-ab
-0
-#270
-/(a+|b){1,}/
-ab
-0
-#271
-/(a+|b)?/
-ab
-0
-#272
-/(a+|b){0,1}/
-ab
-0
-#273
-/)(/
--
-2
-#274
-/[^ab]*/
-cde
-0
-#275
-/abc/
-
-1
-#276
-/a*/
-
-0
-#277
-/([abc])*d/
-abbbcd
-0
-#278
-/([abc])*bcd/
-abcd
-0
-#279
-/a|b|c|d|e/
-e
-0
-#280
-/(a|b|c|d|e)f/
-ef
-0
-#281
-/abcd*efg/
-abcdefg
-0
-#282
-/ab*/
-xabyabbbz
-0
-#283
-/ab*/
-xayabbbz
-0
-#284
-/(ab|cd)e/
-abcde
-0
-#285
-/[abhgefdc]ij/
-hij
-0
-#286
-/^(ab|cd)e/
-abcde
-1
-#287
-/(abc|)ef/
-abcdef
-0
-#288
-/(a|b)c*d/
-abcd
-0
-#289
-/(ab|ab*)bc/
-abc
-0
-#290
-/a([bc]*)c*/
-abc
-0
-#291
-/a([bc]*)(c*d)/
-abcd
-0
-#292
-/a([bc]+)(c*d)/
-abcd
-0
-#293
-/a([bc]*)(c+d)/
-abcd
-0
-#294
-/a[bcd]*dcdcde/
-adcdcde
-0
-#295
-/a[bcd]+dcdcde/
-adcdcde
-1
-#296
-/(ab|a)b*c/
-abc
-0
-#297
-/((a)(b)c)(d)/
-abcd
-0
-#298
-/[a-zA-Z_][a-zA-Z0-9_]*/
-alpha
-0
-#299
-/^a(bc+|b[eh])g|.h$/
-abh
-0
-#300
-/(bc+d$|ef*g.|h?i(j|k))/
-effgz
-0
-#301
-/(bc+d$|ef*g.|h?i(j|k))/
-ij
-0
-#302
-/(bc+d$|ef*g.|h?i(j|k))/
-effg
-1
-#303
-/(bc+d$|ef*g.|h?i(j|k))/
-bcdd
-1
-#304
-/(bc+d$|ef*g.|h?i(j|k))/
-reffgz
-0
-#305
-/((((((((((a))))))))))/
-a
-0
-#306
-/((((((((((a))))))))))\\10/
-aa
-0
-#307
-/((((((((((a))))))))))\\41/
-
-2
-#308
-/(?i)((((((((((a))))))))))\\41/
-
-2
-#309
-/(((((((((a)))))))))/
-a
-0
-#310
-/multiple words of text/
-uh-uh
-1
-#311
-/multiple words/
-multiple words, yeah
-0
-#312
-/(.*)c(.*)/
-abcde
-0
-#313
-/\\((.*), (.*)\\)/
-(a, b)
-0
-#314
-/[k]/
-ab
-1
-#315
-/a[-]?c/
-ac
-0
-#316
-/(abc)\\1/
-abcabc
-0
-#317
-/([a-c]*)\\1/
-abcabc
-0
-#318
-/(?i)abc/
-ABC
-0
-#319
-/(?i)abc/
-XBC
-1
-#320
-/(?i)abc/
-AXC
-1
-#321
-/(?i)abc/
-ABX
-1
-#322
-/(?i)abc/
-XABCY
-0
-#323
-/(?i)abc/
-ABABC
-0
-#324
-/(?i)ab*c/
-ABC
-0
-#325
-/(?i)ab*bc/
-ABC
-0
-#326
-/(?i)ab*bc/
-ABBC
-0
-#327
-/(?i)ab*?bc/
-ABBBBC
-0
-#328
-/(?i)ab{0,}?bc/
-ABBBBC
-0
-#329
-/(?i)ab+?bc/
-ABBC
-0
-#330
-/(?i)ab+bc/
-ABC
-1
-#331
-/(?i)ab+bc/
-ABQ
-1
-#332
-/(?i)ab{1,}bc/
-ABQ
-1
-#333
-/(?i)ab+bc/
-ABBBBC
-0
-#334
-/(?i)ab{1,}?bc/
-ABBBBC
-0
-#335
-/(?i)ab{1,3}?bc/
-ABBBBC
-0
-#336
-/(?i)ab{3,4}?bc/
-ABBBBC
-0
-#337
-/(?i)ab{4,5}?bc/
-ABBBBC
-1
-#338
-/(?i)ab??bc/
-ABBC
-0
-#339
-/(?i)ab??bc/
-ABC
-0
-#340
-/(?i)ab{0,1}?bc/
-ABC
-0
-#341
-/(?i)ab??bc/
-ABBBBC
-1
-#342
-/(?i)ab??c/
-ABC
-0
-#343
-/(?i)ab{0,1}?c/
-ABC
-0
-#344
-/(?i)^abc$/
-ABC
-0
-#345
-/(?i)^abc$/
-ABCC
-1
-#346
-/(?i)^abc/
-ABCC
-0
-#347
-/(?i)^abc$/
-AABC
-1
-#348
-/(?i)abc$/
-AABC
-0
-#349
-/(?i)^/
-ABC
-0
-#350
-/(?i)$/
-ABC
-0
-#351
-/(?i)a.c/
-ABC
-0
-#352
-/(?i)a.c/
-AXC
-0
-#353
-/(?i)a.*?c/
-AXYZC
-0
-#354
-/(?i)a.*c/
-AXYZD
-1
-#355
-/(?i)a[bc]d/
-ABC
-1
-#356
-/(?i)a[bc]d/
-ABD
-0
-#357
-/(?i)a[b-d]e/
-ABD
-1
-#358
-/(?i)a[b-d]e/
-ACE
-0
-#359
-/(?i)a[b-d]/
-AAC
-0
-#360
-/(?i)a[-b]/
-A-
-0
-#361
-/(?i)a[b-]/
-A-
-0
-#362
-/(?i)a[b-a]/
--
-2
-#363
-/(?i)a[]b/
--
-2
-#364
-/(?i)a[/
--
-2
-#365
-/(?i)a]/
-A]
-0
-#366
-/(?i)a[]]b/
-A]B
-0
-#367
-/(?i)a[^bc]d/
-AED
-0
-#368
-/(?i)a[^bc]d/
-ABD
-1
-#369
-/(?i)a[^-b]c/
-ADC
-0
-#370
-/(?i)a[^-b]c/
-A-C
-1
-#371
-/(?i)a[^]b]c/
-A]C
-1
-#372
-/(?i)a[^]b]c/
-ADC
-0
-#373
-/(?i)ab|cd/
-ABC
-0
-#374
-/(?i)ab|cd/
-ABCD
-0
-#375
-/(?i)()ef/
-DEF
-0
-#376
-/(?i)*a/
--
-2
-#377
-/(?i)(*)b/
--
-2
-#378
-/(?i)$b/
-B
-1
-#379
-/(?i)a\\/
--
-2
-#380
-/(?i)a\\(b/
-A(B
-0
-#381
-/(?i)a\\(*b/
-AB
-0
-#382
-/(?i)a\\(*b/
-A((B
-0
-#383
-/(?i)a\\\\b/
-A\\B
-0
-#384
-/(?i)abc)/
--
-2
-#385
-/(?i)(abc/
--
-2
-#386
-/(?i)((a))/
-ABC
-0
-#387
-/(?i)(a)b(c)/
-ABC
-0
-#388
-/(?i)a+b+c/
-AABBABC
-0
-#389
-/(?i)a{1,}b{1,}c/
-AABBABC
-0
-#390
-/(?i)a**/
--
-2
-#391
-/(?i)a.+?c/
-ABCABC
-0
-#392
-/(?i)a.*?c/
-ABCABC
-0
-#393
-/(?i)a.{0,5}?c/
-ABCABC
-0
-#394
-/(?i)(a+|b)*/
-AB
-0
-#395
-/(?i)(a+|b){0,}/
-AB
-0
-#396
-/(?i)(a+|b)+/
-AB
-0
-#397
-/(?i)(a+|b){1,}/
-AB
-0
-#398
-/(?i)(a+|b)?/
-AB
-0
-#399
-/(?i)(a+|b){0,1}/
-AB
-0
-#400
-/(?i)(a+|b){0,1}?/
-AB
-0
-#401
-/(?i))(/
--
-2
-#402
-/(?i)[^ab]*/
-CDE
-0
-#403
-/(?i)abc/
-
-1
-#404
-/(?i)a*/
-
-0
-#405
-/(?i)([abc])*d/
-ABBBCD
-0
-#406
-/(?i)([abc])*bcd/
-ABCD
-0
-#407
-/(?i)a|b|c|d|e/
-E
-0
-#408
-/(?i)(a|b|c|d|e)f/
-EF
-0
-#409
-/(?i)abcd*efg/
-ABCDEFG
-0
-#410
-/(?i)ab*/
-XABYABBBZ
-0
-#411
-/(?i)ab*/
-XAYABBBZ
-0
-#412
-/(?i)(ab|cd)e/
-ABCDE
-0
-#413
-/(?i)[abhgefdc]ij/
-HIJ
-0
-#414
-/(?i)^(ab|cd)e/
-ABCDE
-1
-#415
-/(?i)(abc|)ef/
-ABCDEF
-0
-#416
-/(?i)(a|b)c*d/
-ABCD
-0
-#417
-/(?i)(ab|ab*)bc/
-ABC
-0
-#418
-/(?i)a([bc]*)c*/
-ABC
-0
-#419
-/(?i)a([bc]*)(c*d)/
-ABCD
-0
-#420
-/(?i)a([bc]+)(c*d)/
-ABCD
-0
-#421
-/(?i)a([bc]*)(c+d)/
-ABCD
-0
-#422
-/(?i)a[bcd]*dcdcde/
-ADCDCDE
-0
-#423
-/(?i)a[bcd]+dcdcde/
-ADCDCDE
-1
-#424
-/(?i)(ab|a)b*c/
-ABC
-0
-#425
-/(?i)((a)(b)c)(d)/
-ABCD
-0
-#426
-/(?i)[a-zA-Z_][a-zA-Z0-9_]*/
-ALPHA
-0
-#427
-/(?i)^a(bc+|b[eh])g|.h$/
-ABH
-0
-#428
-/(?i)(bc+d$|ef*g.|h?i(j|k))/
-EFFGZ
-0
-#429
-/(?i)(bc+d$|ef*g.|h?i(j|k))/
-IJ
-0
-#430
-/(?i)(bc+d$|ef*g.|h?i(j|k))/
-EFFG
-1
-#431
-/(?i)(bc+d$|ef*g.|h?i(j|k))/
-BCDD
-1
-#432
-/(?i)(bc+d$|ef*g.|h?i(j|k))/
-REFFGZ
-0
-#433
-/(?i)((((((((((a))))))))))/
-A
-0
-#434
-/(?i)((((((((((a))))))))))\\10/
-AA
-0
-#435
-/(?i)(((((((((a)))))))))/
-A
-0
-#436
-/(?i)(?:(?:(?:(?:(?:(?:(?:(?:(?:(a))))))))))/
-A
-0
-#437
-/(?i)(?:(?:(?:(?:(?:(?:(?:(?:(?:(a|b|c))))))))))/
-C
-0
-#438
-/(?i)multiple words of text/
-UH-UH
-1
-#439
-/(?i)multiple words/
-MULTIPLE WORDS, YEAH
-0
-#440
-/(?i)(.*)c(.*)/
-ABCDE
-0
-#441
-/(?i)\\((.*), (.*)\\)/
-(A, B)
-0
-#442
-/(?i)[k]/
-AB
-1
-#443
-/(?i)a[-]?c/
-AC
-0
-#444
-/(?i)(abc)\\1/
-ABCABC
-0
-#445
-/(?i)([a-c]*)\\1/
-ABCABC
-0
-#446
-/a(?!b)./
-abad
-0
-#447
-/a(?=d)./
-abad
-0
-#448
-/a(?=c|d)./
-abad
-0
-#449
-/a(?:b|c|d)(.)/
-ace
-0
-#450
-/a(?:b|c|d)*(.)/
-ace
-0
-#451
-/a(?:b|c|d)+?(.)/
-ace
-0
-#452
-/a(?:b|(c|e){1,2}?|d)+?(.)/
-ace
-0
-#453
-/^(.+)?B/
-AB
-0
-#454
-/(?<!-):(.*?)(?<!-):/
-a:bc-:de:f
-0
-#455
-/(?<!\\\\):(.*?)(?<!\\\\):/
-a:bc\\:de:f
-0
-#456
-/(?<!\\?)'(.*?)(?<!\\?)'/
-a'bc?'de'f
-0
-#457
-/w(?# comment/
-w
-2
-#458
-/w(?# comment 1)xy(?# comment 2)z/
-wxyz
-0
-#459
-/(?i)w/
-W
-0
-#460
-/(?x)w# comment 1\n        x y\n        # comment 2\n        z/
-wxyz
-0
-#461
-/^abc/
-jkl\nabc\nxyz
-1
-#462
-/(?m)^abc/
-jkl\nabc\nxyz
-0
-#463
-/(?m)abc$/
-jkl\nxyzabc\n123
-0
-#464
-/a.b/
-a\nb
-1
-#465
-/(?s)a.b/
-a\nb
-0
-#466
-/\\w+/
---ab_cd0123--
-0
-#467
-/[\\w]+/
---ab_cd0123--
-0
-#468
-/\\D+/
-1234abc5678
-0
-#469
-/[\\D]+/
-1234abc5678
-0
-#470
-/[\\da-fA-F]+/
-123abc
-0
-#471
-/([\\s]*)([\\S]*)([\\s]*)/
- testing!1972
-0
-#472
-/(\\s*)(\\S*)(\\s*)/
- testing!1972
-0
-#475
-/\\t\\n\\v\\r\\f\\a/
-\t\n\x0b\r\x0c\x07
-0
-#476
-/\t\n\x0b\r\x0c\x07/
-\t\n\x0b\r\x0c\x07
-0
-#477
-/\\t\\n\\v\\r\\f\\a/
-\t\n\x0b\r\x0c\x07
-0
-#478
-/[\\t][\\n][\\v][\\r][\\f][\\b]/
-\t\n\x0b\r\x0c\x08
-0
-#479
-/(([a-z]+):)?([a-z]+)$/
-smil
-0
-#480
-/((.)\\1+)/
-
-2
-#481
-/.*d/
-abc\nabd
-0
-#482
-/(/
-
-2
-#483
-/[\\41]/
-!
-0
-#484
-/(x?)?/
-x
-0
-#485
-/(?x) foo /
-foo
-0
-#486
-/(?<!abc)(d.f)/
-abcdefdof
-0
-#487
-/[\\w-]+/
-laser_beam
-0
-#488
-/.*?\\S *:/
-xx:
-0
-#489
-/a[ ]*?\\ (\\d+).*/
-a   10
-0
-#490
-/a[ ]*?\\ (\\d+).*/
-a    10
-0
-#491
-/(?ms).*?x\\s*\\Z(.*)/
-xx\nx\n
-0
-#492
-/(?i)M+/
-MMM
-0
-#493
-/(?i)m+/
-MMM
-0
-#494
-/(?i)[M]+/
-MMM
-0
-#495
-/(?i)[m]+/
-MMM
-0
-#496
-/^*/
-
-2
-#497
-/"(?:\\\\"|[^"])*?"/
-"\\""
-0
-#498
-/^.*?$/
-one\ntwo\nthree\n
-1
-#499
-/a[^>]*?b/
-a>b
-1
-#500
-/^a*?$/
-foo
-1
-#501
-/^((a)c)?(ab)$/
-ab
-0
-#502
-/^([ab]*?)(?=(b)?)c/
-abc
-0
-#503
-/^([ab]*?)(?!(b))c/
-abc
-0
-#504
-/^([ab]*?)(?<!(a))c/
-abc
-0
-#505
-/\\b.\\b/
-a
-0
+test21("/\\u/", "", 2)
+test24("/\\x00f/", "\x0f", 1)
+test27("/a.b/", "acb", 0)
+test28("/a.b/", "a\nb", 1)
+test29("/a.*b/", "acc\nccb", 1)
+test30("/a.{4,5}b/", "acc\nccb", 1)
+test31("/a.b/", "a\rb", 0)
+test32("/(?s)a.b/", "a\nb", 0)
+test33("/(?s)a.*b/", "acc\nccb", 0)
+test34("/(?s)a.{4,5}b/", "acc\nccb", 0)
+test35("/(?s)a.b/", "a\nb", 0)
+test36("/)/", "", 2)
+test37("//", "", 0)
+test38("/abc/", "abc", 0)
+test39("/abc/", "xbc", 1)
+test40("/abc/", "axc", 1)
+test41("/abc/", "abx", 1)
+test42("/abc/", "xabcy", 0)
+test43("/abc/", "ababc", 0)
+test44("/ab*c/", "abc", 0)
+test45("/ab*bc/", "abc", 0)
+test46("/ab*bc/", "abbc", 0)
+test47("/ab*bc/", "abbbbc", 0)
+test48("/ab+bc/", "abbc", 0)
+test49("/ab+bc/", "abc", 1)
+test50("/ab+bc/", "abq", 1)
+test51("/ab+bc/", "abbbbc", 0)
+test52("/ab?bc/", "abbc", 0)
+test53("/ab?bc/", "abc", 0)
+test54("/ab?bc/", "abbbbc", 1)
+test55("/ab?c/", "abc", 0)
+test56("/^abc$/", "abc", 0)
+test57("/^abc$/", "abcc", 1)
+test58("/^abc/", "abcc", 0)
+test59("/^abc$/", "aabc", 1)
+test60("/abc$/", "aabc", 0)
+test61("/^/", "abc", 0)
+test62("/$/", "abc", 0)
+test63("/a.c/", "abc", 0)
+test64("/a.c/", "axc", 0)
+test65("/a.*c/", "axyzc", 0)
+test66("/a.*c/", "axyzd", 1)
+test67("/a[bc]d/", "abc", 1)
+test68("/a[bc]d/", "abd", 0)
+test69("/a[b-d]e/", "abd", 1)
+test70("/a[b-d]e/", "ace", 0)
+test71("/a[b-d]/", "aac", 0)
+test72("/a[-b]/", "a-", 0)
+test73("/a[\\-b]/", "a-", 0)
+test74("/a[]b/", "-", 2)
+test75("/a[/", "-", 2)
+test76("/a\\/", "-", 2)
+test77("/abc)/", "-", 2)
+test78("/(abc/", "-", 2)
+test79("/a]/", "a]", 0)
+test80("/a[]]b/", "a]b", 0)
+test81("/a[\\]]b/", "a]b", 0)
+test82("/a[^bc]d/", "aed", 0)
+test83("/a[^bc]d/", "abd", 1)
+test84("/a[^-b]c/", "adc", 0)
+test85("/a[^-b]c/", "a-c", 1)
+test86("/a[^]b]c/", "a]c", 1)
+test87("/a[^]b]c/", "adc", 0)
+test95("/x\\B/", "xyz", 0)
+test96("/\\Bz/", "xyz", 0)
+test97("/z\\B/", "xyz", 1)
+test98("/\\Bx/", "xyz", 1)
+test99("/\\Ba\\B/", "a-", 1)
+test100("/\\Ba\\B/", "-a", 1)
+test101("/\\Ba\\B/", "-a-", 1)
+test102("/\\By\\B/", "xy", 1)
+test103("/\\By\\B/", "yz", 1)
+test106("/\\By\\B/", "xyz", 0)
+test107("/ab|cd/", "abc", 0)
+test108("/ab|cd/", "abcd", 0)
+test109("/()ef/", "def", 0)
+test110("/$b/", "b", 1)
+test111("/a\\(b/", "a(b", 0)
+test112("/a\\(*b/", "ab", 0)
+test113("/a\\(*b/", "a((b", 0)
+test115("/((a))/", "abc", 0)
+test116("/(a)b(c)/", "abc", 0)
+test117("/a+b+c/", "aabbabc", 0)
+test118("/(a+|b)*/", "ab", 0)
+test119("/(a+|b)+/", "ab", 0)
+test120("/(a+|b)?/", "ab", 0)
+test121("/)(/", "-", 2)
+test122("/[^ab]*/", "cde", 0)
+test123("/abc/", "", 1)
+test124("/a*/", "", 0)
+test125("/a|b|c|d|e/", "e", 0)
+test126("/(a|b|c|d|e)f/", "ef", 0)
+test127("/abcd*efg/", "abcdefg", 0)
+test128("/ab*/", "xabyabbbz", 0)
+test129("/ab*/", "xayabbbz", 0)
+test130("/(ab|cd)e/", "abcde", 0)
+test131("/[abhgefdc]ij/", "hij", 0)
+test132("/^(ab|cd)e/", "abcde", 1)
+test133("/(abc|)ef/", "abcdef", 0)
+test134("/(a|b)c*d/", "abcd", 0)
+test135("/(ab|ab*)bc/", "abc", 0)
+test136("/a([bc]*)c*/", "abc", 0)
+test137("/a([bc]*)(c*d)/", "abcd", 0)
+test138("/a([bc]+)(c*d)/", "abcd", 0)
+test139("/a([bc]*)(c+d)/", "abcd", 0)
+test140("/a[bcd]*dcdcde/", "adcdcde", 0)
+test141("/a[bcd]+dcdcde/", "adcdcde", 1)
+test142("/(ab|a)b*c/", "abc", 0)
+test143("/((a)(b)c)(d)/", "abcd", 0)
+test144("/[a-zA-Z_][a-zA-Z0-9_]*/", "alpha", 0)
+test145("/^a(bc+|b[eh])g|.h$/", "abh", 0)
+test146("/(bc+d$|ef*g.|h?i(j|k))/", "effgz", 0)
+test147("/(bc+d$|ef*g.|h?i(j|k))/", "ij", 0)
+test148("/(bc+d$|ef*g.|h?i(j|k))/", "effg", 1)
+test149("/(bc+d$|ef*g.|h?i(j|k))/", "bcdd", 1)
+test150("/(bc+d$|ef*g.|h?i(j|k))/", "reffgz", 0)
+test151("/(((((((((a)))))))))/", "a", 0)
+test152("/multiple words of text/", "uh-uh", 1)
+test153("/multiple words/", "multiple words, yeah", 0)
+test154("/(.*)c(.*)/", "abcde", 0)
+test155("/\\((.*), (.*)\\)/", "(a, b)", 0)
+test156("/[k]/", "ab", 1)
+test157("/a[-]?c/", "ac", 0)
+test160("/^(.+)?B/", "AB", 0)
+test174("/(a)(b)c|ab/", "ab", 0)
+test175("/(a)+x/", "aaax", 0)
+test176("/([ac])+x/", "aacx", 0)
+test177("/([^/]*/)*sub1//", "d:msgs/tdir/sub1/trial/away.cpp", 0)
+test178("/([^.]*)\\.([^:]*):[T ]+(.*)/", "track1.title:TBlah blah blah", 0)
+test179("/([^N]*N)+/", "abNNxyzN", 0)
+test180("/([^N]*N)+/", "abNNxyz", 0)
+test181("/([abc]*)x/", "abcx", 0)
+test182("/([abc]*)x/", "abc", 1)
+test183("/([xyz]*)x/", "abcx", 0)
+test184("/(a)+b|aac/", "aac", 0)
+test193("/abc/", "abc", 0)
+test194("/abc/", "xbc", 1)
+test195("/abc/", "axc", 1)
+test196("/abc/", "abx", 1)
+test197("/abc/", "xabcy", 0)
+test198("/abc/", "ababc", 0)
+test199("/ab*c/", "abc", 0)
+test200("/ab*bc/", "abc", 0)
+test201("/ab*bc/", "abbc", 0)
+test202("/ab*bc/", "abbbbc", 0)
+test203("/ab{0,}bc/", "abbbbc", 0)
+test204("/ab+bc/", "abbc", 0)
+test205("/ab+bc/", "abc", 1)
+test206("/ab+bc/", "abq", 1)
+test207("/ab{1,}bc/", "abq", 1)
+test208("/ab+bc/", "abbbbc", 0)
+test209("/ab{1,}bc/", "abbbbc", 0)
+test210("/ab{1,3}bc/", "abbbbc", 0)
+test211("/ab{3,4}bc/", "abbbbc", 0)
+test212("/ab{4,5}bc/", "abbbbc", 1)
+test213("/ab?bc/", "abbc", 0)
+test214("/ab?bc/", "abc", 0)
+test215("/ab{0,1}bc/", "abc", 0)
+test216("/ab?bc/", "abbbbc", 1)
+test217("/ab?c/", "abc", 0)
+test218("/ab{0,1}c/", "abc", 0)
+test219("/^abc$/", "abc", 0)
+test220("/^abc$/", "abcc", 1)
+test221("/^abc/", "abcc", 0)
+test222("/^abc$/", "aabc", 1)
+test223("/abc$/", "aabc", 0)
+test224("/^/", "abc", 0)
+test225("/$/", "abc", 0)
+test226("/a.c/", "abc", 0)
+test227("/a.c/", "axc", 0)
+test228("/a.*c/", "axyzc", 0)
+test229("/a.*c/", "axyzd", 1)
+test230("/a[bc]d/", "abc", 1)
+test231("/a[bc]d/", "abd", 0)
+test232("/a[b-d]e/", "abd", 1)
+test233("/a[b-d]e/", "ace", 0)
+test234("/a[b-d]/", "aac", 0)
+test235("/a[-b]/", "a-", 0)
+test236("/a[b-]/", "a-", 0)
+test237("/a[b-a]/", "-", 2)
+test238("/a[]b/", "-", 2)
+test239("/a[/", "-", 2)
+test240("/a]/", "a]", 0)
+test241("/a[]]b/", "a]b", 0)
+test242("/a[^bc]d/", "aed", 0)
+test243("/a[^bc]d/", "abd", 1)
+test244("/a[^-b]c/", "adc", 0)
+test245("/a[^-b]c/", "a-c", 1)
+test246("/a[^]b]c/", "a]c", 1)
+test247("/a[^]b]c/", "adc", 0)
+test248("/ab|cd/", "abc", 0)
+test249("/ab|cd/", "abcd", 0)
+test250("/()ef/", "def", 0)
+test251("/*a/", "-", 2)
+test252("/(*)b/", "-", 2)
+test253("/$b/", "b", 1)
+test254("/a\\/", "-", 2)
+test255("/a\\(b/", "a(b", 0)
+test256("/a\\(*b/", "ab", 0)
+test257("/a\\(*b/", "a((b", 0)
+test259("/abc)/", "-", 2)
+test260("/(abc/", "-", 2)
+test261("/((a))/", "abc", 0)
+test262("/(a)b(c)/", "abc", 0)
+test263("/a+b+c/", "aabbabc", 0)
+test264("/a{1,}b{1,}c/", "aabbabc", 0)
+test265("/a**/", "-", 2)
+test266("/a.+?c/", "abcabc", 0)
+test267("/(a+|b)*/", "ab", 0)
+test268("/(a+|b){0,}/", "ab", 0)
+test269("/(a+|b)+/", "ab", 0)
+test270("/(a+|b){1,}/", "ab", 0)
+test271("/(a+|b)?/", "ab", 0)
+test272("/(a+|b){0,1}/", "ab", 0)
+test273("/)(/", "-", 2)
+test274("/[^ab]*/", "cde", 0)
+test275("/abc/", "", 1)
+test276("/a*/", "", 0)
+test277("/([abc])*d/", "abbbcd", 0)
+test278("/([abc])*bcd/", "abcd", 0)
+test279("/a|b|c|d|e/", "e", 0)
+test280("/(a|b|c|d|e)f/", "ef", 0)
+test281("/abcd*efg/", "abcdefg", 0)
+test282("/ab*/", "xabyabbbz", 0)
+test283("/ab*/", "xayabbbz", 0)
+test284("/(ab|cd)e/", "abcde", 0)
+test285("/[abhgefdc]ij/", "hij", 0)
+test286("/^(ab|cd)e/", "abcde", 1)
+test287("/(abc|)ef/", "abcdef", 0)
+test288("/(a|b)c*d/", "abcd", 0)
+test289("/(ab|ab*)bc/", "abc", 0)
+test290("/a([bc]*)c*/", "abc", 0)
+test291("/a([bc]*)(c*d)/", "abcd", 0)
+test292("/a([bc]+)(c*d)/", "abcd", 0)
+test293("/a([bc]*)(c+d)/", "abcd", 0)
+test294("/a[bcd]*dcdcde/", "adcdcde", 0)
+test295("/a[bcd]+dcdcde/", "adcdcde", 1)
+test296("/(ab|a)b*c/", "abc", 0)
+test297("/((a)(b)c)(d)/", "abcd", 0)
+test298("/[a-zA-Z_][a-zA-Z0-9_]*/", "alpha", 0)
+test299("/^a(bc+|b[eh])g|.h$/", "abh", 0)
+test300("/(bc+d$|ef*g.|h?i(j|k))/", "effgz", 0)
+test301("/(bc+d$|ef*g.|h?i(j|k))/", "ij", 0)
+test302("/(bc+d$|ef*g.|h?i(j|k))/", "effg", 1)
+test303("/(bc+d$|ef*g.|h?i(j|k))/", "bcdd", 1)
+test304("/(bc+d$|ef*g.|h?i(j|k))/", "reffgz", 0)
+test305("/((((((((((a))))))))))/", "a", 0)
+test309("/(((((((((a)))))))))/", "a", 0)
+test310("/multiple words of text/", "uh-uh", 1)
+test311("/multiple words/", "multiple words, yeah", 0)
+test312("/(.*)c(.*)/", "abcde", 0)
+test313("/\\((.*), (.*)\\)/", "(a, b)", 0)
+test314("/[k]/", "ab", 1)
+test315("/a[-]?c/", "ac", 0)
+test318("/(?i)abc/", "ABC", 0)
+test319("/(?i)abc/", "XBC", 1)
+test320("/(?i)abc/", "AXC", 1)
+test321("/(?i)abc/", "ABX", 1)
+test322("/(?i)abc/", "XABCY", 0)
+test323("/(?i)abc/", "ABABC", 0)
+test324("/(?i)ab*c/", "ABC", 0)
+test325("/(?i)ab*bc/", "ABC", 0)
+test326("/(?i)ab*bc/", "ABBC", 0)
+test327("/(?i)ab*?bc/", "ABBBBC", 0)
+test328("/(?i)ab{0,}?bc/", "ABBBBC", 0)
+test329("/(?i)ab+?bc/", "ABBC", 0)
+test330("/(?i)ab+bc/", "ABC", 1)
+test331("/(?i)ab+bc/", "ABQ", 1)
+test332("/(?i)ab{1,}bc/", "ABQ", 1)
+test333("/(?i)ab+bc/", "ABBBBC", 0)
+test334("/(?i)ab{1,}?bc/", "ABBBBC", 0)
+test335("/(?i)ab{1,3}?bc/", "ABBBBC", 0)
+test336("/(?i)ab{3,4}?bc/", "ABBBBC", 0)
+test337("/(?i)ab{4,5}?bc/", "ABBBBC", 1)
+test338("/(?i)ab??bc/", "ABBC", 0)
+test339("/(?i)ab??bc/", "ABC", 0)
+test340("/(?i)ab{0,1}?bc/", "ABC", 0)
+test341("/(?i)ab??bc/", "ABBBBC", 1)
+test342("/(?i)ab??c/", "ABC", 0)
+test343("/(?i)ab{0,1}?c/", "ABC", 0)
+test344("/(?i)^abc$/", "ABC", 0)
+test345("/(?i)^abc$/", "ABCC", 1)
+test346("/(?i)^abc/", "ABCC", 0)
+test347("/(?i)^abc$/", "AABC", 1)
+test348("/(?i)abc$/", "AABC", 0)
+test349("/(?i)^/", "ABC", 0)
+test350("/(?i)$/", "ABC", 0)
+test351("/(?i)a.c/", "ABC", 0)
+test352("/(?i)a.c/", "AXC", 0)
+test353("/(?i)a.*?c/", "AXYZC", 0)
+test354("/(?i)a.*c/", "AXYZD", 1)
+test355("/(?i)a[bc]d/", "ABC", 1)
+test356("/(?i)a[bc]d/", "ABD", 0)
+test357("/(?i)a[b-d]e/", "ABD", 1)
+test358("/(?i)a[b-d]e/", "ACE", 0)
+test359("/(?i)a[b-d]/", "AAC", 0)
+test360("/(?i)a[-b]/", "A-", 0)
+test361("/(?i)a[b-]/", "A-", 0)
+test362("/(?i)a[b-a]/", "-", 2)
+test363("/(?i)a[]b/", "-", 2)
+test364("/(?i)a[/", "-", 2)
+test365("/(?i)a]/", "A]", 0)
+test366("/(?i)a[]]b/", "A]B", 0)
+test367("/(?i)a[^bc]d/", "AED", 0)
+test368("/(?i)a[^bc]d/", "ABD", 1)
+test369("/(?i)a[^-b]c/", "ADC", 0)
+test370("/(?i)a[^-b]c/", "A-C", 1)
+test371("/(?i)a[^]b]c/", "A]C", 1)
+test372("/(?i)a[^]b]c/", "ADC", 0)
+test373("/(?i)ab|cd/", "ABC", 0)
+test374("/(?i)ab|cd/", "ABCD", 0)
+test375("/(?i)()ef/", "DEF", 0)
+test376("/(?i)*a/", "-", 2)
+test377("/(?i)(*)b/", "-", 2)
+test378("/(?i)$b/", "B", 1)
+test379("/(?i)a\\/", "-", 2)
+test380("/(?i)a\\(b/", "A(B", 0)
+test381("/(?i)a\\(*b/", "AB", 0)
+test382("/(?i)a\\(*b/", "A((B", 0)
+test384("/(?i)abc)/", "-", 2)
+test385("/(?i)(abc/", "-", 2)
+test386("/(?i)((a))/", "ABC", 0)
+test387("/(?i)(a)b(c)/", "ABC", 0)
+test388("/(?i)a+b+c/", "AABBABC", 0)
+test389("/(?i)a{1,}b{1,}c/", "AABBABC", 0)
+test390("/(?i)a**/", "-", 2)
+test391("/(?i)a.+?c/", "ABCABC", 0)
+test392("/(?i)a.*?c/", "ABCABC", 0)
+test393("/(?i)a.{0,5}?c/", "ABCABC", 0)
+test394("/(?i)(a+|b)*/", "AB", 0)
+test395("/(?i)(a+|b){0,}/", "AB", 0)
+test396("/(?i)(a+|b)+/", "AB", 0)
+test397("/(?i)(a+|b){1,}/", "AB", 0)
+test398("/(?i)(a+|b)?/", "AB", 0)
+test399("/(?i)(a+|b){0,1}/", "AB", 0)
+test400("/(?i)(a+|b){0,1}?/", "AB", 0)
+test401("/(?i))(/", "-", 2)
+test402("/(?i)[^ab]*/", "CDE", 0)
+test403("/(?i)abc/", "", 1)
+test404("/(?i)a*/", "", 0)
+test405("/(?i)([abc])*d/", "ABBBCD", 0)
+test406("/(?i)([abc])*bcd/", "ABCD", 0)
+test407("/(?i)a|b|c|d|e/", "E", 0)
+test408("/(?i)(a|b|c|d|e)f/", "EF", 0)
+test409("/(?i)abcd*efg/", "ABCDEFG", 0)
+test410("/(?i)ab*/", "XABYABBBZ", 0)
+test411("/(?i)ab*/", "XAYABBBZ", 0)
+test412("/(?i)(ab|cd)e/", "ABCDE", 0)
+test413("/(?i)[abhgefdc]ij/", "HIJ", 0)
+test414("/(?i)^(ab|cd)e/", "ABCDE", 1)
+test415("/(?i)(abc|)ef/", "ABCDEF", 0)
+test416("/(?i)(a|b)c*d/", "ABCD", 0)
+test417("/(?i)(ab|ab*)bc/", "ABC", 0)
+test418("/(?i)a([bc]*)c*/", "ABC", 0)
+test419("/(?i)a([bc]*)(c*d)/", "ABCD", 0)
+test420("/(?i)a([bc]+)(c*d)/", "ABCD", 0)
+test421("/(?i)a([bc]*)(c+d)/", "ABCD", 0)
+test422("/(?i)a[bcd]*dcdcde/", "ADCDCDE", 0)
+test423("/(?i)a[bcd]+dcdcde/", "ADCDCDE", 1)
+test424("/(?i)(ab|a)b*c/", "ABC", 0)
+test425("/(?i)((a)(b)c)(d)/", "ABCD", 0)
+test426("/(?i)[a-zA-Z_][a-zA-Z0-9_]*/", "ALPHA", 0)
+test427("/(?i)^a(bc+|b[eh])g|.h$/", "ABH", 0)
+test428("/(?i)(bc+d$|ef*g.|h?i(j|k))/", "EFFGZ", 0)
+test429("/(?i)(bc+d$|ef*g.|h?i(j|k))/", "IJ", 0)
+test430("/(?i)(bc+d$|ef*g.|h?i(j|k))/", "EFFG", 1)
+test431("/(?i)(bc+d$|ef*g.|h?i(j|k))/", "BCDD", 1)
+test432("/(?i)(bc+d$|ef*g.|h?i(j|k))/", "REFFGZ", 0)
+test433("/(?i)((((((((((a))))))))))/", "A", 0)
+test435("/(?i)(((((((((a)))))))))/", "A", 0)
+test436("/(?i)(?:(?:(?:(?:(?:(?:(?:(?:(?:(a))))))))))/", "A", 0)
+test437("/(?i)(?:(?:(?:(?:(?:(?:(?:(?:(?:(a|b|c))))))))))/", "C", 0)
+test438("/(?i)multiple words of text/", "UH-UH", 1)
+test439("/(?i)multiple words/", "MULTIPLE WORDS, YEAH", 0)
+test440("/(?i)(.*)c(.*)/", "ABCDE", 0)
+test441("/(?i)\\((.*), (.*)\\)/", "(A, B)", 0)
+test442("/(?i)[k]/", "AB", 1)
+test443("/(?i)a[-]?c/", "AC", 0)
+test446("/a(?!b)./", "abad", 0)
+test447("/a(?=d)./", "abad", 0)
+test448("/a(?=c|d)./", "abad", 0)
+test449("/a(?:b|c|d)(.)/", "ace", 0)
+test450("/a(?:b|c|d)*(.)/", "ace", 0)
+test451("/a(?:b|c|d)+?(.)/", "ace", 0)
+test452("/a(?:b|(c|e){1,2}?|d)+?(.)/", "ace", 0)
+test453("/^(.+)?B/", "AB", 0)
+test454("/(?<!-):(.*?)(?<!-):/", "a:bc-:de:f", 0)
+test455("/(?<!\\\\):(.*?)(?<!\\\\):/", "a:bc\\:de:f", 0)
+test456("/(?<!\\?)'(.*?)(?<!\\?)'/", "a'bc?'de'f", 0)
+test457("/w(?# comment/", "w", 2)
+test458("/w(?# comment 1)xy(?# comment 2)z/", "wxyz", 0)
+test459("/(?i)w/", "W", 0)
+test460("/(?x)w# comment 1\n        x y\n        # comment 2\n        z/", "wxyz", 0)
+test461("/^abc/", "jkl\nabc\nxyz", 1)
+test462("/(?m)^abc/", "jkl\nabc\nxyz", 0)
+test463("/(?m)abc$/", "jkl\nxyzabc\n123", 0)
+test464("/a.b/", "a\nb", 1)
+test465("/(?s)a.b/", "a\nb", 0)
+test466("/\\w+/", "--ab_cd0123--", 0)
+test467("/[\\w]+/", "--ab_cd0123--", 0)
+test468("/\\D+/", "1234abc5678", 0)
+test469("/[\\D]+/", "1234abc5678", 0)
+test470("/[\\da-fA-F]+/", "123abc", 0)
+test471("/([\\s]*)([\\S]*)([\\s]*)/", " testing!1972", 0)
+test472("/(\\s*)(\\S*)(\\s*)/", " testing!1972", 0)
+test475("/\\t\\n\\v\\r\\f\\a/", "\t\n\x0b\r\x0c\x07", 0)
+test476("/\t\n\x0b\r\x0c\x07/", "\t\n\x0b\r\x0c\x07", 0)
+test477("/\\t\\n\\v\\r\\f\\a/", "\t\n\x0b\r\x0c\x07", 0)
+test479("/(([a-z]+):)?([a-z]+)$/", "smil", 0)
+test481("/.*d/", "abc\nabd", 0)
+test482("/(/", "", 2)
+test484("/(x?)?/", "x", 0)
+test485("/(?x) foo /", "foo", 0)
+test486("/(?<!abc)(d.f)/", "abcdefdof", 0)
+test487("/[\\w-]+/", "laser_beam", 0)
+test488("/.*?\\S *:/", "xx:", 0)
+test489("/a[ ]*?\\ (\\d+).*/", "a   10", 0)
+test490("/a[ ]*?\\ (\\d+).*/", "a    10", 0)
+test491("/(?ms).*?x\\s*\\Z(.*)/", "xx\nx\n", 0)
+test492("/(?i)M+/", "MMM", 0)
+test493("/(?i)m+/", "MMM", 0)
+test494("/(?i)[M]+/", "MMM", 0)
+test495("/(?i)[m]+/", "MMM", 0)
+test496("/^*/", "", 2)
+test497("/"(?:\\\\"|[^"])*?"/", ""\\""", 0)
+test498("/^.*?$/", "one\ntwo\nthree\n", 1)
+test499("/a[^>]*?b/", "a>b", 1)
+test500("/^a*?$/", "foo", 1)
+test501("/^((a)c)?(ab)$/", "ab", 0)
+test502("/^([ab]*?)(?=(b)?)c/", "abc", 0)
+test503("/^([ab]*?)(?!(b))c/", "abc", 0)
+test504("/^([ab]*?)(?<!(a))c/", "abc", 0)

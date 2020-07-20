@@ -1,5 +1,5 @@
-import antlr_generated.RegexLexer;
-import antlr_generated.RegexParser;
+import antlr.RegexLexer;
+import antlr.RegexParser;
 import automaton.nfa.Nfa;
 import org.antlr.v4.runtime.*;
 import parsing.ParsingError;
