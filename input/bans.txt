@@ -1,9 +1,76 @@
-/^\s*?[^(ID)]\d/R
-/^HELO\s+x[a-z]{31}[^@].*?^MAIL\s+FROM\x3a x[a-z]{31}[^@].*?^RCPT TO\x3a\s*x[a-z]{31}[^@]/smi
-/^OPTIONS.+\r\n\r\n(.+)?^Call-ID\x3A/smi
-/^OPTIONS.+\r\n\r\n(.+)?^Via\x3A/smi
-/^\S+\s+(uid\s+|)search\s+charset\s*\{\s/smi
-/^\S+\s+(uid\s+|)search\s+charset\s+[^\s]{250}/smi
-/^\S+\s+(uid\s+|)search\s[^\n]*(sent|)(on|before|since)\s*\{\s/smi
-/^Reply\-To\x3a[^\n]{512}.*^Reply\-To\x3a[^\n]{512}/ism
-/^\S+\s+(uid\s+|)search\s[^\n]*(sent|)(on|before|since)\s+[^\s]{64}/Osmi
+/^\s*Content-Encoding\s*\x3A\s*[^\r\n]{300}/mi
+/^RCPT TO\x3a\s*\x3c?[^\n\x3e]{256}/im
+/^Location\s*\x3a\s*\w+\x3a\/\/([^\n]*\x3a)?[^\n]{128}/smi
+/^SEND FROM\x3a\s+[\w\s@\.]{200,}\x3b[\w\s@\.]{200,}\x3b[\w\s@\.]{200}/smi
+/^SAML FROM\x3a\s+[\w\s@\.]{200,}\x3b[\w\s@\.]{200,}\x3b[\w\s@\.]{200}/smi
+/^SOML FROM\x3a\s+[\w\s@\.]{200,}\x3b[\w\s@\.]{200,}\x3b[\w\s@\.]{200}/smi
+/^MAIL FROM\x3a\s+[\w\s@\.]{200,}\x3b[\w\s@\.]{200,}\x3b[\w\s@\.]{200}/smi
+/^RCPT TO\x3a\s*[\w\s@\.]{200,}\x3b[\w\s@\.]{200,}\x3b[\w\s@\.]{200}/smi
+/^X?PAT\s+[^\n]{160}/i
+/^SEARCH\s+[^\n]{160}/i
+/^\s*Content-Type\s*\x3A\s*[^\r\n]{300}/mi
+/^\s*Content-Encoding\s*\x3A\s*[^\r\n]{300}/mi
+/^[a-z\d\x2b\x2f\x3d]{48,256}$/iP
+/^.{0,100}\xFF[\xE1\xE2\xED\xFE]\x00[\x00\x01]/s
+/^Cookie\x3a[^\n]*[\x3b\x3a]\s*JSESSIONID=[^\n\x3b=]{500}/smi
+/^\S+\s+subscribe\s+[^\n]{250}/smi
+/^From\x3A\s+[^\r\n]{256}/smi
+/^.*?(\x5c.){256}/s
+/^\x01\x02.{0,50}[a-zA-Z]{10}\x2fPK.{0,50}[a-zA-Z]{10}\x2f[a-zA-Z]{7}\.classPK/sR
+/^\x01\x02.{0,50}[a-zA-Z]{10}\x2fPK.{0,50}[a-zA-Z]{10}\x2f[a-zA-Z]{7}\.classPK/sR
+/^\s*[^\x3e]{62}/Rsmi
+/^\s*[^\x7d]{62}/Rsmi
+/^\s*[^\x3e]{62}/Rsmi
+/^\s*[^\x7d]{62}/Rsmi
+/^.*?dir\s*=\s*(\x22[^\x22]{500}|\x27[^\x27]{500}|[^\s\>]{500})/isR
+/^\s*[^\x3e]{62}/Rsmi
+/^\s*[^\x3e]{62}/Rsmi
+/^\s*HLP\s*\x3d\s*[^\n]{257}/smi
+/^\s+([^\x22\x20\x3E]{200}|[^\s]*\s+\x22[^\x22\x20\x3E]{200})/smR
+/^[^\x0A]*?.{88}PICT/mR
+/^.{1,32}\|.{1,32}\|.{1,64}@.{1,64}\|.{1,32}\|.{1,5}\|/msR
+/^User\x2DAgent\x3A\x20[a-z0-9\_\-\.\x20]{1,256}\x2E(exe|bat|cmd|com)/iH
+/^m=\s+[^\r\n]{256}/Psmi
+/^m=\s+[^\r\n]{256}/Psmi
+/^s=\s+[^\r\n]{256}/Psmi
+/^s=\s+[^\r\n]{256}/Psmi
+/^o=\s+[^\r\n]{256}/Psmi
+/^o=\s+[^\r\n]{256}/Psmi
+/^To\x3A\s+[^\r\n]{256}/Hsmi
+/^To\x3A\s+[^\r\n]{256}/Hsmi
+/^Via\x3A\s+SIP\x2F2\x2E0\x2F(TCP|UDP)\s+[^\x3B\r\n]{63}/Hsmi
+/^Via\x3A\s+SIP\x2F2\x2E0\x2F(TCP|UDP)\s+[^\x3B\r\n]{63}/Hsmi
+/^Authorization\x3a\sDigest[^\n]*?(=[^,\s\n\x22\x27]{500}|\s[^=\n\x22\x27]{500})/mH
+/^.{1,32}\|.{1,32}\|.{1,64}@.{1,64}\|.{1,32}\|.{1,5}\|/msR
+/^User\x2DAgent\x3A\x20[a-z0-9\_\-\.\x20]{1,256}\x2E(exe|bat|cmd|com)/iH
+/^m=\s+[^\r\n]{256}/Psmi
+/^m=\s+[^\r\n]{256}/Psmi
+/^s=\s+[^\r\n]{256}/Psmi
+/^s=\s+[^\r\n]{256}/Psmi
+/^o=\s+[^\r\n]{256}/Psmi
+/^o=\s+[^\r\n]{256}/Psmi
+/^To\x3A\s+[^\r\n]{256}/Hsmi
+/^To\x3A\s+[^\r\n]{256}/Hsmi
+/^Via\x3A\s+SIP\x2F2\x2E0\x2F(TCP|UDP)\s+[^\x3B\r\n]{63}/Hsmi
+/^Via\x3A\s+SIP\x2F2\x2E0\x2F(TCP|UDP)\s+[^\x3B\r\n]{63}/Hsmi
+/^Authorization\x3a\sDigest[^\n]*?(=[^,\s\n\x22\x27]{500}|\s[^=\n\x22\x27]{500})/mH
+/^\s*SEND\s+[^\n]{246}/sm
+/^\s*SAML\s+[^\n]{246}/sm
+/^MAIL\s+[^\n]{246}/sm
+/^SOML\s+[^\n]{246}/sm
+/^\d+\s+append\s+[^\r\n]*\{[^\r\n}]{128}/i
+/^RCPT\x20TO\x3a\s*\x3c?[^\r\n\x3e]{256}(\x3e|\x0d|\x0a)/smi
+/^USER\s+[^\n]{100}/smi
+/^TEST\s+[^\n]{100}/smi
+/^PASS\s+[^\n]{100}/smi
+/^UTP\x2f1 To\x3a\s*[^\s]+\s+[^\n]{256}/smi
+/^.*HTTP.*\r\n(.+\x3a\s+.+\r\n){31,}/
+/^host\x3a\s*[^\r\n]{300}/smi
+/^HOST\s*\x3a\s*[^\x0a]{1000}/mi
+/^Accept\x2dCharset\x3a\s*?([^\x3b\x3d\x2c]{1,36}\s*?[\x2d\x3b\x3d\x2c]\s*?)*[^\x2d\x3b\x2c\x3d\n]{37}/smi
+/^Content-Length\x3A\s*[^\r\n]{100}/smiH
+/^\/fp\/servlet\/RequestAccessController\?.{0,60}?file\=\/.{0,30}?conf.{0,30}?\.xml/U
+/^GET\s+.*\x2Frequests\x2Fstatus\.xml\x3F.*smb\x3A\x2F\x2F[^\s\x0A\x0D]{251}/smi
+/^Accept\x2dLanguage\x3a\s*(\w{1,36}\s*(\x2e|\x2d|\x3b|\x3d|\x2c)\s*)*[^\x2d\x3b\x2c\x3d\n]{37}/smi
+/^(GET|POST)\s+[^\s]*(\x2fnds|\x2fdhost)[^\n]*\nHost\x3a\s*[^\n]{63}/i
+/^\/fp\/servlet\/Login\?.{0,60}?file\=\/.{0,30}?conf.{0,30}?\.xml/U

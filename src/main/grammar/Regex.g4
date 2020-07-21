@@ -32,7 +32,7 @@ params                  : LETTER* ;
 
 charset                 : L_SQBRACKET CAP? (charsetValues)+ R_SQBRACKET ;
 charsetRange            : (DIGIT | LETTER | BYTESYMBOL) HYPHEN (LETTER | DIGIT | BYTESYMBOL);
-charsetValues           : charsetRange | character | PLUS ;
+charsetValues           : charsetRange | character | PLUS | DOLLAR | R_BRACE | L_BRACE | L_PAR | R_PAR ;
 
 expr                    : expr1+ OR expr*
                         | expr1 ;

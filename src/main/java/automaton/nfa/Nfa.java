@@ -121,22 +121,6 @@ public class Nfa {
         return terminals;
     }
 
-
-    private void traverseEpsilons(Queue<State> checkEpsilons, Set<State> newStates) {
-        while (!checkEpsilons.isEmpty()) {
-            State state = checkEpsilons.poll();
-            for (Pair<Transition, State> edge : state.getEdges()) {
-                Transition transition = edge.getFirst();
-                State target = edge.getSecond();
-                if (transition instanceof EpsilonTransition &&
-                        !newStates.contains(target)) {
-                    newStates.add(target);
-                    checkEpsilons.add(target);
-                }
-            }
-        }
-    }
-
     public boolean test(String s) {
         return testHeader(s, true);
     }
@@ -152,7 +136,7 @@ public class Nfa {
         states.add(start);
 
         Queue<State> checkEpsilons = new ArrayDeque<>(states);
-        traverseEpsilons(checkEpsilons, states);
+        State.traverseEpsilons(checkEpsilons, states);
         success |= states.stream().anyMatch(State::isTerminal);
 
         for (int i = 0; !success && i < s.length(); i++) {
@@ -171,7 +155,7 @@ public class Nfa {
             }
 
             checkEpsilons = new ArrayDeque<>(newStates);
-            traverseEpsilons(checkEpsilons, newStates);
+            State.traverseEpsilons(checkEpsilons, newStates);
 
             states = newStates;
             success |= states.stream().anyMatch(State::isTerminal);

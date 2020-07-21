@@ -2,6 +2,8 @@ package main;
 
 import antlr.RegexLexer;
 import antlr.RegexParser;
+import automaton.algo.ThompsonConverter;
+import automaton.dfa.Dfa;
 import automaton.nfa.Nfa;
 import org.antlr.v4.runtime.*;
 import parsing.ParsingError;
@@ -11,6 +13,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.concurrent.*;
 
 public class Main {
 
@@ -22,19 +25,14 @@ public class Main {
 //        System.out.println((char) 256);
 //        Character.
 
-//        BufferedReader rulesReader = Files.newBufferedReader(Paths.get("./input/filtered.txt"));
-//        rulesReader.lines().forEach(Main::processRule);
+        BufferedReader rulesReader = Files.newBufferedReader(Paths.get("./input/filtered.txt"));
+        rulesReader.lines().forEach(Main::processRule);
 
 //        new RegexTest("#318", "/abc/i", "ABC", 0),
 //        new RegexTest("#319", "/abc/i", "XBC", 1),
 //        new RegexTest("#320", "/abc/i", "AXC", 1),
 //        new RegexTest("#321", "/abc/i", "ABX", 1),
 //        new RegexTest("#322", "/abc/i", "XABCY", 0),
-
-        String regex = "/a[ ]*?\\ (\\d+).*/";
-        String string = "a    10";
-        Nfa nfa = buildNfa(regex);
-        System.out.println(nfa.test(string));
     }
 
     public static Nfa buildNfa(String rule) {
@@ -58,13 +56,32 @@ public class Main {
         return visitor.visit(start);
     }
 
+    public static Dfa buildDfa(String rule) {
+        return new ThompsonConverter().run(buildNfa(rule));
+    }
+
     private static void processRule(String rule) {
+//        System.out.println("Processing:\n" + rule);
         try {
-            Nfa nfa = buildNfa(rule);
+//            Nfa nfa = buildNfa(rule);
+            Dfa dfa = buildDfa(rule);
+            System.out.println(dfa.nodesCount());
+
+//            Thread thread = new Thread(() -> {
+//                Dfa dfa = buildDfa(rule);
+//            });
+//            ExecutorService executor = Executors.newSingleThreadExecutor();
+//            Future<?> future = executor.submit(thread);
+//            try {
+//                future.get(10, TimeUnit.SECONDS);
+//            } catch (TimeoutException e) {
+//                System.out.println(rule);
+//            } catch (InterruptedException | ExecutionException e) {
+//                e.printStackTrace();
+//            }
         } catch (ParsingError e) {
             e.printStackTrace();
             System.out.println(rule);
         }
-
     }
 }

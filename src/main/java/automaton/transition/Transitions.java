@@ -7,6 +7,7 @@ import java.util.*;
 
 public class Transitions {
     final private static Map<String, Transition> transitionMap = generateTransitionMap();
+    final public static char MAX_CHAR = 257;
 
     private static HashMap<String, Transition> generateTransitionMap() { // TODO: pass config
         HashMap<String, Transition> transitionMap = new HashMap<>();
@@ -47,8 +48,17 @@ public class Transitions {
     }
 
     public static Transition ofString(String s, RegexConfig config) {
+        return ofStringImpl(s, config, false);
+    }
+
+    public static Transition ofStringImpl(String s, RegexConfig config, boolean literal) {
         if (s.equals(".")) {
             return new RangeTransition((char) 0, (char) 255);
+        }
+        if (literal) {
+            if (s.equals("$") | s.equals("^")) {
+                return new SingleElementTransition(s.charAt(0));
+            }
         }
         if (transitionMap.containsKey(s)) {
             return transitionMap.get(s);

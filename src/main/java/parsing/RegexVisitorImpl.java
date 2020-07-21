@@ -62,7 +62,7 @@ public class RegexVisitorImpl extends RegexBaseVisitor<Nfa> {
         } else if (ctx.character() != null) {
             return parseCharacter(ctx.character());
         }
-        return Transitions.ofString(ctx.getText(), regexConfig);
+        return Transitions.ofStringImpl(ctx.getText(), regexConfig, true);
     }
 
     @Override
