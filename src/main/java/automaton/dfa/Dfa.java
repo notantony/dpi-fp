@@ -4,6 +4,7 @@ import automaton.nfa.Nfa;
 import util.Utils;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class Dfa {
     private final Node start;
@@ -37,10 +38,14 @@ public class Dfa {
         return Utils.testHeader(this::testAnyImpl, string);
     }
 
-    public Integer nodesCount() {
+    public Collection<Node> allNodes() {
+        return runDfs(start);
+    }
+
+    public Collection<Node> runDfs(Node node) {
         Queue<Node> queue = new ArrayDeque<>();
-        HashSet<Node> visited = new HashSet<>();
-        queue.add(start);
+        queue.add(node);
+        HashSet<Node> visited = new HashSet<>(queue);
         while (!queue.isEmpty()) {
             Node cur = queue.poll();
             cur.getEdges().values().stream()
@@ -50,6 +55,31 @@ public class Dfa {
                         queue.add(target);
                     });
         }
-        return visited.size();
+        return visited;
+    }
+
+    public Integer nodesCount() {
+        return allNodes().size();
+    }
+
+    public Node getStart() {
+        return start;
+    }
+
+    public long cutCount() {
+        Collection<Node> nodes = allNodes();
+        return nodes.stream()
+                .map(this::runDfs)
+                .map(path -> {
+                    Set<Integer> visited = new HashSet<>();
+                    path.forEach(node -> visited.addAll(node.getTerminal()));
+                    return visited.size() > 1;
+                }).filter(a -> a).count();
+//                .map(path -> path.distinct().count() > 1).count();
+//        return nodes.stream()
+//                .map(this::runDfs)
+//                .map(path -> path.stream()
+//                        .flatMap(node -> node.getTerminal().stream()))
+//                .map(path -> path.distinct().count() > 1).filter(a -> a).count();
     }
 }

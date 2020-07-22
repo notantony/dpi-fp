@@ -3,17 +3,26 @@ package main;
 import automaton.dfa.Dfa;
 import automaton.nfa.Nfa;
 
-import static main.Main.buildDfa;
-import static main.Main.buildNfa;
+import java.util.List;
+
+import static main.Main.*;
 
 public class MainSingle {
+
     public static void main(String[] args) {
-        String regex = "/^\\s*?[^(ID)]\\d/R";
+        String regex = "/^(abc|cde).*/";
         String string = "acb";
-//        Nfa nfa = buildNfa(regex);
+        Nfa nfa1 = buildNfa("/abcqd/");
+        nfa1.close(1);
+        Nfa nfa2 = buildNfa("/abcdc/");
+        nfa2.close(2);
+        Nfa nfa3 = buildNfa("/abcde/");
+        nfa3.close(3);
+        Nfa nfa = Nfa.union(List.of(nfa1, nfa2, nfa3));
 //        System.out.println(nfa.test(string));
-        Dfa dfa = buildDfa(regex);
+        Dfa dfa = convert(nfa);
         System.out.println(dfa.testAny(string));
         System.out.println(dfa.nodesCount());
+        System.out.println(dfa.cutCount());
     }
 }

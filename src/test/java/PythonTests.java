@@ -3,6 +3,7 @@ import automaton.nfa.Nfa;
 import main.Main;
 import org.junit.Test;
 import parsing.ParsingError;
+import templates.DfaMinTester;
 import templates.DfaTester;
 import templates.NfaTester;
 import templates.RegexTest;
@@ -41,4 +42,10 @@ public class PythonTests {
     public void testDfa() {
         runAll(new DfaTester());
     }
+
+    @Test
+    public void testDfaMin() {
+        runAll(new DfaMinTester());
+    }
+
 }
