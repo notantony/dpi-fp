@@ -1,19 +1,20 @@
 package automaton.dfa;
 
 import automaton.nfa.Nfa;
+import util.Pair;
 import util.Utils;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
 public class Dfa {
-    private final Node start;
+    private Node start;
 
     public Dfa(Node start) {
         this.start = start;
     }
 
-    public Collection<Integer> test(String string) {
+    public Collection<Integer> testImpl(String string) {
         Set<Integer> result = new HashSet<>();
         Node cur = start;
         for (int i = 0; i < string.length(); i++) {
@@ -30,12 +31,12 @@ public class Dfa {
         return result;
     }
 
-    public boolean testAnyImpl(String string) {
+    public boolean testAny(String string) {
         return !test(string).isEmpty();
     }
 
-    public boolean testAny(String string) {
-        return Utils.testHeader(this::testAnyImpl, string);
+    public Collection<Integer> test(String string) {
+        return Utils.testHeader(this::testImpl, string);
     }
 
     public Collection<Node> allNodes() {
@@ -81,5 +82,44 @@ public class Dfa {
 //                .map(path -> path.stream()
 //                        .flatMap(node -> node.getTerminal().stream()))
 //                .map(path -> path.distinct().count() > 1).filter(a -> a).count();
+    }
+
+    public void print() {
+        Collection<Node> nodes = allNodes();
+        Map<Node, Integer> map = new HashMap<>();
+        int counter = 0;
+        for (Node node : nodes) {
+            map.put(node, counter++);
+        }
+        Map<Pair<Integer, Integer>, List<Character>> edges = new HashMap<>();
+        nodes.forEach(node -> {
+            node.getEdges().forEach((c, target) -> {
+                Pair<Integer, Integer> pair = new Pair<>(map.get(node), map.get(target));
+                edges.putIfAbsent(pair, new ArrayList<>());
+                edges.get(pair).add(c == 256 ? '$' : (c == 257 ? '^' : c));
+            });
+            if (node.isTerminal()) {
+                System.out.println(map.get(node));
+            }
+//            if (node.isTerminal()) {
+//                System.out.print("T ");
+//            }
+//            System.out.println(node.hashCode() + " " + map.get(node));
+        });
+        edges.forEach((pair, chars) -> {
+            String edgeName;
+            if (chars.size() > 95) {
+                edgeName = "r" + chars.size();
+            } else {
+                StringBuilder sb = new StringBuilder();
+                chars.forEach(sb::append);
+                edgeName = sb.toString();
+            }
+            System.out.println(pair.getFirst() + " " + pair.getSecond() + " " + edgeName);
+        });
+    }
+
+    public void setStart(Node start) {
+        this.start = start;
     }
 }

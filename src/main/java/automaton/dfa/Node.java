@@ -1,16 +1,14 @@
 package automaton.dfa;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class Node {
     private List<Integer> terminal;
-    private final Map<Character, Node> edges;
+    private Map<Character, Node> edges;
 
     public Node() {
         edges = new HashMap<>();
+        terminal = new ArrayList<>();
     }
 
     public List<Integer> getTerminal() {
@@ -31,5 +29,9 @@ public class Node {
 
     public void addEdge(Character c, Node node) {
         edges.put(c, node);
+    }
+
+    public void setEdges(Map<Character, Node> edges) {
+        this.edges = edges;
     }
 }

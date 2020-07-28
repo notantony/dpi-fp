@@ -2,9 +2,7 @@ package main;
 
 import antlr.RegexLexer;
 import antlr.RegexParser;
-import automaton.algo.AlgoException;
-import automaton.algo.DfaMinimizer;
-import automaton.algo.ThompsonConverter;
+import automaton.algo.*;
 import automaton.dfa.Dfa;
 import automaton.nfa.Nfa;
 import org.antlr.v4.runtime.*;
@@ -12,16 +10,24 @@ import parsing.ParsingError;
 import parsing.RegexVisitorImpl;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.*;
 
 public class Main {
+    private static BufferedWriter writer;
 
-    public static void main(String[] args) throws IOException {
+    static {
+        try {
+            writer = Files.newBufferedWriter(Paths.get("./input/node-counts1.txt"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void main(String[] args) throws Exception {
 //        char x = (char) ((byte) 'a');// Byte.parseByte("52", 16);
 //        byte x = (byte) ((char) 255);// Byte.parseByte("52", 16);
 //        char x = (char) Integer.parseInt("3a", 16);// (Integer.valueOf("3a"));
@@ -29,18 +35,17 @@ public class Main {
 //        System.out.println((char) 256);
 //        Character.
 
-        BufferedReader rulesReader = Files.newBufferedReader(Paths.get("./input/filtered.txt"));
-        rulesReader.lines().forEach(Main::processUnion);
+        BufferedReader rulesReader = Files.newBufferedReader(Paths.get("./input/selected.txt"));
+//        rulesReader.lines().forEach(Main::processUnion);
+//        rulesReader.lines().forEach(Main::writeNodesCount);
+        rulesReader.lines().forEach(Main::processBaseline);
 
-//        new RegexTest("#318", "/abc/i", "ABC", 0),
-//        new RegexTest("#319", "/abc/i", "XBC", 1),
-//        new RegexTest("#320", "/abc/i", "AXC", 1),
-//        new RegexTest("#321", "/abc/i", "ABX", 1),
-//        new RegexTest("#322", "/abc/i", "XABCY", 0),
+        writer.close();
     }
 
     private static int counter = 0;
     private static ArrayList<Nfa> nfas = new ArrayList<>();
+    private static ArrayList<Nfa> nfasSingle = new ArrayList<>();
     private static ArrayList<Integer> sizes = new ArrayList<>();
 
     public static void pause() {
@@ -51,30 +56,144 @@ public class Main {
         }
     }
 
+    private static ArrayList<Integer> ind = new ArrayList<>();
+
+    private static void modifyOnly(String rule) {
+        counter++;
+        System.out.println(counter);
+        Nfa nfaSingle = buildNfa(rule);
+        nfaSingle.close(counter);
+        nfas.add(nfaSingle);
+
+        Dfa modified;
+        try {
+            modified = new ThompsonModified().run(nfas);
+        } catch (AlgoException e) {
+            System.out.println("Rejected");
+            nfas.remove(nfas.size() - 1);
+            return;
+        }
+        ind.add(counter);
+        System.out.println("Total rules: " + nfas.size());
+        System.out.println(""
+                + "ThompsonModified: " + modified.nodesCount()
+        );
+//        compress(modified);
+//        System.out.println(""
+//                + "Compressed: " + modified.nodesCount());
+        System.out.println(ind);
+    }
+
+    private static void writeNodesCount(String rule) {
+        try {
+            int count = buildMinDfa(rule).nodesCount();
+            writer.write(rule + "\n" + count + "\n");
+            System.out.println(count);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private static void processBaseline(String rule) {
+        counter++;
+        System.out.println("Processing " + counter + " rules:");
+
+        // Nfa:
+        Nfa nfaCurrent = buildNfa(rule);
+        nfaCurrent.close(counter);
+        nfas.add(nfaCurrent);
+
+        Nfa nfaCurrentSingle = buildNfa(rule);
+        nfaCurrentSingle.close(1);
+        nfasSingle.add(nfaCurrentSingle);
+
+        // Dfa:
+        Dfa dfaCurrentMin = minimizeHopcroft(convert(nfaCurrent));
+        sizes.add(dfaCurrentMin.nodesCount());
+        System.out.println("Sum-of-single: " + sizes.stream().reduce(0, Integer::sum));
+
+        Dfa dfaSingleMin = minimizeHopcroft(convert(Nfa.union(nfasSingle)));
+        System.out.println("Single-terminal-minimized: " + dfaSingleMin.nodesCount());
+
+        Dfa dfaMin = minimizeHopcroft(convert(Nfa.union(nfas)));
+        System.out.println("Minimized: " + dfaMin.nodesCount());
+        System.out.println("Minimized-cut: " + (dfaMin.cutCount() + nfas.size()));
+
+        Dfa modified = new ThompsonModified().run(nfas);
+        System.out.println("ThompsonModified: " + modified.nodesCount());
+
+        if (counter % 20 == 0) {
+            modified = minimize(modified);
+            compress(modified);
+            System.out.println("ThompsonModifiedHeuristic: " + modified.nodesCount());
+        }
+//        new DfaCompressorOld().compress(modified);
+//        int newCount = modified.nodesCount();
+//        assert newCount == oldCount;
+
+        System.out.println();
+        System.out.flush();
+    }
+
     private static void processUnion(String rule) {
         counter++;
         System.out.println(counter);
         Nfa nfaSingle = buildNfa(rule);
         nfaSingle.close(counter);
         nfas.add(nfaSingle);
+
+//        if (nfas.size() != 2) {
+//            return;
+//        }
+
+        nfaSingle = buildNfa(rule);
+        nfasSingle.add(nfaSingle);
+
         Dfa dfaSingle = convert(nfaSingle);
-        Nfa nfa = Nfa.union(nfas);
-        Dfa dfa = new ThompsonConverter().run(nfa);
-        Dfa min;
+        Dfa dfa = new ThompsonConverter().run(Nfa.union(nfas));
+        Dfa min, min2;
         try {
             min = minimize(dfa);
+            min2 = minimizeHopcroft(dfa);
         } catch (AlgoException e) {
             System.out.println("Rejected");
             nfas.remove(nfas.size() - 1);
             return;
         }
-        sizes.add(dfaSingle.nodesCount());
+
+//        dfa = new ThompsonConverter().run(Nfa.union(nfasSingleTerm));
+//        Dfa minSingleTerm;
+//        try {
+//            minSingleTerm = minimize(dfa);
+//        } catch (AlgoException e) {
+//            System.out.println("Rejected2");
+//            nfasSingleTerm.remove(nfasSingleTerm.size() - 1);
+//            return;
+//        }
+
+        Dfa modified = new ThompsonModified().run(nfas);
+        sizes.add(minimize(dfaSingle).nodesCount());
         System.out.println("Total " + nfas.size() + " nodes");
-        System.out.println("One-by-one: " + sizes.stream().reduce(Integer::sum).get() + "\n"
+        System.out.println(""
+                + "Sum of single: " + sizes.stream().reduce(0, Integer::sum) + "\n"
                 + "Merged: " + dfa.nodesCount() + "\n"
                 + "Minimized: " + min.nodesCount() + "\n"
-                + "Cut: " + min.cutCount());
+                + "MinimizedHopcroft: " + min2.nodesCount() + "\n"
+//                + "Single-terminal-minimized: " + minSingleTerm.nodesCount() + "\n"
+                + "Optimized: " + min.cutCount() + "\n"
+                + "ThompsonModified: " + modified.nodesCount()
+        );
+        modified = minimize(modified);
+        compress(modified);
+        System.out.println(""
+                + "ThompsonModifiedHeuristic: " + modified.nodesCount());
+        modified.print();
+
         System.out.flush();
+
+//        if (counter == 20) {
+//            pause();
+//        }
 
 //        pause();
     }
@@ -87,18 +206,7 @@ public class Main {
             Dfa dfa = buildDfa(rule);
             System.out.println(dfa.nodesCount());
 
-//            Thread thread = new Thread(() -> {
-//                Dfa dfa = buildDfa(rule);
-//            });
-//            ExecutorService executor = Executors.newSingleThreadExecutor();
-//            Future<?> future = executor.submit(thread);
-//            try {
-//                future.get(10, TimeUnit.SECONDS);
-//            } catch (TimeoutException e) {
-//                System.out.println(rule);
-//            } catch (InterruptedException | ExecutionException e) {
-//                e.printStackTrace();
-//            }
+
         } catch (ParsingError e) {
             e.printStackTrace();
             System.out.println(rule);
@@ -139,7 +247,15 @@ public class Main {
         return new DfaMinimizer().run(dfa);
     }
 
+    public static Dfa minimizeHopcroft(Dfa dfa) {
+        return new HopcroftMinimizer().run(dfa);
+    }
+
     public static Dfa convert(Nfa nfa) {
         return new ThompsonConverter().run(nfa);
+    }
+
+    public static void compress(Dfa dfa) {
+        new DfaCompressor().compress(dfa);
     }
 }
