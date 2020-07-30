@@ -15,30 +15,27 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.List;
 
 public class Main {
     private static BufferedWriter writer;
 
     static {
         try {
-            writer = Files.newBufferedWriter(Paths.get("./input/node-counts1.txt"));
+            writer = Files.newBufferedWriter(Paths.get("./output/distinct.txt"));
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
     public static void main(String[] args) throws Exception {
-//        char x = (char) ((byte) 'a');// Byte.parseByte("52", 16);
-//        byte x = (byte) ((char) 255);// Byte.parseByte("52", 16);
-//        char x = (char) Integer.parseInt("3a", 16);// (Integer.valueOf("3a"));
-//        char x = Character.codePointOf("\n");
-//        System.out.println((char) 256);
-//        Character.
 
         BufferedReader rulesReader = Files.newBufferedReader(Paths.get("./input/selected.txt"));
 //        rulesReader.lines().forEach(Main::processUnion);
 //        rulesReader.lines().forEach(Main::writeNodesCount);
         rulesReader.lines().forEach(Main::processBaseline);
+//        rulesReader.lines().forEach(Main::processDistinct);
+        writer.write(ind.toString());
 
         writer.close();
     }
@@ -110,6 +107,9 @@ public class Main {
         // Dfa:
         Dfa dfaCurrentMin = minimizeHopcroft(convert(nfaCurrent));
         sizes.add(dfaCurrentMin.nodesCount());
+        if (counter < 660) {
+            return;
+        }
         System.out.println("Sum-of-single: " + sizes.stream().reduce(0, Integer::sum));
 
         Dfa dfaSingleMin = minimizeHopcroft(convert(Nfa.union(nfasSingle)));
@@ -122,17 +122,41 @@ public class Main {
         Dfa modified = new ThompsonModified().run(nfas);
         System.out.println("ThompsonModified: " + modified.nodesCount());
 
-        if (counter % 20 == 0) {
+//        if (counter % 20 == 0) {
             modified = minimize(modified);
             compress(modified);
             System.out.println("ThompsonModifiedHeuristic: " + modified.nodesCount());
-        }
-//        new DfaCompressorOld().compress(modified);
-//        int newCount = modified.nodesCount();
-//        assert newCount == oldCount;
+//        }
 
         System.out.println();
         System.out.flush();
+    }
+
+    private static void processDistinct(String rule) {
+        if (counter % 100 == 0) {
+            System.out.println(ind);
+        }
+        counter++;
+        System.out.println("Trying to add: " + counter);
+
+        Nfa nfa = buildNfa(rule);
+        nfa.close(counter);
+
+        if (counter < 450) {
+            ind.add(counter);
+            return;
+        }
+
+        try {
+            nfas.forEach(other -> new ThompsonModified().run(List.of(nfa, other)));
+//            new ThompsonModified().run(nfas);
+        } catch (AlgoException e) {
+            System.out.println("Rejected");
+            return;
+        }
+        nfas.add(nfa);
+        System.out.println("Success");
+        ind.add(counter);
     }
 
     private static void processUnion(String rule) {
