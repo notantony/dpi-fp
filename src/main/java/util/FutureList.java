@@ -1,0 +1,14 @@
+package util;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+
+public class FutureList {
+
+    @SafeVarargs
+    public static <T> List<T> of(T ... a) {
+        return Arrays.asList(a);
+    }
+}

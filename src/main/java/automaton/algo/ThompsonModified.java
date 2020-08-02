@@ -42,16 +42,15 @@ public class ThompsonModified {
             for (char c = 0; c <= Transitions.MAX_CHAR; c++) {
                 List<Set<State>> newStatesList = new ArrayList<>();
                 for (int i = 0; i < nfas.size(); i++) {
-                    Set<State> newStates = new HashSet<>();
-                    newStatesList.add(newStates);
                     Set<State> states = statesList.get(i);
-                    for (State state : states) {
-                        char finalC = c;
-                        state.getEdges().stream()
-                                .filter(edgePair -> !(edgePair.getFirst() instanceof EpsilonTransition) &&
-                                        edgePair.getFirst().test(finalC))
-                                .map(Pair::getSecond).forEach(newStates::add);
-                    }
+                    char finalC = c;
+                    Set<State> newStates = states.parallelStream()
+                            .flatMap(state -> state.getEdges().stream())
+                            .filter(edgePair -> !(edgePair.getFirst() instanceof EpsilonTransition) &&
+                                    edgePair.getFirst().test(finalC))
+                            .map(Pair::getSecond)
+                            .collect(Collectors.toSet());
+                    newStatesList.add(newStates);
                 }
                 List<Integer> nonEmptySets = new ArrayList<>();
                 for (int i = 0; i < nfas.size(); i++) {
@@ -64,11 +63,15 @@ public class ThompsonModified {
                     newStatesList = newStatesList.stream()
                             .map(State::traverseEpsilonsSafe)
                             .collect(Collectors.toList());
-                    newStatesList.forEach(states -> states.forEach(state -> {
-                        if (state.isTerminal()) {
-                            throw new AlgoException("Found terminal state which belongs to more than one Nfa");
-                        }
-                    }));
+                    for (int i = 0; i < newStatesList.size(); i++) {
+                        Set<State> states = newStatesList.get(i);
+                        int finalI = i;
+                        states.forEach(state -> {
+                            if (state.isTerminal()) {
+                                throw new AlgoException("Found terminal state which belongs to more than one Nfa: " + nonEmptySets.stream() + " terminal:" + state.getTerminal());
+                            }
+                        });
+                    }
                     Node newNode;
                     if (!bijection.containsKey(newStatesList)) { // TODO: empty newStates
                         newNode = createNode(newStatesList);

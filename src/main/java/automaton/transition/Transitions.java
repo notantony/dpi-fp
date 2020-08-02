@@ -2,6 +2,8 @@ package automaton.transition;
 
 import parsing.ParsingError;
 import parsing.RegexConfig;
+import util.FutureList;
+import util.FutureSet;
 
 import java.util.*;
 
@@ -23,7 +25,7 @@ public class Transitions {
             transitionMap.put("\\" + symbol, new SingleElementTransition(symbol));
         }
 
-        Set<Character> sClass = Set.of('\n', '\t', '\r', '\f', ' ');
+        Set<Character> sClass = FutureSet.of('\n', '\t', '\r', '\f', ' ');
         transitionMap.put("\\s", new CollectionTransition(sClass));
 
         transitionMap.put("\\h", new SingleElementTransition('\t')); // TODO: support Unicode / filter rules
@@ -66,7 +68,7 @@ public class Transitions {
         if (s.length() == 1) {
             char c = s.charAt(0);
             if (config.isCaseInsensitive() && Character.isAlphabetic(c)) {
-                List<Character> list = List.of(Character.toUpperCase(c), Character.toLowerCase(c));
+                List<Character> list = FutureList.of(Character.toUpperCase(c), Character.toLowerCase(c));
                 return new CollectionTransition(list);
             }
             return new SingleElementTransition(c);

@@ -11,6 +11,11 @@ public class Node {
         terminal = new ArrayList<>();
     }
 
+    public Node(Map<Character, Node> edges) {
+        this.edges = edges;
+        this.terminal = new ArrayList<>();
+    }
+
     public List<Integer> getTerminal() {
         return terminal;
     }

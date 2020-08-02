@@ -8,6 +8,7 @@ import automaton.nfa.Nfa;
 import org.antlr.v4.runtime.*;
 import parsing.ParsingError;
 import parsing.RegexVisitorImpl;
+import util.FutureList;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -16,6 +17,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
 
 public class Main {
     private static BufferedWriter writer;
@@ -35,7 +37,7 @@ public class Main {
 //        rulesReader.lines().forEach(Main::writeNodesCount);
         rulesReader.lines().forEach(Main::processBaseline);
 //        rulesReader.lines().forEach(Main::processDistinct);
-        writer.write(ind.toString());
+//        writer.write(ind.toString());
 
         writer.close();
     }
@@ -107,10 +109,20 @@ public class Main {
         // Dfa:
         Dfa dfaCurrentMin = minimizeHopcroft(convert(nfaCurrent));
         sizes.add(dfaCurrentMin.nodesCount());
-        if (counter < 660) {
+
+        if (counter < 562) {
             return;
         }
+
         System.out.println("Sum-of-single: " + sizes.stream().reduce(0, Integer::sum));
+
+        Dfa modified = new ThompsonModified().run(nfas);
+        System.out.println("ThompsonModified: " + modified.nodesCount());
+
+        Dfa modifiedMin = minimizeHopcroft(modified);
+        compress(modifiedMin);
+        System.out.println("ThompsonModifiedHeuristic: " + modifiedMin.nodesCount());
+
 
         Dfa dfaSingleMin = minimizeHopcroft(convert(Nfa.union(nfasSingle)));
         System.out.println("Single-terminal-minimized: " + dfaSingleMin.nodesCount());
@@ -118,15 +130,6 @@ public class Main {
         Dfa dfaMin = minimizeHopcroft(convert(Nfa.union(nfas)));
         System.out.println("Minimized: " + dfaMin.nodesCount());
         System.out.println("Minimized-cut: " + (dfaMin.cutCount() + nfas.size()));
-
-        Dfa modified = new ThompsonModified().run(nfas);
-        System.out.println("ThompsonModified: " + modified.nodesCount());
-
-//        if (counter % 20 == 0) {
-            modified = minimize(modified);
-            compress(modified);
-            System.out.println("ThompsonModifiedHeuristic: " + modified.nodesCount());
-//        }
 
         System.out.println();
         System.out.flush();
@@ -142,13 +145,8 @@ public class Main {
         Nfa nfa = buildNfa(rule);
         nfa.close(counter);
 
-        if (counter < 450) {
-            ind.add(counter);
-            return;
-        }
-
         try {
-            nfas.forEach(other -> new ThompsonModified().run(List.of(nfa, other)));
+            nfas.forEach(other -> new ThompsonModified().run(FutureList.of(nfa, other)));
 //            new ThompsonModified().run(nfas);
         } catch (AlgoException e) {
             System.out.println("Rejected");
@@ -264,7 +262,7 @@ public class Main {
     }
 
     public static Dfa buildMinDfa(String rule) {
-        return minimize(buildDfa(rule));
+        return minimizeHopcroft(buildDfa(rule));
     }
 
     public static Dfa minimize(Dfa dfa) {
@@ -281,5 +279,12 @@ public class Main {
 
     public static void compress(Dfa dfa) {
         new DfaCompressor().compress(dfa);
+    }
+
+    public static <T> void timing(Consumer<T> consumer, T arg) {
+        long pre = System.currentTimeMillis();
+        consumer.accept(arg);
+        long post = System.currentTimeMillis();
+        System.out.println(post - pre);
     }
 }

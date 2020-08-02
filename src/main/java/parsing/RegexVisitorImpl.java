@@ -4,6 +4,7 @@ import antlr.RegexBaseVisitor;
 import antlr.RegexParser;
 import automaton.nfa.Nfa;
 import automaton.transition.*;
+import util.FutureList;
 
 import java.util.Collection;
 import java.util.List;
@@ -70,7 +71,7 @@ public class RegexVisitorImpl extends RegexBaseVisitor<Nfa> {
         if (ctx.OR() != null) {
             Nfa nfa1 = parseMany1(ctx.expr1());
             Nfa nfa2 = parseMany(ctx.expr());
-            return Nfa.union(List.of(nfa1, nfa2));
+            return Nfa.union(FutureList.of(nfa1, nfa2));
         }
         return visit(ctx.expr1(0));
     }

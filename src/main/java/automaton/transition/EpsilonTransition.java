@@ -1,8 +1,5 @@
 package automaton.transition;
 
-import edu.emory.mathcs.backport.java.util.Collections;
-import jdk.jshell.spi.ExecutionControl;
-
 import java.util.Collection;
 
 public class EpsilonTransition implements Transition {

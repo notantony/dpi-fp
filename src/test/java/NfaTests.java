@@ -1,6 +1,7 @@
 import automaton.nfa.Nfa;
 import main.Main;
 import org.junit.Test;
+import util.FutureList;
 
 import java.util.List;
 
@@ -20,8 +21,8 @@ public class NfaTests {
     @Test
     public void testRepeated1() {
         String rule = "/^a{1,3}/Hsmi";
-        List<String> accepted = List.of("a", "aa", "aaa");
-        List<String> rejected = List.of("", "aaaa", "b");
+        List<String> accepted = FutureList.of("a", "aa", "aaa");
+        List<String> rejected = FutureList.of("", "aaaa", "b");
         testRegex(rule, accepted, rejected);
     }
 
@@ -29,8 +30,8 @@ public class NfaTests {
     public void
     testRepeated2() {
         String rule = "/^a{1,3}b{0,2}/Hsmi";
-        List<String> accepted = List.of("a", "aa", "aaa", "ab", "abb", "aaabb");
-        List<String> rejected = List.of("", "aaaa", "b", "bb", "baaa", "ba", "abbb");
+        List<String> accepted = FutureList.of("a", "aa", "aaa", "ab", "abb", "aaabb");
+        List<String> rejected = FutureList.of("", "aaaa", "b", "bb", "baaa", "ba", "abbb");
         testRegex(rule, accepted, rejected);
     }
 
@@ -38,8 +39,8 @@ public class NfaTests {
     public void
     testRepeated3() {
         String rule = "/^\\w{0,1}\\d{0,2}/Hsmi";
-        List<String> accepted = List.of("", "a", "x", "a5", "b64", "44", "1");
-        List<String> rejected = List.of("aa2", "aa", "a345", "aaa", "42a", "3a", "a4a");
+        List<String> accepted = FutureList.of("", "a", "x", "a5", "b64", "44", "1");
+        List<String> rejected = FutureList.of("aa2", "aa", "a345", "aaa", "42a", "3a", "a4a");
         testRegex(rule, accepted, rejected);
     }
 

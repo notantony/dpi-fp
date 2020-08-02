@@ -10,16 +10,27 @@ import automaton.transition.Transitions;
 import util.Pair;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 public class ThompsonConverter {
     private final Queue<Set<State>> queue = new ArrayDeque<>();
-    private final HashMap<Set<State>, Node> bijection = new HashMap<>();
+    private final Map<Set<State>, Node> bijection = new HashMap<>();
 
-    public Node createNode(Set<State> states) {
+//    private void preCalc(Nfa nfa) {
+//        Set<State> states = State.traverseEpsilonsSafe(Collections.singletonList(nfa.getStart()));
+//        nfa.
+//    }
+
+    private Node createNode(Set<State> states) {
         Node node = new Node();
         bijection.put(states, node);
+        if (bijection.size() % 500 == 0) {
+            System.out.println("Bijection size > " + bijection.size());
+        }
         queue.add(states);
         return node;
     }
@@ -31,30 +42,33 @@ public class ThompsonConverter {
         while (!queue.isEmpty()) {
             Set<State> states = queue.poll();
             Node curNode = bijection.get(states);
-            for (char c = 0; c <= Transitions.MAX_CHAR; c++) {
-                Set<State> newStates = new HashSet<>();
-                for (State state : states) {
-                    char finalC = c;
-                    state.getEdges().stream()
-                            .filter(edgePair -> !(edgePair.getFirst() instanceof EpsilonTransition) &&
-                                    edgePair.getFirst().test(finalC))
-                            .map(Pair::getSecond).forEach(newStates::add);
-                }
+            IntStream.range(0, Transitions.MAX_CHAR + 1).forEach(c -> {
+//                Set<State> newStates = ConcurrentHashMap.newKeySet();
+                char finalC = (char) c;
+                Set<State> newStates = states.parallelStream()
+                        .flatMap(state -> state.getEdges().stream())
+                        .filter(edgePair -> !(edgePair.getFirst() instanceof EpsilonTransition) &&
+                                edgePair.getFirst().test(finalC))
+                        .map(Pair::getSecond)
+                        .collect(Collectors.toSet());
                 if (!newStates.isEmpty()) {
-                    newStates = State.traverseEpsilonsSafe(newStates);
+                    Set<State> newStatesTraversed = State.traverseEpsilonsSafe(newStates);
                     Node newNode;
-                    if (!bijection.containsKey(newStates)) { // TODO: empty newStates
-                        newNode = createNode(newStates);
+                    if (!bijection.containsKey(newStatesTraversed)) {
+                        newNode = createNode(newStatesTraversed);
                     } else {
-                        newNode = bijection.get(newStates);
+                        newNode = bijection.get(newStatesTraversed);
                     }
-                    curNode.addEdge(c, newNode);
+                    curNode.addEdge(finalC, newNode);
                 }
-            }
+            });
         }
         bijection.forEach((key, value) -> {
             List<Integer> terminals = key.stream()
-                    .filter(State::isTerminal).map(State::getTerminal).distinct().collect(Collectors.toList());
+                    .filter(State::isTerminal)
+                    .map(State::getTerminal)
+                    .distinct()
+                    .collect(Collectors.toList());
             value.setTerminal(terminals);
         });
         return new Dfa(newStart);
