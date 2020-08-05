@@ -45,6 +45,7 @@ public class Main {
     private static int counter = 0;
     private static ArrayList<Nfa> nfas = new ArrayList<>();
     private static ArrayList<Nfa> nfasSingle = new ArrayList<>();
+    private static ArrayList<Nfa> rejected = new ArrayList<>();
     private static ArrayList<Integer> sizes = new ArrayList<>();
 
     public static void pause() {
@@ -110,9 +111,9 @@ public class Main {
         Dfa dfaCurrentMin = minimizeHopcroft(convert(nfaCurrent));
         sizes.add(dfaCurrentMin.nodesCount());
 
-        if (counter < 562) {
-            return;
-        }
+//        if (counter < 562) {
+//            return;
+//        }
 
         System.out.println("Sum-of-single: " + sizes.stream().reduce(0, Integer::sum));
 
@@ -121,7 +122,9 @@ public class Main {
 
         Dfa modifiedMin = minimizeHopcroft(modified);
         compress(modifiedMin);
-        System.out.println("ThompsonModifiedHeuristic: " + modifiedMin.nodesCount());
+        Dfa modifiedMinCompressedMin = minimizeHopcroft(modifiedMin);
+        System.out.println("ThompsonModifiedHeuristic: " + modifiedMin.nodesCount()
+                + "/" + modifiedMinCompressedMin.nodesCount());
 
 
         Dfa dfaSingleMin = minimizeHopcroft(convert(Nfa.union(nfasSingle)));
@@ -257,7 +260,14 @@ public class Main {
         return visitor.visit(start);
     }
 
-    public static Dfa buildDfa(String rule) {
+    public static Nfa buildNfa(String rule, int terminal) {
+        Nfa nfa = buildNfa(rule);
+        nfa.close(terminal);
+        return nfa;
+    }
+
+
+        public static Dfa buildDfa(String rule) {
         return new ThompsonConverter().run(buildNfa(rule));
     }
 

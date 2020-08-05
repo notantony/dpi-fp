@@ -28,9 +28,9 @@ public class ThompsonConverter {
     private Node createNode(Set<State> states) {
         Node node = new Node();
         bijection.put(states, node);
-        if (bijection.size() % 500 == 0) {
-            System.out.println("Bijection size > " + bijection.size());
-        }
+//        if (bijection.size() % 500 == 0) {
+//            System.out.println("Bijection size > " + bijection.size());
+//        }
         queue.add(states);
         return node;
     }

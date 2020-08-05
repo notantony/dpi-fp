@@ -10,14 +10,18 @@ import util.Pair;
 
 import java.util.*;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
-public class ThompsonModified {
+public class ThompsonModifiedMulti {
     private final Queue<List<Set<State>>> queue = new ArrayDeque<>();
     private final HashMap<List<Set<State>>, Node> bijection = new HashMap<>();
-    private ArrayList<Node> finals;
+    private Map<Set<Integer>, Node> finals;
+    private int n;
 
-    public Node createNode(List<Set<State>> states) {
+    public ThompsonModifiedMulti(int n) {
+        this.n = n;
+    }
+
+    private Node createNode(List<Set<State>> states) {
         Node node = new Node();
         bijection.put(states, node);
         queue.add(states);
@@ -25,11 +29,8 @@ public class ThompsonModified {
     }
 
     public Dfa run(List<Nfa> nfas) {
-        finals = new ArrayList<>();
-        for (int i = 0; i < nfas.size(); i++) {
-            finals.add(null);
-        }
-        List<Set<State>> startSets = nfas.parallelStream()
+        finals = new HashMap<>();
+        List<Set<State>> startSets = nfas.stream()
                 .map(Nfa::getStart)
                 .map(state -> State.traverseEpsilonsSafe(Collections.singletonList(state)))
                 .collect(Collectors.toList());
@@ -59,7 +60,7 @@ public class ThompsonModified {
                     }
                 }
 
-                if (nonEmptySets.size() > 1) {
+                if (nonEmptySets.size() > n) {
                     newStatesList = newStatesList.parallelStream()
                             .map(State::traverseEpsilonsSafe)
                             .collect(Collectors.toList());
@@ -73,20 +74,21 @@ public class ThompsonModified {
                         });
                     }
                     Node newNode;
-                    if (!bijection.containsKey(newStatesList)) { // TODO: empty newStates
+                    if (!bijection.containsKey(newStatesList)) {
                         newNode = createNode(newStatesList);
                     } else {
                         newNode = bijection.get(newStatesList);
                     }
                     curNode.addEdge(c, newNode);
-                } else if (nonEmptySets.size() == 1) {
-                    int index = nonEmptySets.get(0);
+                } else { // TODO: not safe
+                    Set<Integer> index = new HashSet<>(nonEmptySets);
                     Node newNode = finals.get(index);
                     if (newNode == null) {
                         newNode = new Node();
-                        finals.set(index, newNode);
+                        finals.put(index, newNode);
                     }
-                    newNode.setTerminal(Collections.singletonList(index));
+
+                    newNode.setTerminal(nonEmptySets);
                     curNode.addEdge(c, newNode);
                 }
             }

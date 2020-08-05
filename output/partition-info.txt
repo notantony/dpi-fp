@@ -1,0 +1,26 @@
+Group #0
+Total 562 rules
+Sum-of-single: 38841
+Single-terminal-minimized: 31383
+Minimized: 49086
+Minimized-cut: 15369
+ThompsonModified: 15878
+ThompsonModifiedHeuristic: 10972
+
+Group #1
+Total 143 rules
+Sum-of-single: 15414
+Single-terminal-minimized: 12344
+Minimized: 16044
+Minimized-cut: 2504
+ThompsonModified: 2565
+ThompsonModifiedHeuristic: 2103
+
+Group #2
+Total 2 rules
+Sum-of-single: 12
+Single-terminal-minimized: 13
+Minimized: 14
+Minimized-cut: 8
+ThompsonModified: 8
+ThompsonModifiedHeuristic: 4

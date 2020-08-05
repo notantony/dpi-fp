@@ -1,0 +1,184 @@
+0
+Minimized: 1
+ThompsonModified: 1
+ThompsonModifiedHeuristic: 1
+ThompsonModifiedHeuristic5: 1
+ThompsonModifiedHeuristic10: 1
+ThompsonModifiedHeuristic5: 1
+ThompsonModifiedHeuristic10: 1
+25
+Minimized: 2007
+ThompsonModified: 110
+ThompsonModifiedHeuristic: 83
+ThompsonModifiedHeuristic5: 17
+ThompsonModifiedHeuristic10: 17
+ThompsonModifiedHeuristic5: 16
+ThompsonModifiedHeuristic10: 16
+50
+Minimized: 3997
+ThompsonModified: 779
+ThompsonModifiedHeuristic: 295
+ThompsonModifiedHeuristic5: 40
+ThompsonModifiedHeuristic10: 29
+ThompsonModifiedHeuristic5: 28
+ThompsonModifiedHeuristic10: 24
+75
+Minimized: 5224
+ThompsonModified: 1086
+ThompsonModifiedHeuristic: 411
+ThompsonModifiedHeuristic5: 55
+ThompsonModifiedHeuristic10: 47
+ThompsonModifiedHeuristic5: 42
+ThompsonModifiedHeuristic10: 33
+100
+Minimized: 9061
+ThompsonModified: 1260
+ThompsonModifiedHeuristic: 326
+ThompsonModifiedHeuristic5: 134
+ThompsonModifiedHeuristic10: 64
+ThompsonModifiedHeuristic5: 107
+ThompsonModifiedHeuristic10: 43
+125
+Minimized: 11917
+ThompsonModified: 2022
+ThompsonModifiedHeuristic: 1070
+ThompsonModifiedHeuristic5: 211
+ThompsonModifiedHeuristic10: 72
+ThompsonModifiedHeuristic5: 180
+ThompsonModifiedHeuristic10: 55
+150
+Minimized: 12749
+ThompsonModified: 2202
+ThompsonModifiedHeuristic: 1235
+ThompsonModifiedHeuristic5: 1153
+ThompsonModifiedHeuristic10: 90
+ThompsonModifiedHeuristic5: 1113
+ThompsonModifiedHeuristic10: 62
+175
+Minimized: 13813
+ThompsonModified: 2364
+ThompsonModifiedHeuristic: 1315
+ThompsonModifiedHeuristic5: 1281
+ThompsonModifiedHeuristic10: 102
+ThompsonModifiedHeuristic5: 1228
+ThompsonModifiedHeuristic10: 74
+200
+Minimized: 16089
+ThompsonModified: 2602
+ThompsonModifiedHeuristic: 1430
+ThompsonModifiedHeuristic5: 1889
+ThompsonModifiedHeuristic10: 155
+ThompsonModifiedHeuristic5: 1814
+ThompsonModifiedHeuristic10: 115
+225
+Minimized: 17156
+ThompsonModified: 2706
+ThompsonModifiedHeuristic: 1518
+ThompsonModifiedHeuristic5: 1935
+ThompsonModifiedHeuristic10: 244
+ThompsonModifiedHeuristic5: 1773
+ThompsonModifiedHeuristic10: 183
+250
+Minimized: 18502
+ThompsonModified: 2983
+ThompsonModifiedHeuristic: 1652
+ThompsonModifiedHeuristic5: 2166
+ThompsonModifiedHeuristic10: 319
+ThompsonModifiedHeuristic5: 1957
+ThompsonModifiedHeuristic10: 263
+275
+Minimized: 19866
+ThompsonModified: 3718
+ThompsonModifiedHeuristic: 2720
+ThompsonModifiedHeuristic5: 2730
+ThompsonModifiedHeuristic10: 530
+ThompsonModifiedHeuristic5: 2606
+ThompsonModifiedHeuristic10: 431
+300
+Minimized: 21871
+ThompsonModified: 5535
+ThompsonModifiedHeuristic: 3762
+ThompsonModifiedHeuristic5: 4291
+ThompsonModifiedHeuristic10: 1678
+ThompsonModifiedHeuristic5: 4162
+ThompsonModifiedHeuristic10: 1575
+325
+Minimized: 23172
+ThompsonModified: 5597
+ThompsonModifiedHeuristic: 3876
+ThompsonModifiedHeuristic5: 4331
+ThompsonModifiedHeuristic10: 1707
+ThompsonModifiedHeuristic5: 4211
+ThompsonModifiedHeuristic10: 1565
+350
+Minimized: 24172
+ThompsonModified: 5685
+ThompsonModifiedHeuristic: 3880
+ThompsonModifiedHeuristic5: 4358
+ThompsonModifiedHeuristic10: 1753
+ThompsonModifiedHeuristic5: 4234
+ThompsonModifiedHeuristic10: 1626
+375
+Minimized: 25816
+ThompsonModified: 6013
+ThompsonModifiedHeuristic: 4248
+ThompsonModifiedHeuristic5: 4599
+ThompsonModifiedHeuristic10: 2104
+ThompsonModifiedHeuristic5: 4448
+ThompsonModifiedHeuristic10: 1961
+400
+Minimized: 27658
+ThompsonModified: 6288
+ThompsonModifiedHeuristic: 4439
+ThompsonModifiedHeuristic5: 4752
+ThompsonModifiedHeuristic10: 3531
+ThompsonModifiedHeuristic5: 4610
+ThompsonModifiedHeuristic10: 3380
+425
+Minimized: 30802
+ThompsonModified: 6469
+ThompsonModifiedHeuristic: 4569
+ThompsonModifiedHeuristic5: 4894
+ThompsonModifiedHeuristic10: 3638
+ThompsonModifiedHeuristic5: 4723
+ThompsonModifiedHeuristic10: 3466
+450
+Minimized: 38981
+ThompsonModified: 14273
+ThompsonModifiedHeuristic: 9604
+ThompsonModifiedHeuristic5: 5027
+ThompsonModifiedHeuristic10: 4467
+ThompsonModifiedHeuristic5: 4830
+ThompsonModifiedHeuristic10: 4284
+475
+Minimized: 40530
+ThompsonModified: 14502
+ThompsonModifiedHeuristic: 9678
+ThompsonModifiedHeuristic5: 5120
+ThompsonModifiedHeuristic10: 4545
+ThompsonModifiedHeuristic5: 4962
+ThompsonModifiedHeuristic10: 4362
+500
+Minimized: 45289
+ThompsonModified: 14633
+ThompsonModifiedHeuristic: 9859
+ThompsonModifiedHeuristic5: 5178
+ThompsonModifiedHeuristic10: 4626
+ThompsonModifiedHeuristic5: 4971
+ThompsonModifiedHeuristic10: 4423
+525
+Minimized: 46773
+ThompsonModified: 14811
+ThompsonModifiedHeuristic: 9899
+ThompsonModifiedHeuristic5: 5245
+ThompsonModifiedHeuristic10: 4699
+ThompsonModifiedHeuristic5: 5058
+ThompsonModifiedHeuristic10: 4492
+550
+Minimized: 47936
+ThompsonModified: 15191
+ThompsonModifiedHeuristic: 10144
+ThompsonModifiedHeuristic5: 5484
+ThompsonModifiedHeuristic10: 4917
+ThompsonModifiedHeuristic5: 5274
+ThompsonModifiedHeuristic10: 4705
