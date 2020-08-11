@@ -5,6 +5,7 @@ import automaton.transition.Transition;
 import util.Pair;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class State {
     private int terminal = -1;
@@ -58,4 +59,27 @@ public class State {
         return result;
     }
 
+    public Set<State> allChildren() {
+        HashSet<State> nodes = new HashSet<>();
+        Queue<State> queue = new ArrayDeque<>();
+        nodes.add(this);
+        queue.add(this);
+        while (!queue.isEmpty()) {
+            State cur = queue.remove();
+            cur.getEdges().forEach(edge -> {
+                State target = edge.getSecond();
+                if (!nodes.contains(target)) {
+                    nodes.add(target);
+                    queue.add(target);
+                }
+            });
+        }
+        return nodes;
+    }
+
+
+    public void print() {
+        Set<State> states = allChildren();
+//        for (se)
+    }
 }

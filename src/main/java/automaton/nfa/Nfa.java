@@ -1,7 +1,7 @@
 package automaton.nfa;
 
-import automaton.transition.EpsilonTransition;
-import automaton.transition.Transition;
+import automaton.transition.*;
+import util.FutureList;
 import util.Pair;
 
 import java.util.*;
@@ -173,5 +173,64 @@ public class Nfa {
 
     public void close() {
         close(1);
+    }
+
+    public void setupTail() {
+        State fin = new State();
+        fin.addEdge(new RangeTransition((char) 0, Transitions.MAX_CHAR), fin);
+        fin.setTerminal(0);
+        Nfa finNfa = new Nfa(fin, FutureList.of(fin));
+        append(finNfa);
+    }
+
+    public static Nfa parseNfa(String s) {
+        String[] lines = s.split("\n");
+        String[][] dataLines = new String[lines.length][0];
+        for (int i = 0; i < lines.length; i++) {
+            dataLines[i] = lines[i].split(" ");
+        }
+        HashMap<Integer, List<Pair<Character, Integer>>> mp = new HashMap<>();
+
+        int i = 0;
+        List<Integer> terminalIds = new ArrayList<>();
+        while (dataLines[i].length == 1) {
+            terminalIds.add(Integer.parseInt(dataLines[i][0]));
+            i++;
+        }
+        for (; i < dataLines.length; i++) {
+            String line = lines[i];
+            String[] dataLine = line.split(" ");
+            int a = Integer.parseInt(dataLine[0]);
+            int b = Integer.parseInt(dataLine[1]);
+            mp.putIfAbsent(a, new ArrayList<>());
+            for (char c : dataLine[2].toCharArray()) {
+                assert c < Transitions.MAX_CHAR : "" + c;
+                mp.get(a).add(new Pair<>(c, b));
+            }
+        }
+        ArrayList<State> states = new ArrayList<>();
+        int size = Integer.max(
+                mp.keySet().stream()
+                        .reduce(Integer::max)
+                        .orElse(0),
+                mp.values().stream()
+                        .flatMap(Collection::stream)
+                        .map(Pair::getSecond)
+                        .reduce(Integer::max)
+                        .orElse(0)) + 1;
+        for (int j = 0; j < size; j++) {
+            states.add(new State());
+        }
+        mp.forEach((a, b) -> {
+            b.forEach(edge -> {
+                states.get(a).addEdge(new SingleElementTransition(edge.getFirst()), states.get(edge.getSecond()));
+            });
+        });
+
+        for (int id : terminalIds) {
+            states.get(id).setTerminal(1);
+        }
+
+        return new Nfa(states.get(0), terminalIds.stream().map(states::get).collect(Collectors.toList()));
     }
 }

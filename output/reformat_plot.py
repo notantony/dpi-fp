@@ -16,3 +16,12 @@ with open('formatted.txt', 'w') as formatted_fs:
         for row in data:
             formatted_fs.write("({},{})".format(row[0], row[i + 1]))
         formatted_fs.write('\n')
+
+import csv
+with open('out.csv', 'w') as csvfile:
+    # spamwriter = csv.writer(csvfile, delimiter=' ', quotechar='|', quoting=csv.QUOTE_MINIMAL)
+    spamwriter = csv.writer(csvfile, quoting=csv.QUOTE_MINIMAL)
+    index = ['x', 'Minimized', 'ThompsonModifiedHeuristic', 'ThompsonModifiedHeuristic5', 'ThompsonModifiedHeuristic10'] 
+    spamwriter.writerow(index)    
+    for row in data:
+        spamwriter.writerow(row)

@@ -7,6 +7,7 @@ public class SingleElementTransition extends AbstractTransition {
     final private char c;
 
     public SingleElementTransition(char c) {
+        assert c < Transitions.MAX_CHAR;
         this.c = c;
     }
 

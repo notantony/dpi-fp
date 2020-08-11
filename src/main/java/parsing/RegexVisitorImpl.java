@@ -3,7 +3,9 @@ package parsing;
 import antlr.RegexBaseVisitor;
 import antlr.RegexParser;
 import automaton.nfa.Nfa;
+import automaton.nfa.State;
 import automaton.transition.*;
+import edu.emory.mathcs.backport.java.util.Collections;
 import util.FutureList;
 
 import java.util.Collection;
@@ -27,6 +29,7 @@ public class RegexVisitorImpl extends RegexBaseVisitor<Nfa> {
     public Nfa visitStart(RegexParser.StartContext ctx) {
         regexConfig = new RegexConfig(ctx.params().getText());
         Nfa result = parseMany(ctx.expr());
+        result.setupTail();
         result.close();
         return result;
     }

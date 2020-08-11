@@ -12,6 +12,9 @@ public class RangeTransition extends AbstractTransition {
     final private char l, r;
 
     public RangeTransition(char l, char r) {
+        if (r > Transitions.MAX_CHAR) {
+            throw new ParsingError("r > MAX_CHAR");
+        }
         if (l > r) {
             throw new ParsingError("l > r");
         }
@@ -21,6 +24,8 @@ public class RangeTransition extends AbstractTransition {
 
     public RangeTransition(String l, String r) {
         this(parseChar(l), parseChar(r));
+        assert parseChar(l) < Transitions.MAX_CHAR;
+        assert parseChar(r) < Transitions.MAX_CHAR;
     }
 
     @Override
