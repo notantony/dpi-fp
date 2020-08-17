@@ -1,6 +1,6 @@
 package templates;
 
-import automaton.algo.ThompsonConverter;
+import automaton.algo.thompson.ThompsonConverter;
 import automaton.dfa.Dfa;
 import automaton.nfa.Nfa;
 import main.Main;

@@ -5,6 +5,7 @@ import automaton.transition.Transition;
 import util.Pair;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 public class State {
@@ -81,5 +82,35 @@ public class State {
     public void print() {
         Set<State> states = allChildren();
 //        for (se)
+    }
+
+    public static class EpsilonMemoizedTraverser {
+        private Map<State, Set<State>> mp = new ConcurrentHashMap<>();
+
+        public Set<State> traverseEpsilonsSafe(State start) {
+            Queue<State> queue = new ArrayDeque<>();
+            queue.add(start);
+            Set<State> result = new HashSet<>(queue);
+            State.traverseEpsilons(queue, result);
+
+            while (!queue.isEmpty()) {
+                State state = queue.poll();
+                for (Pair<Transition, State> edge : state.getEdges()) {
+                    Transition transition = edge.getFirst();
+                    State target = edge.getSecond();
+                    if (transition instanceof EpsilonTransition &&
+                            !result.contains(target)) {
+                        if (mp.containsKey(start)) {
+                            result.addAll(mp.get(start));
+                        } else {
+                            result.add(target);
+                            queue.add(target);
+                        }
+                    }
+                }
+            }
+            mp.put(start, result);
+            return result;
+        }
     }
 }

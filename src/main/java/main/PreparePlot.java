@@ -1,9 +1,11 @@
 package main;
 
-import automaton.algo.*;
+import automaton.algo.compressor.DfaCompressor;
+import automaton.algo.compressor.DfaCompressorMulti;
+import automaton.algo.thompson.ThompsonModified;
+import automaton.algo.thompson.ThompsonModifiedMulti;
 import automaton.dfa.Dfa;
 import automaton.nfa.Nfa;
-import util.FutureList;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -12,7 +14,6 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 

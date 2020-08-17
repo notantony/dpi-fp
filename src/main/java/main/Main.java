@@ -3,6 +3,12 @@ package main;
 import antlr.RegexLexer;
 import antlr.RegexParser;
 import automaton.algo.*;
+import automaton.algo.compressor.DfaCompressor;
+import automaton.algo.independence.IndependenceCheckerBfs;
+import automaton.algo.independence.IndependenceCheckerDfs;
+import automaton.algo.thompson.ThompsonConverter;
+import automaton.algo.thompson.ThompsonModified;
+import automaton.algo.thompson.ThompsonModifiedDfs;
 import automaton.dfa.Dfa;
 import automaton.nfa.Nfa;
 import org.antlr.v4.runtime.*;
@@ -18,6 +24,7 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
 
 public class Main {
     private static BufferedWriter writer;
@@ -296,5 +303,37 @@ public class Main {
         consumer.accept(arg);
         long post = System.currentTimeMillis();
         System.out.println(post - pre);
+    }
+
+    public static List<String> readAllRules() throws IOException {
+        String inputPath = "./input/selected.txt";
+        BufferedReader rulesReader = Files.newBufferedReader(Paths.get(inputPath));
+        return rulesReader.lines().collect(Collectors.toList());
+    }
+
+    public static boolean runChecker(Nfa a, Nfa b) {
+        return new IndependenceCheckerDfs().areIndependent(a, b);
+    }
+
+    public static boolean runCheckerAlt(Nfa a, Nfa b) {
+        return new IndependenceCheckerBfs().areIndependent(a, b);
+    }
+
+    public static boolean runThompson(Nfa a, Nfa b) {
+        try {
+            new ThompsonModified().run(FutureList.of(a, b));
+        } catch (AlgoException e) {
+            return false;
+        }
+        return true;
+    }
+
+    public static boolean runThompsonAlt(Nfa a, Nfa b) {
+        try {
+            new ThompsonModifiedDfs().run(FutureList.of(a, b));
+        } catch (AlgoException e) {
+            return false;
+        }
+        return true;
     }
 }

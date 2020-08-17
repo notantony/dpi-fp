@@ -1,12 +1,9 @@
 package main;
 
-import automaton.algo.AlgoException;
-import automaton.algo.DfaCompressor;
-import automaton.algo.ThompsonModified;
-import automaton.algo.ThompsonModifiedMulti;
+import automaton.algo.compressor.DfaCompressor;
+import automaton.algo.thompson.ThompsonModifiedMulti;
 import automaton.dfa.Dfa;
 import automaton.nfa.Nfa;
-import util.FutureList;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -18,8 +15,6 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
-
-import static main.Main.*;
 
 public class Multi {
     private static final Logger logger = Logger.getGlobal();

@@ -1,6 +1,6 @@
 package main;
 
-import automaton.algo.IndependenceChecker;
+import automaton.algo.independence.IndependenceChecker;
 import automaton.nfa.Nfa;
 
 public class MainSingle {

@@ -1,10 +1,10 @@
 package util;
 
-import automaton.transition.SingleElementTransition;
-
 import java.util.Collection;
-import java.util.function.Function;
-import java.util.function.Predicate;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.function.*;
+import java.util.logging.Logger;
 
 public class Utils {
     public static char parseChar(String s) {
@@ -23,5 +23,34 @@ public class Utils {
             result.addAll(predicate.apply(s.substring(i)));
         }
         return result;
+    }
+
+    public static <T, X> X timeit(Function<T, X> function, T arg) {
+        long pre = System.currentTimeMillis();
+        X tmp = function.apply(arg);
+        long post = System.currentTimeMillis();
+        Logger.getGlobal().info(function.getClass().getCanonicalName() + ": " + (post - pre));
+        return tmp;
+    }
+
+    public static <T, V, X> X timeit(BiFunction<T, V, X> function, T arg, V arg1) {
+        return timeit(function, arg, arg1, "");
+    }
+
+    private static Map<String, Long> timeLog = new HashMap<>();
+    public static <T, V, X> X timeit(BiFunction<T, V, X> function, T arg, V arg1, String label) {
+        long pre = System.currentTimeMillis();
+        X tmp = function.apply(arg, arg1);
+        long post = System.currentTimeMillis();
+//        Logger.getGlobal().info(label + (post - pre));
+        long timing = post - pre;
+        System.err.println(label + timing);
+        timeLog.putIfAbsent(label, 0L);
+        timeLog.put(label, timeLog.get(label) + timing);
+        return tmp;
+    }
+
+    public static void printTimeLog() {
+        System.err.println(timeLog.toString());
     }
 }
