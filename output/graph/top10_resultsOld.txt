@@ -1,0 +1,80 @@
+Total 604 rules
+Sum-of-single: 45877
+Single-terminal-minimized: 28911
+Minimized: 46871
+Minimized-cut: 7106
+ThompsonModified: 7338
+ThompsonModifiedHeuristic: 5668
+
+Total 112 rules
+Sum-of-single: 7279
+Single-terminal-minimized: 8515
+Minimized: 11265
+Minimized-cut: 5040
+ThompsonModified: 5303
+ThompsonModifiedHeuristic: 2184
+
+Total 60 rules
+Sum-of-single: 3805
+Single-terminal-minimized: 4134
+Minimized: 4358
+Minimized-cut: 992
+ThompsonModified: 1002
+ThompsonModifiedHeuristic: 877
+
+Total 33 rules
+Sum-of-single: 4547
+Single-terminal-minimized: 5019
+Minimized: 5995
+Minimized-cut: 1968
+ThompsonModified: 2540
+ThompsonModifiedHeuristic: 1637
+
+Total 31 rules
+Sum-of-single: 1846
+Single-terminal-minimized: 1333
+Minimized: 1801
+Minimized-cut: 68
+ThompsonModified: 68
+ThompsonModifiedHeuristic: 56
+
+Total 23 rules
+Sum-of-single: 1329
+Single-terminal-minimized: 1111
+Minimized: 1315
+Minimized-cut: 137
+ThompsonModified: 141
+ThompsonModifiedHeuristic: 89
+
+Total 18 rules
+Sum-of-single: 2111
+Single-terminal-minimized: 2055
+Minimized: 2075
+Minimized-cut: 76
+ThompsonModified: 79
+ThompsonModifiedHeuristic: 57
+
+Total 15 rules
+Sum-of-single: 560
+Single-terminal-minimized: 518
+Minimized: 532
+Minimized-cut: 65
+ThompsonModified: 69
+ThompsonModifiedHeuristic: 59
+
+Total 11 rules
+Sum-of-single: 679
+Single-terminal-minimized: 652
+Minimized: 662
+Minimized-cut: 18
+ThompsonModified: 19
+ThompsonModifiedHeuristic: 15
+
+Total 10 rules
+Sum-of-single: 755
+Single-terminal-minimized: 727
+Minimized: 736
+Minimized-cut: 14
+ThompsonModified: 14
+ThompsonModifiedHeuristic: 12
+

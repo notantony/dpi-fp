@@ -72,7 +72,6 @@ public class DfaCompressor {
                             return pair;
                         }).collect(Collectors.toSet()));
 
-                        //                    nodes.remove(a);
                         ordered.set(i, null);
                         if (dfa.getStart() == a) {
                             dfa.setStart(b);

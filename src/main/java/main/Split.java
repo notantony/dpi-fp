@@ -54,16 +54,19 @@ public class Split {
                 if (failed) {
                     break;
                 }
-                try {
-                    new ThompsonModified().run(FutureList.of(selected, nfa));
-                } catch (AlgoException e) {
+//                boolean thompsonAlt = Main.runThompsonAlt(selected, nfa);
+                boolean checker = Main.runChecker(selected, nfa);
+//                if (thompsonAlt != checker) {
+//                    throw new RuntimeException("WRONG ANSWER");
+//                }
+
+                if (!checker) {
                     failed = true;
                 }
             }
             if (!failed) {
                 nfa.close(1 + group.size());
                 group.add(nfa);
-//                group.sort();
                 groupRules.add(rule);
                 logger.info("Ok");
             } else {
@@ -83,11 +86,15 @@ public class Split {
         System.out.println(groupHeader);
         processGroup(groupRules, group);
         System.out.println();
+        System.out.flush();
         rules = rejected;
     }
 
     private static void processGroup(List<String> rules, List<Nfa> nfas) {
         System.out.println("Total " + rules.size() + " rules");
+        if(true) {
+            return;
+        }
 
         // Nfa:
         List<Nfa> nfasSingle = rules.parallelStream()

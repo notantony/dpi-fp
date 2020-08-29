@@ -4,6 +4,7 @@ import antlr.RegexLexer;
 import antlr.RegexParser;
 import automaton.algo.*;
 import automaton.algo.compressor.DfaCompressor;
+import automaton.algo.compressor.RecursiveCompressor;
 import automaton.algo.independence.IndependenceCheckerBfs;
 import automaton.algo.independence.IndependenceCheckerDfs;
 import automaton.algo.thompson.ThompsonConverter;
@@ -118,10 +119,6 @@ public class Main {
         Dfa dfaCurrentMin = minimizeHopcroft(convert(nfaCurrent));
         sizes.add(dfaCurrentMin.nodesCount());
 
-//        if (counter < 562) {
-//            return;
-//        }
-
         System.out.println("Sum-of-single: " + sizes.stream().reduce(0, Integer::sum));
 
         Dfa modified = new ThompsonModified().run(nfas);
@@ -129,9 +126,14 @@ public class Main {
 
         Dfa modifiedMin = minimizeHopcroft(modified);
         compress(modifiedMin);
-        Dfa modifiedMinCompressedMin = minimizeHopcroft(modifiedMin);
+//        Dfa modifiedMinCompressedMin = minimizeHopcroft(modifiedMin);
         System.out.println("ThompsonModifiedHeuristic: " + modifiedMin.nodesCount()
-                + "/" + modifiedMinCompressedMin.nodesCount());
+//                + "/" + modifiedMinCompressedMin.nodesCount()
+        );
+
+        Dfa modifiedMinCopy = minimizeHopcroft(modified);
+        new RecursiveCompressor().compress(modifiedMinCopy);
+        System.out.println("ThompsonModifiedRecursive: " + modifiedMinCopy.nodesCount());
 
 
         Dfa dfaSingleMin = minimizeHopcroft(convert(Nfa.union(nfasSingle)));
@@ -207,13 +209,13 @@ public class Main {
         sizes.add(minimize(dfaSingle).nodesCount());
         System.out.println("Total " + nfas.size() + " nodes");
         System.out.println(""
-                + "Sum of single: " + sizes.stream().reduce(0, Integer::sum) + "\n"
-                + "Merged: " + dfa.nodesCount() + "\n"
-                + "Minimized: " + min.nodesCount() + "\n"
-                + "MinimizedHopcroft: " + min2.nodesCount() + "\n"
+                        + "Sum of single: " + sizes.stream().reduce(0, Integer::sum) + "\n"
+                        + "Merged: " + dfa.nodesCount() + "\n"
+                        + "Minimized: " + min.nodesCount() + "\n"
+                        + "MinimizedHopcroft: " + min2.nodesCount() + "\n"
 //                + "Single-terminal-minimized: " + minSingleTerm.nodesCount() + "\n"
-                + "Optimized: " + min.cutCount() + "\n"
-                + "ThompsonModified: " + modified.nodesCount()
+                        + "Optimized: " + min.cutCount() + "\n"
+                        + "ThompsonModified: " + modified.nodesCount()
         );
         modified = minimize(modified);
         compress(modified);
@@ -274,7 +276,7 @@ public class Main {
     }
 
 
-        public static Dfa buildDfa(String rule) {
+    public static Dfa buildDfa(String rule) {
         return new ThompsonConverter().run(buildNfa(rule));
     }
 

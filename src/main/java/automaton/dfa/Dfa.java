@@ -1,6 +1,9 @@
 package automaton.dfa;
 
 import automaton.nfa.Nfa;
+import automaton.nfa.State;
+import automaton.transition.SingleElementTransition;
+import automaton.transition.Transitions;
 import util.Pair;
 import util.Utils;
 
@@ -121,5 +124,57 @@ public class Dfa {
 
     public void setStart(Node start) {
         this.start = start;
+    }
+
+    public static Dfa parseDfa(String s) {
+        String[] lines = s.split("\n");
+        String[][] dataLines = new String[lines.length][0];
+        for (int i = 0; i < lines.length; i++) {
+            dataLines[i] = lines[i].split(" ");
+        }
+        HashMap<Integer, List<Pair<Character, Integer>>> mp = new HashMap<>();
+
+        int i = 0;
+        Map<Integer, Integer> terminalIds = new HashMap<>();
+        while (dataLines[i].length == 2) {
+            terminalIds.put(Integer.parseInt(dataLines[i][0]), Integer.parseInt(dataLines[i][1]));
+            i++;
+        }
+        for (; i < dataLines.length; i++) {
+            String line = lines[i];
+            String[] dataLine = line.split(" ");
+            int a = Integer.parseInt(dataLine[0]);
+            int b = Integer.parseInt(dataLine[1]);
+            mp.putIfAbsent(a, new ArrayList<>());
+            for (char c : dataLine[2].toCharArray()) {
+                assert c < Transitions.MAX_CHAR : "" + c;
+                mp.get(a).add(new Pair<>(c, b));
+            }
+        }
+        ArrayList<Node> nodes = new ArrayList<>();
+        int size = Integer.max(
+                mp.keySet().stream()
+                        .reduce(Integer::max)
+                        .orElse(0),
+                mp.values().stream()
+                        .flatMap(Collection::stream)
+                        .map(Pair::getSecond)
+                        .reduce(Integer::max)
+                        .orElse(0)) + 1;
+        for (int j = 0; j < size; j++) {
+            nodes.add(new Node());
+        }
+        mp.forEach((a, b) -> {
+            b.forEach(edge -> {
+                nodes.get(a).addEdge(edge.getFirst(), nodes.get(edge.getSecond()));
+            });
+        });
+
+        terminalIds.forEach((id, terminal) -> {
+            nodes.get(id).setTerminal(Collections.singletonList(terminal));
+        });
+
+
+        return new Dfa(nodes.get(0));
     }
 }
