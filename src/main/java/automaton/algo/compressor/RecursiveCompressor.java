@@ -15,6 +15,9 @@ public class RecursiveCompressor {
     private Map<Node, Set<Pair<Character, Node>>> mp;
     private MergeGraph mergeQueue;
 
+//    private byte[][] __debugDistinct;
+//    private byte
+
     private byte checkInd(int i, int j) {
         if (distinct[i][j] != 0) {
             return distinct[i][j];
@@ -101,9 +104,11 @@ public class RecursiveCompressor {
                     .forEach(c -> {
                         incident[i].get(c).forEach(a -> {
                             incident[j].get(c).forEach(b -> {
-                                if (distinct[a][b] == 0) {
-                                    distinct[a][b] = 1;
-                                    queue.add(new Pair<>(a, b));
+                                int targetA = Integer.max(a, b);
+                                int targetB = Integer.min(a, b);
+                                if (distinct[targetA][targetB] == 0) {
+                                    distinct[targetA][targetB] = 1;
+                                    queue.add(new Pair<>(targetA, targetB));
                                 }
                             });
                         });
@@ -120,6 +125,8 @@ public class RecursiveCompressor {
     }
 
     private List<Pair<Integer, Integer>> mergePair(int aId, int bId) {
+        assert !nodes.get(aId).isTerminal();
+        assert !nodes.get(bId).isTerminal();
         ArrayList<Pair<Integer, Integer>> needsMerge = new ArrayList<>();
         Node a = nodes.get(aId);
         Node b = nodes.get(bId);
@@ -238,7 +245,7 @@ public class RecursiveCompressor {
     private boolean runMerge() {
         Integer foundI = null, foundJ = null;
         for (int i = 0; foundI == null && i < nodes.size(); i++) {
-            for (int j = 0; foundI == null && j < nodes.size(); j++) {
+            for (int j = 0; foundI == null && j < i; j++) {
                 if (distinct[i][j] == -1 && !nodes.get(i).isTerminal() && !nodes.get(j).isTerminal()) {
                     foundI = i;
                     foundJ = j;
@@ -259,6 +266,7 @@ public class RecursiveCompressor {
     }
 
     public void compress(Dfa dfa) {
+        dfa.close();
         this.dfa = dfa;
 
         boolean updated = true;

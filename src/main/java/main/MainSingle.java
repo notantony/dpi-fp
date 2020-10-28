@@ -11,19 +11,30 @@ public class MainSingle {
 //        String regex = "/qwe/";
 //        String string = "abdqwe";
 
-//        String a = "2 1\n" +
-//                "3 2\n" +
-//                "5 2\n" +
-//                "0 1 a\n" +
-//                "1 2 abc\n" +
-//                "2 2 b\n" +
-//                "3 4 ab\n" +
-//                "3 5 ab\n" +
-//                "1 3 c\n";
-//        Dfa dfa = Dfa.parseDfa(a);
+//        String a = "6 1\n" +
+//                "7 2\n" +
+//                "8 3\n" +
+//                "0 1 ab\n" +
+//                "1 2 ac\n" +
+//                "1 3 b\n" +
+//                "2 5 b\n" +
+//                "2 4 a\n" +
+//                "3 4 ac\n" +
+//                "4 8 b\n" +
+//                "5 5 c\n" +
+//                "5 6 a\n" +
+//                "5 7 b\n";
+        String a = "3 3\n" +
+                "1 1\n" +
+                "4 4\n" +
+                "0 1 a\n" +
+                "0 2 b\n" +
+                "2 4 b\n" +
+                "0 3 c\n";
+        Dfa dfa = Dfa.parseDfa(a);
 
-        String a = "/(^Contact\\x3A\\s+[^\\r\\n\\x3C]*\\x3C[^\\r\\n\\x3E]*?[\\x20\\x09]).*/Hsmi";
-        Dfa dfa = Main.buildDfa(a);
+//        String a = "/(^Contact\\x3A\\s+[^\\r\\n\\x3C]*\\x3C[^\\r\\n\\x3E]*?[\\x20\\x09]).*/Hsmi";
+//        Dfa dfa = Main.buildDfa(a);
 
         new RecursiveCompressor().compress(dfa);
         System.out.println(dfa.nodesCount());

@@ -1,8 +1,10 @@
 package automaton.dfa;
 
+import automaton.algo.AlgoException;
 import automaton.nfa.Nfa;
 import automaton.nfa.State;
 import automaton.transition.SingleElementTransition;
+import automaton.transition.Transition;
 import automaton.transition.Transitions;
 import util.Pair;
 import util.Utils;
@@ -122,6 +124,22 @@ public class Dfa {
         });
     }
 
+    public void close() {
+        allNodes().stream().filter(Node::isTerminal).forEach(terminal -> {
+            if (!terminal.getEdges().isEmpty()) {
+                throw new AlgoException("Cannot close terminal with edges");
+            }
+            if (terminal.getTerminal().size() > 1) {
+                throw new AlgoException("Cannot close multi-terminal");
+            }
+            HashMap<Character, Node> mp = new HashMap<>();
+            for (char c = 0; c <= Transitions.MAX_CHAR; c++) {
+                mp.put(c, terminal);
+            }
+            terminal.setEdges(mp);
+        });
+    }
+
     public void setStart(Node start) {
         this.start = start;
     }
@@ -177,4 +195,6 @@ public class Dfa {
 
         return new Dfa(nodes.get(0));
     }
+
+
 }

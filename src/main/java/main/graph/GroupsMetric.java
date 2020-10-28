@@ -29,12 +29,13 @@ public class GroupsMetric {
 
         List<String> rules = rulesReader.lines().collect(Collectors.toList());
 
-        List<List<String>> groupRules = groups.stream().map(group ->
-                group.stream()
+        List<List<String>> groupRules = groups.stream()
+                .map(group -> group.stream()
                         .map(rules::get)
-                        .collect(Collectors.toList())).collect(Collectors.toList());
+                        .collect(Collectors.toList()))
+                .collect(Collectors.toList());
 
-        for (List<String> group: groupRules) {
+        for (List<String> group : groupRules) {
             processGroup(group);
         }
     }
@@ -50,39 +51,52 @@ public class GroupsMetric {
         }
 
         // Nfa:
-        List<Nfa> nfasSingle = rules.parallelStream()
-                .map(Main::buildNfa)
-                .peek(nfa -> nfa.close(1))
-                .collect(Collectors.toList());
+//        List<Nfa> nfasSingle = rules.parallelStream()
+//                .map(Main::buildNfa)
+//                .peek(nfa -> nfa.close(1))
+//                .collect(Collectors.toList());
 
         // Dfa:
-        int sum = nfasSingle.parallelStream()
-                .map(Main::convert)
-                .map(Main::minimizeHopcroft)
-                .map(Dfa::nodesCount)
-                .reduce(Integer::sum)
-                .orElse(0);
+//        int sum = nfasSingle.parallelStream()
+//                .map(Main::convert)
+//                .map(Main::minimizeHopcroft)
+//                .map(Dfa::nodesCount)
+//                .reduce(Integer::sum)
+//                .orElse(0);
+//        System.out.println("Sum-of-single: " + sum);
+//
+//        int max = nfasSingle.parallelStream()
+//                .map(Main::convert)
+//                .map(Main::minimizeHopcroft)
+//                .map(Dfa::nodesCount)
+//                .reduce(Integer::max)
+//                .orElse(0);
+//        System.out.println("Max-of-single: " + max);
 
-        System.out.println("Sum-of-single: " + sum);
-
-        Dfa dfaSingleMin = minimizeHopcroft(convert(Nfa.union(nfasSingle)));
-        System.out.println("Single-terminal-minimized: " + dfaSingleMin.nodesCount());
-
-        Dfa dfaMin = minimizeHopcroft(convert(Nfa.union(nfas)));
+//        Dfa dfaSingleMin = minimizeHopcroft(convert(Nfa.union(nfasSingle)));
+//        System.out.println("Single-terminal-minimized: " + dfaSingleMin.nodesCount());
+        Dfa combined = convert(Nfa.union(nfas));
+        System.out.println("Combined: " + combined.nodesCount());
+        Dfa dfaMin = minimizeHopcroft(combined);
         System.out.println("Minimized: " + dfaMin.nodesCount());
-        System.out.println("Minimized-cut: " + (dfaMin.cutCount() + nfas.size()));
 
-        Dfa modified = new ThompsonModified().run(nfas);
-        System.out.println("ThompsonModified: " + modified.nodesCount());
+//        System.out.println("Minimized-cut: " + (dfaMin.cutCount() + nfas.size()));
 
-        Dfa modifiedMin = minimizeHopcroft(modified);
-        compress(modifiedMin);
-        System.out.println("ThompsonModifiedHeuristic: " + modifiedMin.nodesCount());
+//        Dfa modified = new ThompsonModified().run(nfas);
+//        System.out.println("ThompsonModified: " + modified.nodesCount());
 
-        Dfa modifiedMinCopy = minimizeHopcroft(modified);
-        new RecursiveCompressor().compress(modifiedMinCopy);
-        System.out.println("ThompsonModifiedRecursive: " + modifiedMinCopy.nodesCount());
-        modifiedMinCopy.print();
+//        Dfa modifiedMin = minimizeHopcroft(modified);
+//        compress(modifiedMin);
+//        System.out.println("ThompsonModifiedHeuristic: " + modifiedMin.nodesCount());
+
+//        Dfa modifiedMinCopy = minimizeHopcroft(modified);
+//        new RecursiveCompressor().compress(modifiedMinCopy);
+//        System.out.println("ThompsonModifiedRecursive: " + modifiedMinCopy.nodesCount());
+
+//        new RecursiveCompressor().compress(modifiedMin);
+//        System.out.println("ComHpressThenRecursive: " + modifiedMin.nodesCount());
+
+//        modifiedMinCopy.print();
 
         System.out.println();
         System.out.flush();

@@ -4,18 +4,23 @@ import automaton.dfa.Dfa;
 import automaton.dfa.Node;
 import automaton.transition.Transition;
 import automaton.transition.Transitions;
+import util.FutureList;
 import util.Pair;
 import util.Triple;
+import util.Utils;
 
 import java.util.*;
+import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 public class HopcroftMinimizer {
-    Queue<Pair<Integer, Character>> queue = new ArrayDeque<>();
-    List<Node> nodes;
-    int[] classAssigned;
-    ArrayList<Integer>[][] inv;
-    ArrayList<Set<Integer>> partition;
+    private Queue<Pair<Integer, Character>> queue = new ArrayDeque<>();
+    private List<Node> nodes;
+    private int[] classAssigned;
+    private ArrayList<Integer>[][] inv;
+    private ArrayList<Set<Integer>> partition;
 
+    private int __debugPartitionNextMonitorSize = 512;
 
     private void preCalc(Dfa dfa) {
         HashMap<Node, Integer> back = new HashMap<>();
@@ -74,6 +79,15 @@ public class HopcroftMinimizer {
 
 
     public Dfa run(Dfa dfa) {
+        HashMap<Set<Integer>, Integer> newTerminals = new HashMap<>();
+        dfa.allNodes().stream()
+                .map(node -> new HashSet<>(node.getTerminal()))
+                .distinct()
+                .forEach(terms -> newTerminals.put(terms, newTerminals.size() + 1));
+        dfa.allNodes().forEach(node -> {
+            node.setTerminal(Collections.singletonList(newTerminals.get(new HashSet<>(node.getTerminal()))));
+        });
+
         preCalc(dfa);
 
         while (!queue.isEmpty()) {
@@ -90,6 +104,10 @@ public class HopcroftMinimizer {
             involved.forEach((i, members) -> {
                 if (members.size() < partition.get(i).size()) {
                     partition.add(new HashSet<>());
+                    if (partition.size() >= __debugPartitionNextMonitorSize) {
+                        Logger.getGlobal().info("Partition size exceeded " + __debugPartitionNextMonitorSize);
+                        __debugPartitionNextMonitorSize *= 2;
+                    }
                     int j = partition.size() - 1;
                     for (int member : members) {
                         partition.get(i).remove(member);
@@ -110,9 +128,9 @@ public class HopcroftMinimizer {
             });
         }
 
-        Map<Set<Integer>, Node> bijection = new HashMap<>();
+        Map<Set<Integer>, Node> bijection = new HashMap<>(partition.size());
         partition.forEach(set -> bijection.put(set, new Node()));
-        Map<Node, Node> newNodes = new HashMap<>();
+        Map<Node, Node> newNodes = new HashMap<>(partition.size());
         partition.forEach(set -> set.forEach(node -> newNodes.put(nodes.get(node), bijection.get(set))));
 
         for (Node node: nodes) {

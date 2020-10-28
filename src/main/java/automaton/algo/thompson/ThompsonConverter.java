@@ -7,11 +7,13 @@ import automaton.nfa.State;
 import automaton.transition.EpsilonTransition;
 import automaton.transition.Transition;
 import automaton.transition.Transitions;
+import main.Main;
 import util.Pair;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.logging.Logger;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -25,12 +27,14 @@ public class ThompsonConverter {
 //        nfa.
 //    }
 
+    private int __debugNextBijectionMonitor = 512;
     private Node createNode(Set<State> states) {
         Node node = new Node();
         bijection.put(states, node);
-//        if (bijection.size() % 500 == 0) {
-//            System.out.println("Bijection size > " + bijection.size());
-//        }
+        if (bijection.size() >= __debugNextBijectionMonitor) {
+            Logger.getGlobal().info("Bijection size exceeded " + bijection.size());
+            __debugNextBijectionMonitor *= 2;
+        }
         queue.add(states);
         return node;
     }
