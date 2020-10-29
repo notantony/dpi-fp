@@ -1,10 +1,8 @@
 package main;
 
-import automaton.algo.AlgoException;
 import automaton.algo.thompson.ThompsonModified;
 import automaton.dfa.Dfa;
 import automaton.nfa.Nfa;
-import util.FutureList;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;

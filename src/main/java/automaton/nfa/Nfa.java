@@ -1,7 +1,7 @@
 package automaton.nfa;
 
 import automaton.transition.*;
-import util.FutureList;
+import util.MyList;
 import util.Pair;
 
 import java.util.*;
@@ -179,7 +179,7 @@ public class Nfa {
         State fin = new State();
         fin.addEdge(new RangeTransition((char) 0, Transitions.MAX_CHAR), fin);
         fin.setTerminal(0);
-        Nfa finNfa = new Nfa(fin, FutureList.of(fin));
+        Nfa finNfa = new Nfa(fin, MyList.of(fin));
         append(finNfa);
     }
 

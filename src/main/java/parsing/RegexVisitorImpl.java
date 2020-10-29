@@ -3,13 +3,10 @@ package parsing;
 import antlr.RegexBaseVisitor;
 import antlr.RegexParser;
 import automaton.nfa.Nfa;
-import automaton.nfa.State;
 import automaton.transition.*;
-import edu.emory.mathcs.backport.java.util.Collections;
-import util.FutureList;
+import util.MyList;
 
 import java.util.Collection;
-import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -74,7 +71,7 @@ public class RegexVisitorImpl extends RegexBaseVisitor<Nfa> {
         if (ctx.OR() != null) {
             Nfa nfa1 = parseMany1(ctx.expr1());
             Nfa nfa2 = parseMany(ctx.expr());
-            return Nfa.union(FutureList.of(nfa1, nfa2));
+            return Nfa.union(MyList.of(nfa1, nfa2));
         }
         return visit(ctx.expr1(0));
     }

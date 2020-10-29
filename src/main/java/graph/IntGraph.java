@@ -15,6 +15,19 @@ public class IntGraph {
     }
     List<IntNode> nodes = new ArrayList<>();
 
+    public IntGraph() {}
+
+    public IntGraph(int nNodes) {
+        nodes = new ArrayList<>(nNodes);
+        for (int i = 0; i < nNodes; i++) {
+            nodes.add(new IntNode(i));
+        }
+    }
+
+    public void addEdge(int i, int j) {
+        nodes.get(i).edges.add(j);
+    }
+
     public static IntGraph parseGraph(Stream<String> lines) {
         IntGraph graph = new IntGraph();
         lines.forEach(line -> {

@@ -2,16 +2,11 @@ package automaton.algo;
 
 import automaton.dfa.Dfa;
 import automaton.dfa.Node;
-import automaton.transition.Transition;
 import automaton.transition.Transitions;
-import util.FutureList;
 import util.Pair;
-import util.Triple;
-import util.Utils;
 
 import java.util.*;
 import java.util.logging.Logger;
-import java.util.stream.Collectors;
 
 public class HopcroftMinimizer {
     private Queue<Pair<Integer, Character>> queue = new ArrayDeque<>();

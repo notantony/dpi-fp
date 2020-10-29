@@ -5,7 +5,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-public class FutureList {
+public class MyList {
 
     @SafeVarargs
     public static <T> List<T> of(T ... a) {

@@ -15,7 +15,7 @@ import automaton.nfa.Nfa;
 import org.antlr.v4.runtime.*;
 import parsing.ParsingError;
 import parsing.RegexVisitorImpl;
-import util.FutureList;
+import util.MyList;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -158,7 +158,7 @@ public class Main {
         nfa.close(counter);
 
         try {
-            nfas.forEach(other -> new ThompsonModified().run(FutureList.of(nfa, other)));
+            nfas.forEach(other -> new ThompsonModified().run(MyList.of(nfa, other)));
 //            new ThompsonModified().run(nfas);
         } catch (AlgoException e) {
             System.out.println("Rejected");
@@ -323,7 +323,7 @@ public class Main {
 
     public static boolean runThompson(Nfa a, Nfa b) {
         try {
-            new ThompsonModified().run(FutureList.of(a, b));
+            new ThompsonModified().run(MyList.of(a, b));
         } catch (AlgoException e) {
             return false;
         }
@@ -332,7 +332,7 @@ public class Main {
 
     public static boolean runThompsonAlt(Nfa a, Nfa b) {
         try {
-            new ThompsonModifiedDfs().run(FutureList.of(a, b));
+            new ThompsonModifiedDfs().run(MyList.of(a, b));
         } catch (AlgoException e) {
             return false;
         }

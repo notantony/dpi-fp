@@ -2,7 +2,7 @@ import automaton.dfa.Dfa;
 import automaton.nfa.Nfa;
 import main.Main;
 import org.junit.Test;
-import util.FutureList;
+import util.MyList;
 import util.Pair;
 
 import java.util.ArrayList;
@@ -63,12 +63,12 @@ public class DistinctTests {
 
     @Test
     public void test1() {
-        List<String> rules = FutureList.of(
+        List<String> rules = MyList.of(
                 "/abc/",
                 "/qwe/",
                 "/cde/"
         );
-        List <String> strings = FutureList.of(
+        List <String> strings = MyList.of(
                 "abc",
                 "abd",
                 "qwe",
@@ -80,12 +80,12 @@ public class DistinctTests {
 
     @Test
     public void test2() {
-        List<String> rules = FutureList.of(
+        List<String> rules = MyList.of(
                 "/^abce.*/",
                 "/^abcd.*/",
                 "/^abc.*/"
         );
-        List <String> strings = FutureList.of(
+        List <String> strings = MyList.of(
                 "abc",
                 "abd",
                 "abcd",
