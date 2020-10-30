@@ -9,10 +9,17 @@ import automaton.transition.Transitions;
 import util.Pair;
 import util.Utils;
 
+import java.io.BufferedReader;
+import java.io.Reader;
+import java.lang.reflect.Array;
 import java.util.*;
 import java.util.stream.Collectors;
 
 public class Dfa {
+    private enum ParsingMode {
+        LETTERS_LIST, SINGLE_EDGE
+    }
+
     private Node start;
 
     public Dfa(Node start) {
@@ -91,9 +98,12 @@ public class Dfa {
 
     public void print() {
         Collection<Node> nodes = allNodes();
-        Map<Node, Integer> map = new HashMap<>();
+        Map<Node, Integer> map = new HashMap<>(); // TODO: convert map into list?
         int counter = 0;
         for (Node node : nodes) {
+            if (node == start) {
+                System.out.println("Start: " + counter);
+            }
             map.put(node, counter++);
         }
         Map<Pair<Integer, Integer>, List<Character>> edges = new HashMap<>();
@@ -104,7 +114,10 @@ public class Dfa {
                 edges.get(pair).add(c == 256 ? '$' : (c == 257 ? '^' : c));
             });
             if (node.isTerminal()) {
-                System.out.println(map.get(node));
+                String termStr = node.getTerminal().stream()
+                        .map(Object::toString)
+                        .collect(Collectors.joining(" "));
+                System.out.println(map.get(node) + " " + termStr);
             }
 //            if (node.isTerminal()) {
 //                System.out.print("T ");
@@ -127,6 +140,7 @@ public class Dfa {
     public void close() {
         allNodes().stream().filter(Node::isTerminal).forEach(terminal -> {
             if (!terminal.getEdges().isEmpty()) {
+//                System.out.println(terminal.getEdges().entrySet().stream().map(Object::toString).collect(Collectors.joining(", ")));
                 throw new AlgoException("Cannot close terminal with edges");
             }
             if (terminal.getTerminal().size() > 1) {
@@ -144,8 +158,15 @@ public class Dfa {
         this.start = start;
     }
 
+    public static Dfa parseDfa(BufferedReader reader) {
+        return parseDfa(reader.lines().toArray(String[]::new), ParsingMode.LETTERS_LIST);
+    }
+
     public static Dfa parseDfa(String s) {
-        String[] lines = s.split("\n");
+        return parseDfa(s.split("\n"), ParsingMode.LETTERS_LIST);
+    }
+
+    public static Dfa parseDfa(String[] lines, ParsingMode mode) {
         String[][] dataLines = new String[lines.length][0];
         for (int i = 0; i < lines.length; i++) {
             dataLines[i] = lines[i].split(" ");
@@ -153,6 +174,11 @@ public class Dfa {
         HashMap<Integer, List<Pair<Character, Integer>>> mp = new HashMap<>();
 
         int i = 0;
+        Integer start = null;
+        if (dataLines[0][0].equals("s")) {
+            start = Integer.parseInt(dataLines[0][1]);
+            i++;
+        }
         Map<Integer, Integer> terminalIds = new HashMap<>();
         while (dataLines[i].length == 2) {
             terminalIds.put(Integer.parseInt(dataLines[i][0]), Integer.parseInt(dataLines[i][1]));
@@ -193,7 +219,7 @@ public class Dfa {
         });
 
 
-        return new Dfa(nodes.get(0));
+        return new Dfa(nodes.get(start == null ? 0 : start));
     }
 
 

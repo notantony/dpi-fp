@@ -5,6 +5,9 @@ import automaton.dfa.Node;
 import util.Pair;
 
 import java.util.*;
+import java.util.logging.Level;
+import java.util.logging.LogManager;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 public class RecursiveCompressor {
@@ -74,11 +77,15 @@ public class RecursiveCompressor {
         for (int i = 0; i < nodes.size(); i++) {
             assert nodes.get(i).getTerminal().size() <= 1;
             for (int j = 0; j < i; j++) {
-                if (nodes.get(i).isTerminal() && nodes.get(j).isTerminal() &&
-                        !nodes.get(i).getTerminal().equals(nodes.get(j).getTerminal())) {
+                if (nodes.get(i).isTerminal() && nodes.get(j).isTerminal()) {
+                    // TODO: assert? !nodes.get(i).getTerminal().equals(nodes.get(j).getTerminal())
                     distinct[i][j] = 1;
                     queue.add(new Pair<>(i, j));
                 }
+            }
+            if (nodes.get(i).isTerminal()) {
+                distinct[i][i] = 1;
+                queue.add(new Pair<>(i, i));
             }
         }
 
@@ -125,8 +132,8 @@ public class RecursiveCompressor {
     }
 
     private List<Pair<Integer, Integer>> mergePair(int aId, int bId) {
-        assert !nodes.get(aId).isTerminal();
-        assert !nodes.get(bId).isTerminal();
+        assert !nodes.get(aId).isTerminal() : "Found terminal: " + nodes.get(aId).getTerminal();
+        assert !nodes.get(bId).isTerminal() : "Found terminal: " + nodes.get(bId).getTerminal();
         ArrayList<Pair<Integer, Integer>> needsMerge = new ArrayList<>();
         Node a = nodes.get(aId);
         Node b = nodes.get(bId);

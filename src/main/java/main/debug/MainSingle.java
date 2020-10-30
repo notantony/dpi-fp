@@ -1,13 +1,21 @@
-package main;
+package main.debug;
 
 import automaton.algo.compressor.RecursiveCompressor;
-import automaton.algo.independence.IndependenceChecker;
+import automaton.algo.thompson.ThompsonModified;
 import automaton.dfa.Dfa;
 import automaton.nfa.Nfa;
+import main.Main;
+import main.io.Input;
+
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class MainSingle {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
 //        String regex = "/qwe/";
 //        String string = "abdqwe";
 
@@ -24,20 +32,20 @@ public class MainSingle {
 //                "5 5 c\n" +
 //                "5 6 a\n" +
 //                "5 7 b\n";
-        String a = "3 3\n" +
-                "1 1\n" +
-                "4 4\n" +
-                "0 1 a\n" +
-                "0 2 b\n" +
-                "2 4 b\n" +
-                "0 3 c\n";
-        Dfa dfa = Dfa.parseDfa(a);
+//        String a = "3 3\n" +
+//                "1 1\n" +
+//                "4 4\n" +
+//                "0 1 a\n" +
+//                "0 2 b\n" +
+//                "2 4 b\n" +
+//                "0 3 c\n";
+//        Dfa dfa = Dfa.parseDfa(a);
 
 //        String a = "/(^Contact\\x3A\\s+[^\\r\\n\\x3C]*\\x3C[^\\r\\n\\x3E]*?[\\x20\\x09]).*/Hsmi";
 //        Dfa dfa = Main.buildDfa(a);
 
-        new RecursiveCompressor().compress(dfa);
-        System.out.println(dfa.nodesCount());
+
+
 
 //        String a = "1\n" +
 //                "0 1 q\n" +

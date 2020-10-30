@@ -61,29 +61,29 @@ public class GroupsMetric {
                 .orElse(0);
         System.out.println("Max-of-single: " + max);
 
-        Dfa dfaSingleMin = minimizeHopcroft(convert(Nfa.union(nfasSingle)));
-        System.out.println("Single-terminal-minimized: " + dfaSingleMin.nodesCount());
+//        Dfa dfaSingleMin = minimizeHopcroft(convert(Nfa.union(nfasSingle)));
+//        System.out.println("Single-terminal-minimized: " + dfaSingleMin.nodesCount());
 
-        Dfa combined = convert(Nfa.union(nfas));
-        System.out.println("Combined: " + combined.nodesCount());
-        Dfa dfaMin = minimizeHopcroft(combined);
-        System.out.println("Minimized: " + dfaMin.nodesCount());
+//        Dfa combined = convert(Nfa.union(nfas));
+//        System.out.println("Combined: " + combined.nodesCount());
+//        Dfa dfaMin = minimizeHopcroft(combined);
+//        System.out.println("Minimized: " + dfaMin.nodesCount());
 
-        System.out.println("Minimized-cut: " + (dfaMin.cutCount() + nfas.size()));
+//        System.out.println("Minimized-cut: " + (dfaMin.cutCount() + nfas.size()));
 
         Dfa modified = new ThompsonModified().run(nfas);
         System.out.println("ThompsonModified: " + modified.nodesCount());
 
-        Dfa modifiedMin = minimizeHopcroft(modified);
-        compress(modifiedMin);
-        System.out.println("ThompsonModifiedHeuristic: " + modifiedMin.nodesCount());
+//        Dfa modifiedMin = minimizeHopcroft(modified);
+        compress(modified);
+        System.out.println("ThompsonModifiedHeuristic: " + modified.nodesCount());
 
-//        Dfa modifiedMinCopy = minimizeHopcroft(modified);
-//        new RecursiveCompressor().compress(modifiedMinCopy);
-//        System.out.println("ThompsonModifiedRecursive: " + modifiedMinCopy.nodesCount());
+        new RecursiveCompressor().compress(modified);
+        System.out.println("HeuristicThenRecursive: " + modified.nodesCount());
 
-//        new RecursiveCompressor().compress(modifiedMin);
-//        System.out.println("ComHpressThenRecursive: " + modifiedMin.nodesCount());
+        Dfa modifiedCopy = new ThompsonModified().run(nfas);
+        new RecursiveCompressor().compress(modifiedCopy);
+        System.out.println("ThompsonModifiedRecursive: " + modifiedCopy.nodesCount());
 
 //        modifiedMinCopy.print();
 
