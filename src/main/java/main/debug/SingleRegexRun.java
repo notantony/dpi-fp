@@ -22,12 +22,22 @@ public class SingleRegexRun {
             nfa.close(i++);
         }
 
-        Dfa result = new ThompsonModified().run(nfas);
-        new RecursiveCompressor().compress(result);
-        System.out.println(result.nodesCount());
+        Dfa dfa = new ThompsonModified().run(nfas);
+        new RecursiveCompressor().compress(dfa);
+        System.out.println(dfa.nodesCount());
 
-        Dfa result2 = new ThompsonModified().run(nfas);
-        Main.compress(result2);
-        System.out.println(result2.nodesCount());
+        new RecursiveCompressor().compress(dfa);
+        System.out.println(dfa.nodesCount());
+
+        dfa.print();
+
+        Main.compress(dfa);
+        System.out.println(dfa.nodesCount());
+
+        dfa.print();
+
+//        Dfa result2 = new ThompsonModified().run(nfas);
+//        Main.compress(result2);
+//        System.out.println(result2.nodesCount());
     }
 }

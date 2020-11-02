@@ -75,18 +75,21 @@ public class RecursiveCompressor {
         Queue<Pair<Integer, Integer>> queue = new ArrayDeque<>();
 
         for (int i = 0; i < nodes.size(); i++) {
-            assert nodes.get(i).getTerminal().size() <= 1;
+            if (!nodes.get(i).isTerminal()) {
+                continue;
+            }
+            assert nodes.get(i).getTerminal().size() == 1;
             for (int j = 0; j < i; j++) {
                 if (nodes.get(i).isTerminal() && nodes.get(j).isTerminal()) {
-                    // TODO: assert? !nodes.get(i).getTerminal().equals(nodes.get(j).getTerminal())
+                    assert !nodes.get(i).getTerminal().equals(nodes.get(j).getTerminal());
                     distinct[i][j] = 1;
                     queue.add(new Pair<>(i, j));
                 }
             }
-            if (nodes.get(i).isTerminal()) {
-                distinct[i][i] = 1;
-                queue.add(new Pair<>(i, i));
-            }
+//            if (nodes.get(i).isTerminal()) {
+//                distinct[i][i] = 1;
+//                queue.add(new Pair<>(i, i));
+//            }
         }
 
         HashMap<Character, HashSet<Integer>>[] incident = new HashMap[nodes.size()];

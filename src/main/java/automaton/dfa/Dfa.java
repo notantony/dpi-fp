@@ -101,11 +101,19 @@ public class Dfa {
         Map<Node, Integer> map = new HashMap<>(); // TODO: convert map into list?
         int counter = 0;
         for (Node node : nodes) {
-            if (node == start) {
-                System.out.println("Start: " + counter);
-            }
             map.put(node, counter++);
         }
+        print(map);
+    }
+
+    public void print(Map<Node, Integer> map) { // TODO: strings mapping?
+        Collection<Node> nodes = allNodes();
+        for (Node node : nodes) {
+            if (node == start) {
+                System.out.println("Start: " + map.get(node));
+            }
+        }
+
         Map<Pair<Integer, Integer>, List<Character>> edges = new HashMap<>();
         nodes.forEach(node -> {
             node.getEdges().forEach((c, target) -> {
@@ -140,8 +148,10 @@ public class Dfa {
     public void close() {
         allNodes().stream().filter(Node::isTerminal).forEach(terminal -> {
             if (!terminal.getEdges().isEmpty()) {
-//                System.out.println(terminal.getEdges().entrySet().stream().map(Object::toString).collect(Collectors.joining(", ")));
-                throw new AlgoException("Cannot close terminal with edges");
+                if (terminal.getEdges().values().stream().anyMatch(target -> target != terminal) ||
+                        terminal.getEdges().size() != Transitions.MAX_CHAR + 1) {
+                    throw new AlgoException("Cannot close terminal with edges");
+                }
             }
             if (terminal.getTerminal().size() > 1) {
                 throw new AlgoException("Cannot close multi-terminal");
