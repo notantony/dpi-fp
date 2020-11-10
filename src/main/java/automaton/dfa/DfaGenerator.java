@@ -5,10 +5,16 @@ import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 public class DfaGenerator {
+//    private final int MAX_NODES = 20;
+//    private final double EDGE_PROB = 0.2;
+//    private final char ALPHA_BORDER = 'c';
+//    private final double TERMINAL_PROB = 0.33;
+
     private final int MAX_NODES = 20;
-    private final double EDGE_PROB = 0.2;
-    private final char ALPHA_BORDER = 'c';
+    private final double EDGE_PROB = 0.4;
+    private final char ALPHA_BORDER = 'f';
     private final double TERMINAL_PROB = 0.33;
+
     private Random random;
     private int nNodes;
     private ArrayList<Node> nodes;

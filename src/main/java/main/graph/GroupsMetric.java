@@ -84,6 +84,9 @@ public class GroupsMetric {
         Dfa modifiedCopy = new ThompsonModified().run(nfas);
         new RecursiveCompressor().compress(modifiedCopy);
         System.out.println("ThompsonModifiedRecursive: " + modifiedCopy.nodesCount());
+        int x = modifiedCopy.nodesCount();
+        compress(modifiedCopy);
+        assert x == modifiedCopy.nodesCount();
 
 //        modifiedMinCopy.print();
 
