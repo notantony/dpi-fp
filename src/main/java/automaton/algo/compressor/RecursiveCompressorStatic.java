@@ -6,8 +6,11 @@ import automaton.transition.Transitions;
 import main.io.Static;
 import util.IntMonitor;
 import util.Pair;
+import util.Utils;
 
 import java.util.*;
+import java.util.concurrent.*;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
@@ -16,11 +19,11 @@ public class RecursiveCompressorStatic {
     private Map<Node, Integer> index;
     private ArrayList<Node> nodes;
     private byte[][] distinct; // 1 <-> dependent, 0 <-> maybe independent
-    private MergeDsu mergeQueue;
 
     private List<HashMap<Character, Set<Integer>>> incident;
 
-    private Set<Pair<Node, Node>> transferDependent;
+//    private Set<Pair<Node, Node>> transferDependent;
+    private Map<Integer, Node> transferNodes;
 
     private IntMonitor __debugSizeMonitor = new IntMonitor("Nodes remaining", 100, IntMonitor.Mode.LINEAR);
 
@@ -39,6 +42,7 @@ public class RecursiveCompressorStatic {
     }
 
     private List<Pair<Integer, Integer>> buildMatrix() {
+        List<Node> oldNodes = nodes;
         nodes = new ArrayList<>(dfa.allNodes());
         index = new HashMap<>();
         int counter = 0;
@@ -85,12 +89,27 @@ public class RecursiveCompressorStatic {
                 }
             }
         } else {
-            distinct = new byte[nodes.size()][nodes.size()];
+            byte[][] newDistinct = new byte[nodes.size()][nodes.size()];
+            for (int i = 0; i < distinct.length; i++) {
+                Node nodeI = transferNodes.containsKey(i) ? transferNodes.get(i) : oldNodes.get(i);
+                Integer targetI = index.get(nodeI);
+                assert targetI != null;
+                for (int j = 0; j < i; j++) {
+                    Node nodeJ = transferNodes.containsKey(j) ? transferNodes.get(j) : oldNodes.get(j);
+                    Integer targetJ = index.get(nodeJ);
+                    assert targetJ != null;
+                    if (distinct[i][j] == 1) {
+                        newDistinct[targetI][targetJ] = 1;
+                        newDistinct[targetJ][targetI] = 1;
+                    }
+                }
+            }
+            distinct = newDistinct;
+            watchList.clear();
             for (int i = 0; i < nodes.size(); i++) {
                 for (int j = 0; j < i; j++) {
-                    if (transferDependent.contains(new Pair<>(nodes.get(i), nodes.get(j))) ||
-                            transferDependent.contains(new Pair<>(nodes.get(j), nodes.get(i)))) {
-                        setDependent(i, j);
+                    if (distinct[i][j] == 1) {
+                        queue.add(new Pair<>(i, j));
                     } else {
                         watchList.add(new Pair<>(i, j));
                     }
@@ -139,14 +158,13 @@ public class RecursiveCompressorStatic {
 
     }
 
-    private boolean runMergeAt(int i, int j) {
-        mergeQueue = new MergeDsu();
+    private MergeDsu runMergeAt(int i, int j) {
+        MergeDsu mergeQueue = new MergeDsu();
         mergeQueue.insertPair(i, j);
         if (!mergeQueue.processQueue()) {
-            return false;
+            return null;
         }
-        mergeQueue.applyPartition();
-        return true;
+        return mergeQueue;
     }
 
     private void traverseDependence(Queue<Pair<Integer, Integer>> queue) {
@@ -169,23 +187,105 @@ public class RecursiveCompressorStatic {
         }
     }
 
+    private AtomicReference<Pair<Integer, Integer>> foundPair;
+    volatile MergeDsu dsu;
+
     private boolean tryShrink(List<Pair<Integer, Integer>> watchList) {
-        for (Pair<Integer, Integer> p : watchList) {
-            int i = p.getFirst();
-            int j = p.getSecond();
-            if (!areDependent(i, j)) {
-                boolean success = runMergeAt(i, j);
-                if (!success) {
-                    setDependent(i, j);
-                    Queue<Pair<Integer, Integer>> queue = new ArrayDeque<>();
-                    queue.add(new Pair<>(i, j));
-                    traverseDependence(queue);
-                } else {
-                    return true;
+        if (watchList.size() == 0) {
+            return false;
+        }
+
+        foundPair = new AtomicReference<>(null);
+
+        ArrayBlockingQueue<Pair<Integer, Integer>> processingQueue = new ArrayBlockingQueue<>(watchList.size());
+        LinkedBlockingQueue<Pair<Integer, Integer>> badPairs = new LinkedBlockingQueue<>();
+        processingQueue.addAll(watchList);
+        watchList.clear();
+
+        Runnable tryMergeTask = new Runnable() {
+            @Override
+            public void run() {
+//                System.err.println("Started traverse task?");
+                while (foundPair.get() == null) {
+                    Pair<Integer, Integer> pair;
+                    do {
+                        pair = processingQueue.poll();
+                        if (pair == null) {
+                            return;
+                        }
+                    } while (areDependent(pair.getFirst(), pair.getSecond()));
+                    MergeDsu success = runMergeAt(pair.getFirst(), pair.getSecond());
+                    if (success != null) {
+                        if (foundPair.compareAndSet(null, pair)) {
+                            dsu = success;
+                        }
+                    } else {
+                        badPairs.add(pair);
+                    }
                 }
             }
+        };
+
+        Runnable traverseTask = new Runnable() {
+            @Override
+            public void run() {
+                boolean shutdown;
+                Pair<Integer, Integer> badPair;
+                while (true) {
+                    try {
+                        badPair = badPairs.poll(Long.MAX_VALUE, TimeUnit.DAYS);
+                    } catch (InterruptedException e) {
+                        return;
+                    }
+                    setDependent(badPair.getFirst(), badPair.getSecond());
+                    Queue<Pair<Integer, Integer>> tmpQueue = new ArrayDeque<>();
+                    tmpQueue.add(badPair);
+                    traverseDependence(tmpQueue);
+                }
+            }
+        };
+
+
+        int N_TASKS = 16;
+        ExecutorService executor = Executors.newFixedThreadPool(N_TASKS);
+        Future<?> traverseFuture = executor.submit(traverseTask);
+        for (int i = 0; i < N_TASKS - 1; i++) {
+//            System.err.println("i-th task started: " + i);
+            executor.submit(tryMergeTask);
         }
-        return false;
+
+        try {
+            traverseFuture.cancel(true);
+            executor.shutdown();
+            executor.awaitTermination(Long.MAX_VALUE, TimeUnit.DAYS);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
+//        assert badPairs.isEmpty();
+        Pair<Integer, Integer> result = foundPair.get();
+        if (result == null) {
+            return false;
+        }
+        dsu.applyPartition();
+        return true;
+
+//        for (Pair<Integer, Integer> p : watchList) {
+//            int i = p.getFirst();
+//            int j = p.getSecond();
+//            if (!areDependent(i, j)) {
+//                boolean success = runMergeAt(i, j);
+//                if (!success) {
+//                    setDependent(i, j);
+//                    Queue<Pair<Integer, Integer>> queue = new ArrayDeque<>();
+//                    queue.add(new Pair<>(i, j));
+//                    traverseDependence(queue);
+//                } else {
+//                    return true;
+//                }
+//            }
+//        }
+//        return false;
     }
 
     public void compress(Dfa dfa) {
@@ -195,10 +295,14 @@ public class RecursiveCompressorStatic {
         boolean updated = true;
         while (updated) {
             List<Pair<Integer, Integer>> watchList = buildMatrix();
-            __debugSizeMonitor.update(dfa.nodesCount());
+            if (__debugSizeMonitor.update(dfa.nodesCount())) {
+                Utils.writeTo("./output/graph/checkpoints/at" + dfa.nodesCount() + ".txt",
+                        dfa.print(Dfa.PrintingMode.SERIALIZE));
+            }
             if (Static.DEBUG_RUN) dfa.print(index);
             if (Static.DEBUG_RUN) printDependence();
-            if (Static.DEBUG_RUN) System.out.println(watchList.stream().map(Pair::toString).collect(Collectors.joining(" ")));
+            if (Static.DEBUG_RUN)
+                System.out.println(watchList.stream().map(Pair::toString).collect(Collectors.joining(" ")));
             updated = tryShrink(watchList);
         }
     }
@@ -300,16 +404,27 @@ public class RecursiveCompressorStatic {
                 dfa.setStart(nodes.get(componentsIndex.get(getComponent(startId))));
             }
 
-            transferDependent = new HashSet<>(); // TODO: streams
-            for (int i = 0; i < startingSize; i++) {
-                for (int j = 0; j < i; j++) {
-                    if (areDependent(i, j)) {
-                        Node a = inComponent(i) ? nodes.get(componentsIndex.get(getComponent(i))) : nodes.get(i);
-                        Node b = inComponent(j) ? nodes.get(componentsIndex.get(getComponent(j))) : nodes.get(j);
-                        transferDependent.add(new Pair<>(a, b));
-                    }
+//            transferDependent = new HashSet<>(); // TODO: streams
+//            for (int i = 0; i < startingSize; i++) {
+//                for (int j = 0; j < i; j++) {
+//                    if (areDependent(i, j)) {
+//                        Node a = inComponent(i) ? nodes.get(componentsIndex.get(getComponent(i))) : nodes.get(i);
+//                        Node b = inComponent(j) ? nodes.get(componentsIndex.get(getComponent(j))) : nodes.get(j);
+//                        transferDependent.add(new Pair<>(a, b));
+//                    }
+//                }
+//            }
+            transferNodes = new HashMap<>();
+            for (Component component : components) {
+                Node componentNode = nodes.get(componentsIndex.get(component));
+                for (int nodeId : component.entries) {
+                    transferNodes.put(nodeId, componentNode);
                 }
             }
+
+//            System.out.println("tDep: " + transferDependent.stream()
+//                    .map(p -> new Pair<>(index.get(p.getFirst()), index.get(p.getSecond())))
+//                    .map(Pair::toString).collect(Collectors.joining(" ")));
 
 //            // TODO: anything more to remove?
 //            // TODO: remove mirror dependent
@@ -349,48 +464,6 @@ public class RecursiveCompressorStatic {
 //            return dfa;
         }
 
-//        private void processPair(int aId, int bId) {
-//            Set<Node> aComponent = traverse(aId);
-//            // TODO: non-merged
-//            // TODO: update distinct
-//            // TODO: remove asserts
-//            Node a = nodes.get(aId);
-//            Node b = nodes.get(bId);
-//            Map<Character, Node> aEdges = a.getEdges();
-//            Map<Character, Node> bEdges = b.getEdges();
-//
-//            aEdges.forEach((c, target) -> {
-//                if (bEdges.containsKey(c)) {
-//                    Node conflict = bEdges.get(c);
-//                    int conflictId = index.get(conflict);
-//                    queue.add(new Pair<>(index.get(target), conflictId));
-//                }
-//                if (target == a) {
-//                    b.addEdge(c, b);
-//                } else {
-//                    boolean removed = mp.get(target).remove(new Pair<>(c, a));
-//                    assert removed;
-//                    mp.get(target).add(new Pair<>(c, b));
-//                    b.addEdge(c, target);
-//                }
-//            });
-//            for (Pair<Character, Node> pair : mp.get(a)) {
-//                pair.getSecond().addEdge(pair.getFirst(), b);
-//            }
-//            mp.get(b).addAll(mp.get(a).stream().map(pair -> {
-//                if (pair.getSecond() == a) {
-//                    return new Pair<>(pair.getFirst(), b);
-//                }
-//                return pair;
-//            }).collect(Collectors.toSet()));
-//
-//            nodes.set(aId, null);
-//            if (dfa.getStart() == a) {
-//                dfa.setStart(b);
-//            }
-//            return needsMerge;
-//        }
-
         private boolean processQueue() {
             while (!queue.isEmpty()) {
                 Pair<Integer, Integer> cur = queue.remove();
@@ -406,48 +479,10 @@ public class RecursiveCompressorStatic {
         public void insertPair(int i, int j) {
             if (Static.DEBUG_RUN) Logger.getGlobal().info("InsertPair:" + i + " " + j);
             if (i == j || getComponent(i) == getComponent(j)) {
-//                return true;
                 return;
             }
             queue.add(new Pair<>(i, j));
-//            mergeSet.stream()
-//                    .filter(id -> id != bId)
-//                    .flatMap(id -> mergePair(id, bId).stream())
-//                    .peek(pair -> {
-//                        if (mergeSet.contains(pair.getFirst())) {
-//                            pair.setFirst(bId);
-//                        }
-//                        if (mergeSet.contains(pair.getSecond())) {
-//                            pair.setSecond(bId);
-//                        }
-//                    })
-//                    .distinct()
-//                    .forEach(pair -> mergeQueue.insertPair(pair.getFirst(), pair.getSecond()));
-//            graph[i].add(j);
-//            graph[j].add(i);
-//            involved.add(i);
-//            involved.add(j);
         }
-
-
-//        private void traverseImpl(int c, HashSet<Integer> visited) {
-//            visited.add(c);
-//            graph[c].forEach(x -> {
-//                if (!visited.contains(x)) {
-//                    traverseImpl(c, visited);
-//                }
-//            });
-//        }
-//
-//        private HashSet<Integer> traverse(int c) {
-//            HashSet<Integer> visited = new HashSet<>();
-//            traverseImpl(c, visited);
-//            return visited;
-//        }
-
-//        public boolean isEmpty() {
-//            return involved.isEmpty();
-//        }
 
         private class Component {
             private Component head;
@@ -455,6 +490,7 @@ public class RecursiveCompressorStatic {
             private Map<Character, Integer> mergedEdges;
 
             public Component(int n) {
+                ;
                 assert nodes.get(n) != null : n + " " + nodes.size();
                 entries = new HashSet<>();
                 entries.add(n);
@@ -496,7 +532,7 @@ public class RecursiveCompressorStatic {
                     Integer otherTarget = entry.getValue();
                     if (mergedEdges.containsKey(c)) {
                         Integer target = mergedEdges.get(c);
-                        mergeQueue.insertPair(otherTarget, target);
+                        insertPair(otherTarget, target);
                     } else {
                         mergedEdges.put(c, otherTarget);
                     }

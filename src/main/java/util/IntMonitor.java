@@ -19,14 +19,17 @@ public class IntMonitor {
         this.mode = mode;
     }
 
-    public void update(int current) {
+    public boolean update(int current) {
         if (last == null) {
             Logger.getGlobal().info(label + ": " + current);
             last = current;
+            return true;
         }
-        if (Math.abs(last - current) >  + step) {
+        if (Math.abs(last - current) >= step) {
             last = current;
             Logger.getGlobal().info(label + ": " + current);
+            return true;
         }
+        return false;
     }
 }

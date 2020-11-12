@@ -19,7 +19,6 @@ public class SingleDfaRun {
         Main.compress(dfa);
         assert x == dfa.nodesCount();
 
-
         Dfa dfa2 = Dfa.parseDfa(Files.newBufferedReader(Paths.get("./input/single/single_dfa.txt")));
         Main.compress(dfa2);
         System.out.println(dfa2.nodesCount());

@@ -1,6 +1,7 @@
 package main.graph;
 
 import automaton.algo.compressor.RecursiveCompressorDynamic;
+import automaton.algo.compressor.RecursiveCompressorStatic;
 import automaton.algo.thompson.ThompsonModified;
 import automaton.dfa.Dfa;
 import automaton.nfa.Nfa;
@@ -18,6 +19,7 @@ import static main.Main.compress;
 
 public class DeserializeMetric {
     public static void main(String[] args) throws IOException {
+//        Dfa modified = Dfa.parseDfa(Files.newBufferedReader(Paths.get("./output/graph/result.txt")), Dfa.ParsingMode.DESERIALIZE);
         Dfa modified = Dfa.parseDfa(Files.newBufferedReader(Paths.get("./output/graph/dfa_minimized_610.txt")), Dfa.ParsingMode.DESERIALIZE);
 
 //        Dfa dfaSingleMin = minimizeHopcroft(convert(Nfa.union(nfasSingle)));
@@ -38,8 +40,9 @@ public class DeserializeMetric {
 
 //        Dfa modifiedMin = minimizeHopcroft(modified);
 
+//        Dfa modifiedCopy = Dfa.parseDfa(Files.newBufferedReader(Paths.get("./output/graph/result.txt")), Dfa.ParsingMode.DESERIALIZE);
         Dfa modifiedCopy = Dfa.parseDfa(Files.newBufferedReader(Paths.get("./output/graph/dfa_minimized_610.txt")), Dfa.ParsingMode.DESERIALIZE);
-        new RecursiveCompressorDynamic().compress(modifiedCopy);
+        new RecursiveCompressorStatic().compress(modifiedCopy);
         System.out.println("ThompsonModifiedRecursive: " + modifiedCopy.nodesCount());
         int x = modifiedCopy.nodesCount();
         compress(modifiedCopy);
@@ -48,7 +51,7 @@ public class DeserializeMetric {
         compress(modified);
         System.out.println("ThompsonModifiedHeuristic: " + modified.nodesCount());
 
-        new RecursiveCompressorDynamic().compress(modified);
+        new RecursiveCompressorStatic().compress(modified);
         System.out.println("HeuristicThenRecursive: " + modified.nodesCount());
 
 
