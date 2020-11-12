@@ -39,4 +39,11 @@ public class Node {
     public void setEdges(Map<Character, Node> edges) {
         this.edges = edges;
     }
+
+    public void corrupt() {
+        terminal.clear();
+        terminal = null;
+        edges.clear();
+        edges = null;
+    }
 }

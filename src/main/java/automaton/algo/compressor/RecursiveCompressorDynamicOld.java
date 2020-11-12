@@ -2,7 +2,6 @@ package automaton.algo.compressor;
 
 import automaton.dfa.Dfa;
 import automaton.dfa.Node;
-import automaton.transition.Transition;
 import automaton.transition.Transitions;
 import main.io.Static;
 import util.IntMonitor;
@@ -12,7 +11,7 @@ import java.util.*;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
-public class RecursiveCompressor {
+public class RecursiveCompressorDynamicOld {
     private Dfa dfa;
     private Map<Node, Integer> index;
     private ArrayList<Node> nodes;
@@ -21,7 +20,7 @@ public class RecursiveCompressor {
 
     List<HashMap<Character, Set<Integer>>> incident;
     private Set<Integer> nonMerged;
-//    private List<Set<Integer>> dependent;  // TODO: dependent -> independent?
+    private List<Set<Integer>> dependent;  // TODO: dependent -> independent?
 
     private IntMonitor __debugSizeMonitor = new IntMonitor("Nodes remaining", 100, IntMonitor.Mode.LINEAR);
 
@@ -29,18 +28,15 @@ public class RecursiveCompressor {
 //        if (i < j) {
 //            return areDependent(j, i);
 //        }
-        return distinct[i][j] == 1;
-//        return dependent.get(i).contains(j);
+        return dependent.get(i).contains(j);
     }
 
     private void setDependent(int i, int j) {
 //        if (i < j) {
 //        }
 //        setDependent(j, i);
-//        dependent.get(i).add(j);
-//        dependent.get(j).add(i);
-        distinct[i][j] = 1;
-        distinct[j][i] = 1;
+        dependent.get(i).add(j);
+        dependent.get(j).add(i);
     }
 
     private void buildMatrix() {
@@ -75,13 +71,12 @@ public class RecursiveCompressor {
             }
         }
 
-//        dependent = new ArrayList<>();
-//        for (int i = 0; i < nodes.size(); i++) {
-//            dependent.add(new HashSet<>());
-//        }
+        dependent = new ArrayList<>();
+        for (int i = 0; i < nodes.size(); i++) {
+            dependent.add(new HashSet<>());
+        }
 
-        distinct = new byte[nodes.size()][nodes.size()];
-
+//        distinct = new byte[nodes.size()][nodes.size()];
         Queue<Pair<Integer, Integer>> queue = new ArrayDeque<>();
 
         for (int i = 0; i < nodes.size(); i++) {
@@ -375,7 +370,7 @@ public class RecursiveCompressor {
                 index.put(newNode, newNodeId);
                 nonMerged.add(newNodeId);
                 incident.add(new HashMap<>()); // TODO: do not need?
-//                dependent.add(new HashSet<>());
+                dependent.add(new HashSet<>());
 
                 componentsIndex.put(component, newNodeId);
             }
@@ -425,13 +420,13 @@ public class RecursiveCompressor {
                 }
             }
 
-//            for (Component component : components) { // Update dependent
-//                int componentId = componentsIndex.get(component);
-//                component.entries.stream()
-//                        .flatMap(id -> dependent.get(id).stream())
-//                        .distinct()
-//                        .forEach(id -> setDependent(componentId, id));
-//            }
+            for (Component component : components) { // Update dependent
+                int componentId = componentsIndex.get(component);
+                component.entries.stream()
+                        .flatMap(id -> dependent.get(id).stream())
+                        .distinct()
+                        .forEach(id -> setDependent(componentId, id));
+            }
 
             int startId = index.get(dfa.getStart());
             if (inComponent(startId)) {
@@ -452,8 +447,8 @@ public class RecursiveCompressor {
                     boolean __nonMergedRemoved = nonMerged.remove(id);
                     assert __nonMergedRemoved;
 
-//                    Object __dependentPrevious = dependent.set(id, null);
-//                    assert __dependentPrevious != null;
+                    Object __dependentPrevious = dependent.set(id, null);
+                    assert __dependentPrevious != null;
 
                     Object __nodesPrevious = nodes.set(id, null);
                     assert __nodesPrevious != null;

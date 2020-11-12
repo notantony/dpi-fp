@@ -16,8 +16,12 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class Dfa {
-    private enum ParsingMode {
-        LETTERS_LIST, SINGLE_EDGE
+    public enum ParsingMode {
+        LETTERS_LIST, SINGLE_EDGE, DESERIALIZE
+    }
+
+    public enum PrintingMode {
+        VISUALISE, SERIALIZE
     }
 
     private Node start;
@@ -96,36 +100,56 @@ public class Dfa {
 //                .map(path -> path.distinct().count() > 1).filter(a -> a).count();
     }
 
-    public void print() {
+//    public void print(PrintingMode mode) {
+//        print();
+//    }
+
+    public String print() {
+        return print(PrintingMode.VISUALISE);
+    }
+
+    public String print(PrintingMode mode) {
         Collection<Node> nodes = allNodes();
         Map<Node, Integer> map = new HashMap<>(); // TODO: convert map into list?
         int counter = 0;
         for (Node node : nodes) {
             map.put(node, counter++);
         }
-        print(map);
+        return printImpl(map, mode);
     }
 
-    public void print(Map<Node, Integer> map) { // TODO: strings mapping?
+    public String print(Map<Node, Integer> map) { // TODO: strings mapping?
+        return printImpl(map, PrintingMode.VISUALISE);
+    }
+
+    private String printImpl(Map<Node, Integer> map, PrintingMode mode) {
+        StringBuilder out = new StringBuilder();
         Collection<Node> nodes = allNodes();
         for (Node node : nodes) {
             if (node == start) {
-                System.out.println("Start: " + map.get(node));
+//                System.out.println("s " + map.get(node));
+                out.append("Graph:\n");
+                out.append("s ").append(map.get(node)).append("\n");
             }
         }
 
-        Map<Pair<Integer, Integer>, List<Character>> edges = new HashMap<>();
+        Map<Pair<Integer, Integer>, List<String>> edges = new HashMap<>();
         nodes.forEach(node -> {
             node.getEdges().forEach((c, target) -> {
                 Pair<Integer, Integer> pair = new Pair<>(map.get(node), map.get(target));
                 edges.putIfAbsent(pair, new ArrayList<>());
-                edges.get(pair).add(c == 256 ? '$' : (c == 257 ? '^' : c));
+                if (mode == PrintingMode.VISUALISE) {
+                    edges.get(pair).add("" + (c == 256 ? '$' : (c == 257 ? '^' : c)));
+                } else {
+                    edges.get(pair).add(Integer.toString(c));
+                }
             });
             if (node.isTerminal()) {
                 String termStr = node.getTerminal().stream()
                         .map(Object::toString)
                         .collect(Collectors.joining(" "));
-                System.out.println(map.get(node) + " " + termStr);
+//                System.out.println(map.get(node) + " " + termStr);
+                out.append(map.get(node)).append(" ").append(termStr).append("\n");
             }
 //            if (node.isTerminal()) {
 //                System.out.print("T ");
@@ -134,15 +158,27 @@ public class Dfa {
         });
         edges.forEach((pair, chars) -> {
             String edgeName;
-            if (chars.size() > 95) {
-                edgeName = "r" + chars.size();
+            if (mode == PrintingMode.VISUALISE) {
+                if (chars.size() > 95) {
+                    edgeName = "r" + chars.size();
+                } else {
+                    StringBuilder sb = new StringBuilder();
+                    chars.forEach(sb::append);
+                    edgeName = sb.toString();
+                }
+//                System.out.println(pair.getFirst() + " " + pair.getSecond() + " " + edgeName);
+                out.append(pair.getFirst()).append(" ").append(pair.getSecond()).append(" ").append(edgeName).append("\n");
             } else {
-                StringBuilder sb = new StringBuilder();
-                chars.forEach(sb::append);
-                edgeName = sb.toString();
+                String s = String.join(" ", chars);
+//                System.out.println(pair.getFirst() + " " + pair.getSecond() + " " + s);
+                out.append(pair.getFirst()).append(" ").append(pair.getSecond()).append(" ").append(s).append("\n");
             }
-            System.out.println(pair.getFirst() + " " + pair.getSecond() + " " + edgeName);
         });
+        if (mode == PrintingMode.VISUALISE) {
+            System.out.print(out.toString());
+            return null;
+        }
+        return out.toString();
     }
 
     public void close() {
@@ -169,7 +205,11 @@ public class Dfa {
     }
 
     public static Dfa parseDfa(BufferedReader reader) {
-        return parseDfa(reader.lines().toArray(String[]::new), ParsingMode.LETTERS_LIST);
+        return parseDfa(reader, ParsingMode.LETTERS_LIST);
+    }
+
+    public static Dfa parseDfa(BufferedReader reader, ParsingMode mode) {
+        return parseDfa(reader.lines().toArray(String[]::new), mode);
     }
 
     public static Dfa parseDfa(String s) {
@@ -200,9 +240,15 @@ public class Dfa {
             int a = Integer.parseInt(dataLine[0]);
             int b = Integer.parseInt(dataLine[1]);
             mp.putIfAbsent(a, new ArrayList<>());
-            for (char c : dataLine[2].toCharArray()) {
-                assert c < Transitions.MAX_CHAR : "" + c;
-                mp.get(a).add(new Pair<>(c, b));
+            if (mode == ParsingMode.LETTERS_LIST) {
+                for (char c : dataLine[2].toCharArray()) {
+                    assert c < Transitions.MAX_CHAR : "" + c;
+                    mp.get(a).add(new Pair<>(c, b));
+                }
+            } else {
+                for (int j = 2; j < dataLine.length; j++) {
+                    mp.get(a).add(new Pair<>((char) Integer.parseInt(dataLine[j]), b));
+                }
             }
         }
         ArrayList<Node> nodes = new ArrayList<>();
@@ -231,6 +277,4 @@ public class Dfa {
 
         return new Dfa(nodes.get(start == null ? 0 : start));
     }
-
-
 }

@@ -2,17 +2,17 @@ package automaton.algo.compressor;
 
 import automaton.dfa.Dfa;
 import automaton.dfa.Node;
-import automaton.transition.Transition;
 import automaton.transition.Transitions;
 import main.io.Static;
 import util.IntMonitor;
 import util.Pair;
+import util.Utils;
 
 import java.util.*;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
-public class RecursiveCompressor {
+public class RecursiveCompressorDynamic {
     private Dfa dfa;
     private Map<Node, Integer> index;
     private ArrayList<Node> nodes;
@@ -26,21 +26,27 @@ public class RecursiveCompressor {
     private IntMonitor __debugSizeMonitor = new IntMonitor("Nodes remaining", 100, IntMonitor.Mode.LINEAR);
 
     private boolean areDependent(int i, int j) {
-//        if (i < j) {
-//            return areDependent(j, i);
-//        }
+        if (i < j) {
+            return areDependent(j, i);
+        }
         return distinct[i][j] == 1;
 //        return dependent.get(i).contains(j);
     }
 
     private void setDependent(int i, int j) {
-//        if (i < j) {
-//        }
-//        setDependent(j, i);
+        if (i < j) {
+            setDependent(j, i);
+        }
 //        dependent.get(i).add(j);
 //        dependent.get(j).add(i);
         distinct[i][j] = 1;
-        distinct[j][i] = 1;
+//        distinct[j][i] = 1;
+    }
+
+    private void clearDependence(int i) { // Non-merged only
+        for (int id : nonMerged) {
+            distinct[Integer.max(id, i)][Integer.min(id, i)] = 0;
+        }
     }
 
     private void buildMatrix() {
@@ -75,11 +81,6 @@ public class RecursiveCompressor {
             }
         }
 
-//        dependent = new ArrayList<>();
-//        for (int i = 0; i < nodes.size(); i++) {
-//            dependent.add(new HashSet<>());
-//        }
-
         distinct = new byte[nodes.size()][nodes.size()];
 
         Queue<Pair<Integer, Integer>> queue = new ArrayDeque<>();
@@ -92,7 +93,6 @@ public class RecursiveCompressor {
             for (int j = 0; j < i; j++) {
                 if (nodes.get(i).isTerminal() && nodes.get(j).isTerminal()) {
                     assert !nodes.get(i).getTerminal().equals(nodes.get(j).getTerminal());
-//                    distinct[i][j] = 1;
                     setDependent(i, j);
                     queue.add(new Pair<>(i, j));
                 }
@@ -109,6 +109,23 @@ public class RecursiveCompressor {
                 incident.get(finalI).putIfAbsent(pair.getFirst(), new HashSet<>());
                 incident.get(finalI).get(pair.getFirst()).add(index.get(pair.getSecond()));
             });
+        }
+
+        traverseDependence(queue);
+    }
+
+    private void updateMatrix() {
+        Queue<Pair<Integer, Integer>> queue = new ArrayDeque<>();
+
+        List<Integer> nonMergedList = new ArrayList<>(nonMerged);
+        for (int i = 0; i < nonMergedList.size(); i++) {
+            for (int j = 0; j < i; j++) {
+                int realI = nonMergedList.get(i);
+                int realJ = nonMergedList.get(j);
+                if (areDependent(realI, realJ)) {
+                    queue.add(new Pair<>(realI, realJ));
+                }
+            }
         }
 
         traverseDependence(queue);
@@ -136,131 +153,65 @@ public class RecursiveCompressor {
             }
         }
         System.out.println();
-
     }
 
-//    private void buildMatrixFast() {
-//        nodes = new ArrayList<>(dfa.allNodes());
-//        index = new HashMap<>();
-//        int counter = 0;
-//        for (Node node : nodes) {
-//            index.put(node, counter);
-//            counter++;
-//        }
-//
-//        nonMerged = new HashSet<>(nodes.size());
-//        for (int i = 0; i < nodes.size(); i++) {
-//            nonMerged.add(i);
-//        }
-//
-//        mp = new HashMap<>();
-//        for (Node node : nodes) {
-//            mp.put(node, new HashSet<>());
-//        }
-//        for (Node node : nodes) {
-//            node.getEdges().forEach((c, target) -> {
-//                mp.get(target).add(new Pair<>(c, node));
-//            });
-//        }
-//
-//        dependent = new ArrayList<>();
-//        for (int i = 0; i < nodes.size(); i++) {
-//            dependent.add(new HashSet<>());
-//        }
-//
-////        distinct = new byte[nodes.size()][nodes.size()];
-//        Queue<Pair<Integer, Integer>> queue = new ArrayDeque<>();
-//
-//        for (int i = 0; i < nodes.size(); i++) {
-//            if (!nodes.get(i).isTerminal()) {
-//                continue;
-//            }
-//            assert nodes.get(i).getTerminal().size() == 1;
-//            for (int j = 0; j < i; j++) {
-//                if (nodes.get(i).isTerminal() && nodes.get(j).isTerminal()) {
-//                    assert !nodes.get(i).getTerminal().equals(nodes.get(j).getTerminal());
-////                    distinct[i][j] = 1;
-//                    setDependent(i, j);
-//                    queue.add(new Pair<>(i, j));
-//                }
-//            }
-//        }
-//
-//        incident = new ArrayList<>();
-//        for (int i = 0; i < nodes.size(); i++) {
-//            incident.add(new HashMap<>());
-//        }
-//        for (int i = 0; i < nodes.size(); i++) {
-//            int finalI = i;
-//            mp.get(nodes.get(i)).forEach(pair -> {
-//                incident.get(finalI).putIfAbsent(pair.getFirst(), new HashSet<>());
-//                incident.get(finalI).get(pair.getFirst()).add(index.get(pair.getSecond()));
-//            });
-//        }
-//
-//        traverseDependence(queue);
-//    }
+    private void printInfo() {
+        System.out.println("Total " + nodes.size() + " nodes:");
+        for (int i = 0; i < nodes.size(); i++) {
+            System.out.print(Utils.objCode(nodes.get(i)) + "/" + i + ": ");
+            Node node = nodes.get(i);
+            if (node == null) {
+                System.out.print("null");
+            } else {
+                Map<Character, Node> edges = node.getEdges();
+                if (edges == null) {
+                    System.out.print("null");
+                } else {
+                    if (edges.size() > 10) {
+                        System.out.print("r" + edges.size() + " ");
+                    }
+                    edges.forEach((c, target) -> {
+                        if (c >= 'a' && c <= 'f') {
+                            System.out.print("<" + c + ", " + Utils.objCode(target) + "/" + index.get(target) + "> ");
+                        }
+                    });
+                }
+            }
+            System.out.println();
+        }
+        System.out.println("Incident:");
+        for (int i = 0; i < nodes.size(); i++) {
+            System.out.println(i + ":");
+            if (incident.get(i) == null) {
+                System.out.println("    null");
+            } else {
+                for (char c = 'a'; c <= 'f'; c++) {
+                    Set<Integer> incidentCurrent = incident.get(i).get(c);
+                    if (incidentCurrent != null) {
+                        System.out.print("    " + c + ": <");
+                        incidentCurrent.forEach(id -> System.out.print(id + " "));
+                        System.out.println(">");
+                    }
+                }
+            }
+        }
+        System.out.print("Non-merged: ");
+        nonMerged.forEach(id -> System.out.print(id + " "));
+        System.out.println();
+        System.out.println("Start: " + Utils.objCode(dfa.getStart()) + " / " + index.get(dfa.getStart()));
 
-//    private List<Pair<Integer, Integer>> mergePair(int aId, int bId) {
-//        // TODO: non-merged
-//        // TODO: update distinct
-//        // TODO: remove asserts
-//        assert !nodes.get(aId).isTerminal() : "Found terminal: " + nodes.get(aId).getTerminal();
-//        assert !nodes.get(bId).isTerminal() : "Found terminal: " + nodes.get(bId).getTerminal();
-//        ArrayList<Pair<Integer, Integer>> needsMerge = new ArrayList<>();
-//        Node a = nodes.get(aId);
-//        Node b = nodes.get(bId);
-//        Map<Character, Node> aEdges = a.getEdges();
-//        Map<Character, Node> bEdges = b.getEdges();
-//
-//        aEdges.forEach((c, target) -> {
-//            if (bEdges.containsKey(c)) {
-//                Node conflict = bEdges.get(c);
-//                int conflictId = index.get(conflict);
-//                needsMerge.add(new Pair<>(index.get(target), conflictId));
-//            }
-//            if (target == a) {
-//                b.addEdge(c, b);
-//            } else {
-//                boolean removed = mp.get(target).remove(new Pair<>(c, a));
-//                assert removed;
-//                mp.get(target).add(new Pair<>(c, b));
-//                b.addEdge(c, target);
-//            }
-//        });
-//        for (Pair<Character, Node> pair : mp.get(a)) {
-//            pair.getSecond().addEdge(pair.getFirst(), b);
-//        }
-//        mp.get(b).addAll(mp.get(a).stream().map(pair -> {
-//            if (pair.getSecond() == a) {
-//                return new Pair<>(pair.getFirst(), b);
-//            }
-//            return pair;
-//        }).collect(Collectors.toSet()));
-//
-//        nodes.set(aId, null);
-//        if (dfa.getStart() == a) {
-//            dfa.setStart(b);
-//        }
-//        return needsMerge;
-//    }
+        System.out.print("Index: ");
+        index.forEach((node, id) -> {
+            System.out.print("<" + Utils.objCode(node) + ", " + id + "> ");
+        });
+        System.out.println();
 
-//    private void mergeAll(Set<Integer> mergeSet) { // TODO: faster & parallel implementation using streams?
-//        int bId = mergeSet.stream().min(Integer::compareTo).get();
-//        mergeSet.stream()
-//                .filter(id -> id != bId)
-//                .flatMap(id -> mergePair(id, bId).stream())
-//                .peek(pair -> {
-//                    if (mergeSet.contains(pair.getFirst())) {
-//                        pair.setFirst(bId);
-//                    }
-//                    if (mergeSet.contains(pair.getSecond())) {
-//                        pair.setSecond(bId);
-//                    }
-//                })
-//                .distinct()
-//                .forEach(pair -> mergeQueue.insertPair(pair.getFirst(), pair.getSecond()));
-//    }
+        System.out.print("Nodes: ");
+        nodes.forEach(node -> System.out.print(Utils.objCode(node) + " "));
+        System.out.println();
+        System.out.println();
+    }
+
 
     private boolean runMergeAt(int i, int j) {
         mergeQueue = new MergeDsu();
@@ -277,24 +228,15 @@ public class RecursiveCompressor {
             Pair<Integer, Integer> cur = queue.remove();
             int i = cur.getFirst();
             int j = cur.getSecond();
-//            int i = Integer.max(cur.getFirst(), cur.getSecond());
-//            int j = Integer.min(cur.getFirst(), cur.getSecond());
             incident.get(i).keySet().stream()
                     .filter(incident.get(j)::containsKey)
                     .forEach(c -> {
                         incident.get(i).get(c).forEach(a -> {
                             incident.get(j).get(c).forEach(b -> {
-//                                int targetA = Integer.max(a, b);
-//                                int targetB = Integer.min(a, b);
-//                                !nodes.get(i).isTerminal() && !nodes.get(j).isTerminal()
                                 if (!areDependent(a, b)) {
                                     setDependent(a, b);
                                     queue.add(new Pair<>(a, b));
                                 }
-//                                if (distinct[targetA][targetB] == 0) {
-//                                    distinct[targetA][targetB] = 1;
-//                                    queue.add(new Pair<>(targetA, targetB));
-//                                }
                             });
                         });
                     });
@@ -305,16 +247,12 @@ public class RecursiveCompressor {
         List<Integer> nonMergedList = new ArrayList<>(nonMerged);
         for (int i = 0; i < nonMergedList.size(); i++) {
             for (int j = 0; j < i; j++) { // TODO: FASTER pairs hashset?
-//                int realI = Integer.max(nonMergedList.get(i), nonMergedList.get(j));
-//                int realJ = Integer.min(nonMergedList.get(i), nonMergedList.get(j));
                 int realI = nonMergedList.get(i);
                 int realJ = nonMergedList.get(j);
-//                if (distinct[realI][realJ] == 0) {
                 if (!areDependent(realI, realJ)) {
                     boolean success = runMergeAt(realI, realJ);
                     if (!success) {
                         setDependent(realI, realJ);
-//                        distinct[realI][realJ] = 1;
                         Queue<Pair<Integer, Integer>> queue = new ArrayDeque<>();
                         queue.add(new Pair<>(realI, realJ));
                         traverseDependence(queue);
@@ -332,9 +270,10 @@ public class RecursiveCompressor {
         dfa.close();
         this.dfa = dfa;
 
+        buildMatrix();
         boolean updated = true;
         while (updated) {
-            buildMatrix();
+            updateMatrix();
             __debugSizeMonitor.update(dfa.nodesCount());
             if (Static.DEBUG_RUN) dfa.print(index);
             if (Static.DEBUG_RUN) printDependence();
@@ -367,17 +306,24 @@ public class RecursiveCompressor {
                     .distinct()
                     .collect(Collectors.toList());
 
+            int nodesSavedSize = nodes.size();
+
             HashMap<Component, Integer> componentsIndex = new HashMap<>();
+            HashMap<Component, Integer> componentsNewIndex = new HashMap<>();
+            HashMap<Integer, Integer> componentsTransfer = new HashMap<>();
             for (Component component : components) { // Add new nodes
                 Node newNode = new Node();
                 int newNodeId = nodes.size();
                 nodes.add(newNode);
                 index.put(newNode, newNodeId);
-                nonMerged.add(newNodeId);
+//                nonMerged.add(newNodeId); // later
                 incident.add(new HashMap<>()); // TODO: do not need?
 //                dependent.add(new HashSet<>());
 
                 componentsIndex.put(component, newNodeId);
+                int newId = component.entries.stream().min(Integer::compareTo).get();
+                componentsNewIndex.put(component, newId);
+                componentsTransfer.put(newNodeId, newId);
             }
 
             if (Static.DEBUG_RUN) {
@@ -389,17 +335,15 @@ public class RecursiveCompressor {
                 }
             }
 
-            for (Component component : components) { // Fill nodes with edges
+            // Fill components with edges (orig index)
+            for (Component component : components) {
                 Node newNode = nodes.get(componentsIndex.get(component));
                 newNode.setEdges(component.mergedEdges.entrySet().stream()
-                        .collect(Collectors.toMap(Map.Entry::getKey, entry -> {
-                            int id = entry.getValue();
-                            return nodes.get(inComponent(id) ? componentsIndex.get(getComponent(id)) : id);
-                        })));
+                        .collect(Collectors.toMap(Map.Entry::getKey, entry -> nodes.get(entry.getValue()))));
             }
 
-            // TODO: No need to fix edges?
-            for (Component component : components) { // Update incident
+            // Fill incident (temporary index)
+            for (Component component : components) {
                 int componentId = componentsIndex.get(component);
                 for (char c = 0; c <= Transitions.MAX_CHAR; c++) {
                     char finalC = c;
@@ -413,110 +357,142 @@ public class RecursiveCompressor {
                 }
             }
 
-            for (Component component : components) { // Update edges
+            // Update incidents for non-components (final)
+            for (Component component : components) {
+                component.entries.forEach(entryId -> {
+                    nodes.get(entryId).getEdges().forEach((c, node) -> {
+                        int nodeId = index.get(node);
+                        if (!inComponent(nodeId)) {
+                            Map<Character, Set<Integer>> incidents = incident.get(nodeId);
+                            incidents.put(c, incidents.get(c).stream()
+                                    .map(id -> inComponent(id) ? componentsNewIndex.get(getComponent(id)) : id)
+                                    .collect(Collectors.toSet())
+                            );
+                        }
+                    });
+                });
+            }
+
+            if (Static.DEBUG_RUN) printInfo();
+            // Update edges for all (final index)
+            for (Component component : components) {
                 for (char c = 0; c <= Transitions.MAX_CHAR; c++) {
                     char finalC = c;
-                    component.entries.stream()
-                            .flatMap(id -> incident.get(id).getOrDefault(finalC, Collections.emptySet()).stream())
+//                    component.entries.stream()
+                    incident.get(componentsIndex.get(component)).getOrDefault(finalC, Collections.emptySet())
+//                            .flatMap(id -> incident.get(id).getOrDefault(finalC, Collections.emptySet()).stream())
                             .forEach(id -> {
                                 assert nodes.get(id) != null : id + " " + nodes.size();
                                 nodes.get(id).addEdge(finalC, nodes.get(componentsIndex.get(component)));
                             });
                 }
             }
+            if (Static.DEBUG_RUN) printInfo();
 
-//            for (Component component : components) { // Update dependent
-//                int componentId = componentsIndex.get(component);
-//                component.entries.stream()
-//                        .flatMap(id -> dependent.get(id).stream())
-//                        .distinct()
-//                        .forEach(id -> setDependent(componentId, id));
-//            }
+            // TODO: remove solo nodes
+            // TODO: anything more to remove?
+            // TODO: remove mirror dependent
 
+            // Calculate new dependence
+            HashMap<Component, Set<Integer>> newDistincts = new HashMap<>();
+            for (Component component : components) {
+                Set<Integer> newDistinct = component.entries.stream()
+                        .flatMap(entry -> nonMerged.stream()
+                                .filter(id -> areDependent(entry, id)))
+                        .distinct()
+                        .map(id -> inComponent(id) ? componentsNewIndex.get(getComponent(id)) : id)
+                        .collect(Collectors.toSet());
+                newDistincts.put(component, newDistinct);
+            }
+
+            // Clear dependence
+            for (Component component : components) {
+                int newId = componentsNewIndex.get(component);
+                clearDependence(newId);
+            }
+
+            // Update start
             int startId = index.get(dfa.getStart());
             if (inComponent(startId)) {
+                if (Static.DEBUG_RUN) System.err.println("Start transferred: " + startId + " -> " + componentsIndex.get(getComponent(startId)));
                 dfa.setStart(nodes.get(componentsIndex.get(getComponent(startId))));
             }
 
-            // TODO: anything more to remove?
-            // TODO: remove mirror dependent
-            for (Component component : components) { // Remove shrunk nodes
+            // Move components
+            for (Component component : components) {
+                int newId = componentsNewIndex.get(component);
+                int oldId = componentsIndex.get(component);
+                index.remove(nodes.get(newId));
+                newDistincts.get(component).forEach(id -> setDependent(newId, id));
+                nodes.set(newId, nodes.get(oldId));
+                index.put(nodes.get(oldId), newId);
+                incident.set(newId, incident.get(oldId));
+            }
+
+            // Remove shrunk from nonMerged
+            for (Component component : components) {
                 component.entries.forEach(id -> {
-                    assert !nodes.get(id).isTerminal();
-
-                    nodes.get(id).corrupt();
-
-                    Object __indexPrevious = index.remove(nodes.get(id));
-                    assert __indexPrevious != null;
-
                     boolean __nonMergedRemoved = nonMerged.remove(id);
                     assert __nonMergedRemoved;
-
-//                    Object __dependentPrevious = dependent.set(id, null);
-//                    assert __dependentPrevious != null;
-
-                    Object __nodesPrevious = nodes.set(id, null);
-                    assert __nodesPrevious != null;
                 });
             }
 
-//            nonMerged.stream().map(nodes::get).filter(Objects::isNull).forEach(System.err::println);
-//            dfa.print(index);
-            assert nonMerged.stream().map(nodes::get).collect(Collectors.toSet()).equals(new HashSet<>(dfa.allNodes()));
+            // Add component nodes
+            for (Component component : components) {
+                int newId = componentsNewIndex.get(component);
+                nonMerged.add(newId);
+            }
+
+            // Update incident (final index)
+            for (Component component : components) {
+                int newComponentId = componentsNewIndex.get(component);
+                HashMap<Character, Set<Integer>> incidentComponent = incident.get(newComponentId);
+                for (char c = 0; c <= Transitions.MAX_CHAR; c++) {
+                    if (incidentComponent.containsKey(c)) {
+                        incidentComponent.put(c,
+                                incident.get(newComponentId).get(c).stream()
+                                        .map(id -> componentsTransfer.getOrDefault(id, id))
+                                        .collect(Collectors.toSet()));
+
+                    }
+                }
+            }
+
+            // Destroy temporary nodes
+            while (nodes.size() != nodesSavedSize) {
+                int i = nodes.size() - 1;
+                nodes.remove(i);
+                incident.remove(i);
+            }
+
+            HashSet<Integer> newComponents = new HashSet<>(componentsNewIndex.values());
+            for (Component component : components) { // Remove shrunk nodes
+                component.entries.forEach(id -> {
+                    assert !nodes.get(id).isTerminal();
+                    if (!newComponents.contains(id)) {
+                        nodes.get(id).corrupt();
+
+                        Object __indexPrevious = index.remove(nodes.get(id));
+                        assert __indexPrevious != null;
+
+                        Object __nodesPrevious = nodes.set(id, null);
+                        assert __nodesPrevious != null;
+
+                        incident.set(id, null);
+                    }
+                });
+            }
+
+            if (Static.DEBUG_RUN) printInfo();
             assert nonMerged.stream().map(nodes::get).noneMatch(Objects::isNull);
+            if (Static.DEBUG_RUN) System.err.println(nonMerged.stream().map(Objects::toString).collect(Collectors.joining(" ")));
+            if (Static.DEBUG_RUN) System.err.println(dfa.allNodes().stream().map(index::get).map(Objects::toString).collect(Collectors.joining(" ")));
+            assert nonMerged.stream().map(nodes::get).collect(Collectors.toSet()).equals(new HashSet<>(dfa.allNodes()));
+//            dfa.print(index);
             assert nonMerged.stream().map(nodes::get)
                     .flatMap(node -> node.getEdges().values().stream())
                     .allMatch(node -> nonMerged.contains(index.get(node)));
-
-//                    .flatMap(node -> node)
-//                if (nodes.get(node).getEdges().values().stream().) {
-//
-//                }
-//            }
-//            return dfa;
         }
-
-//        private void processPair(int aId, int bId) {
-//            Set<Node> aComponent = traverse(aId);
-//            // TODO: non-merged
-//            // TODO: update distinct
-//            // TODO: remove asserts
-//            Node a = nodes.get(aId);
-//            Node b = nodes.get(bId);
-//            Map<Character, Node> aEdges = a.getEdges();
-//            Map<Character, Node> bEdges = b.getEdges();
-//
-//            aEdges.forEach((c, target) -> {
-//                if (bEdges.containsKey(c)) {
-//                    Node conflict = bEdges.get(c);
-//                    int conflictId = index.get(conflict);
-//                    queue.add(new Pair<>(index.get(target), conflictId));
-//                }
-//                if (target == a) {
-//                    b.addEdge(c, b);
-//                } else {
-//                    boolean removed = mp.get(target).remove(new Pair<>(c, a));
-//                    assert removed;
-//                    mp.get(target).add(new Pair<>(c, b));
-//                    b.addEdge(c, target);
-//                }
-//            });
-//            for (Pair<Character, Node> pair : mp.get(a)) {
-//                pair.getSecond().addEdge(pair.getFirst(), b);
-//            }
-//            mp.get(b).addAll(mp.get(a).stream().map(pair -> {
-//                if (pair.getSecond() == a) {
-//                    return new Pair<>(pair.getFirst(), b);
-//                }
-//                return pair;
-//            }).collect(Collectors.toSet()));
-//
-//            nodes.set(aId, null);
-//            if (dfa.getStart() == a) {
-//                dfa.setStart(b);
-//            }
-//            return needsMerge;
-//        }
 
         private boolean processQueue() {
             while (!queue.isEmpty()) {
@@ -533,48 +509,10 @@ public class RecursiveCompressor {
         public void insertPair(int i, int j) {
             if (Static.DEBUG_RUN) Logger.getGlobal().info("InsertPair:" + i + " " + j);
             if (i == j || getComponent(i) == getComponent(j)) {
-//                return true;
                 return;
             }
             queue.add(new Pair<>(i, j));
-//            mergeSet.stream()
-//                    .filter(id -> id != bId)
-//                    .flatMap(id -> mergePair(id, bId).stream())
-//                    .peek(pair -> {
-//                        if (mergeSet.contains(pair.getFirst())) {
-//                            pair.setFirst(bId);
-//                        }
-//                        if (mergeSet.contains(pair.getSecond())) {
-//                            pair.setSecond(bId);
-//                        }
-//                    })
-//                    .distinct()
-//                    .forEach(pair -> mergeQueue.insertPair(pair.getFirst(), pair.getSecond()));
-//            graph[i].add(j);
-//            graph[j].add(i);
-//            involved.add(i);
-//            involved.add(j);
         }
-
-
-//        private void traverseImpl(int c, HashSet<Integer> visited) {
-//            visited.add(c);
-//            graph[c].forEach(x -> {
-//                if (!visited.contains(x)) {
-//                    traverseImpl(c, visited);
-//                }
-//            });
-//        }
-//
-//        private HashSet<Integer> traverse(int c) {
-//            HashSet<Integer> visited = new HashSet<>();
-//            traverseImpl(c, visited);
-//            return visited;
-//        }
-
-//        public boolean isEmpty() {
-//            return involved.isEmpty();
-//        }
 
         private class Component {
             private Component head;

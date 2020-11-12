@@ -7,6 +7,7 @@ import automaton.nfa.Nfa;
 import main.Main;
 import main.io.Input;
 import main.io.Static;
+import util.Utils;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -73,6 +74,7 @@ public class GroupsMetric {
 
         Dfa modified = new ThompsonModified().run(nfas);
         System.out.println("ThompsonModified: " + modified.nodesCount());
+        Utils.writeTo("./output/graph/result.txt", modified.print(Dfa.PrintingMode.SERIALIZE));
 
 //        Dfa modifiedMin = minimizeHopcroft(modified);
         compress(modified);
