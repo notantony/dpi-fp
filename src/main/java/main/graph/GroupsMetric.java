@@ -1,6 +1,7 @@
 package main.graph;
 
 import automaton.algo.compressor.RecursiveCompressor;
+import automaton.algo.compressor.RecursiveCompressorStatic;
 import automaton.algo.thompson.ThompsonModified;
 import automaton.dfa.Dfa;
 import automaton.nfa.Nfa;
@@ -80,11 +81,11 @@ public class GroupsMetric {
         compress(modified);
         System.out.println("ThompsonModifiedHeuristic: " + modified.nodesCount());
 
-        new RecursiveCompressor().compress(modified);
+        new RecursiveCompressorStatic().compress(modified);
         System.out.println("HeuristicThenRecursive: " + modified.nodesCount());
 
         Dfa modifiedCopy = new ThompsonModified().run(nfas);
-        new RecursiveCompressor().compress(modifiedCopy);
+        new RecursiveCompressorStatic().compress(modifiedCopy);
         System.out.println("ThompsonModifiedRecursive: " + modifiedCopy.nodesCount());
         int x = modifiedCopy.nodesCount();
         compress(modifiedCopy);

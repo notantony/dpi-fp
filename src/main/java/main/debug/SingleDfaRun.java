@@ -2,6 +2,7 @@ package main.debug;
 
 import automaton.algo.compressor.RecursiveCompressor;
 import automaton.algo.compressor.RecursiveCompressorDynamic;
+import automaton.algo.compressor.RecursiveCompressorStatic;
 import automaton.dfa.Dfa;
 import main.Main;
 
@@ -12,7 +13,7 @@ import java.nio.file.Paths;
 public class SingleDfaRun {
     public static void main(String[] args) throws IOException {
         Dfa dfa = Dfa.parseDfa(Files.newBufferedReader(Paths.get("./input/single/single_dfa.txt")));
-        new RecursiveCompressorDynamic().compress(dfa);
+        new RecursiveCompressorStatic().compress(dfa);
         System.out.println(dfa.nodesCount());
         int x = dfa.nodesCount();
         Main.compress(dfa);
