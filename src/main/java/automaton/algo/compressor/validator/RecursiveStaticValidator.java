@@ -1,22 +1,19 @@
-package automaton.algo.compressor;
+package automaton.algo.compressor.validator;
 
 import automaton.dfa.Dfa;
 import automaton.dfa.Node;
 import automaton.transition.Transitions;
-import com.google.common.collect.Sets;
 import main.io.Static;
 import util.IntMonitor;
 import util.Pair;
-import util.Utils;
 
 import java.util.*;
 import java.util.concurrent.*;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
-public class RecursiveCompressorStatic {
+public class RecursiveStaticValidator {
     private Dfa dfa;
     private Map<Node, Integer> index;
     private ArrayList<Node> nodes;
@@ -24,10 +21,10 @@ public class RecursiveCompressorStatic {
 
     private List<HashMap<Character, Set<Integer>>> incident;
 
-//    private Set<Pair<Node, Node>> transferDependent;
+    //    private Set<Pair<Node, Node>> transferDependent;
     private Map<Integer, Node> transferNodes;
 
-    private IntMonitor __debugSizeMonitor = new IntMonitor("Nodes remaining", 1, IntMonitor.Mode.LINEAR);
+    private IntMonitor __debugSizeMonitor = new IntMonitor("Nodes remaining", 100, IntMonitor.Mode.LINEAR);
 
     private boolean areDependent(int i, int j) {
         if (i < j) {
@@ -110,7 +107,7 @@ public class RecursiveCompressorStatic {
             for (int i = 0; i < nodes.size(); i++) {
                 for (int j = 0; j < i; j++) {
                     if (distinct[i][j] == 1) {
-//                        queue.add(new Pair<>(i, j));
+                        queue.add(new Pair<>(i, j));
                     } else {
                         watchList.add(new Pair<>(i, j));
                     }
@@ -290,11 +287,8 @@ public class RecursiveCompressorStatic {
         }
 //        assert badPairs.isEmpty();
         Pair<Integer, Integer> result = foundPair.get();
-        if (result == null) {
-            return false;
-        }
-        dsu.applyPartition();
-        return true;
+        return result != null;
+//        dsu.applyPartition();
 
 //        for (Pair<Integer, Integer> p : watchList) {
 //            int i = p.getFirst();
@@ -314,23 +308,20 @@ public class RecursiveCompressorStatic {
 //        return false;
     }
 
-    public void compress(Dfa dfa) {
+    public boolean test(Dfa dfa) {
         dfa.close();
         this.dfa = dfa;
 
-        boolean updated = true;
-        while (updated) {
-            List<Pair<Integer, Integer>> watchList = buildMatrix();
-            if (__debugSizeMonitor.update(dfa.nodesCount())) {
+        List<Pair<Integer, Integer>> watchList = buildMatrix();
+        if (__debugSizeMonitor.update(dfa.nodesCount())) {
 //                Utils.writeTo("./output/graph/checkpoints/at" + dfa.nodesCount() + ".txt",
 //                        dfa.print(Dfa.PrintingMode.SERIALIZE));
-            }
-            if (Static.DEBUG_RUN) dfa.print(index);
-            if (Static.DEBUG_RUN) printDependence();
-            if (Static.DEBUG_RUN)
-                System.out.println(watchList.stream().map(Pair::toString).collect(Collectors.joining(" ")));
-            updated = tryShrink(watchList);
         }
+        if (Static.DEBUG_RUN) dfa.print(index);
+        if (Static.DEBUG_RUN) printDependence();
+        if (Static.DEBUG_RUN)
+            System.out.println(watchList.stream().map(Pair::toString).collect(Collectors.joining(" ")));
+        return !tryShrink(watchList);
     }
 
     private class MergeDsu {

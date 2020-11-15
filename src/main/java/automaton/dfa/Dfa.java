@@ -217,9 +217,21 @@ public class Dfa {
     }
 
     public static Dfa parseDfa(String[] lines, ParsingMode mode) {
-        String[][] dataLines = new String[lines.length][0];
-        for (int i = 0; i < lines.length; i++) {
-            dataLines[i] = lines[i].split(" ");
+        String[][] dataLines;
+        int totalLines = lines.length;
+        while (lines[totalLines - 1].equals("")) {
+            totalLines--;
+        }
+        if (!lines[0].equals("Graph:")) {
+            dataLines = new String[totalLines][0];
+            for (int i = 0; i < totalLines; i++) {
+                dataLines[i] = lines[i].split(" ");
+            }
+        } else {
+            dataLines = new String[totalLines - 1][0];
+            for (int i = 0; i < totalLines - 1; i++) {
+                dataLines[i] = lines[i + 1].split(" ");
+            }
         }
         HashMap<Integer, List<Pair<Character, Integer>>> mp = new HashMap<>();
 
@@ -235,8 +247,7 @@ public class Dfa {
             i++;
         }
         for (; i < dataLines.length; i++) {
-            String line = lines[i];
-            String[] dataLine = line.split(" ");
+            String[] dataLine = dataLines[i];
             int a = Integer.parseInt(dataLine[0]);
             int b = Integer.parseInt(dataLine[1]);
             mp.putIfAbsent(a, new ArrayList<>());

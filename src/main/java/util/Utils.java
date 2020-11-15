@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.Collection;
@@ -60,9 +61,11 @@ public class Utils {
         System.err.println(timeLog.toString());
     }
 
-    public static void writeTo(String path, String s) {
+    public static void writeTo(String pathStr, String s) {
         try {
-            BufferedWriter writer = Files.newBufferedWriter(Paths.get(path), StandardOpenOption.APPEND, StandardOpenOption.CREATE);
+            Path path = Paths.get(pathStr);
+            Files.createDirectories(path.getParent());
+            BufferedWriter writer = Files.newBufferedWriter(path, StandardOpenOption.APPEND, StandardOpenOption.CREATE);
             writer.write(s);
             writer.flush();
         } catch (IOException e) {

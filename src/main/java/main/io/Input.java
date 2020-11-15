@@ -25,8 +25,20 @@ public class Input {
                 .collect(Collectors.toList());
     }
 
-    public static Dfa readDfa(String path) throws IOException {
-        return Dfa.parseDfa(new String(Files.readAllBytes(Paths.get(path)), StandardCharsets.UTF_8));
+    public static Dfa readSerialized(String path){
+        try {
+            return Dfa.parseDfa(Files.newBufferedReader(Paths.get(path)), Dfa.ParsingMode.DESERIALIZE);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static Dfa readDfa(String path){
+        try {
+            return Dfa.parseDfa(new String(Files.readAllBytes(Paths.get(path)), StandardCharsets.UTF_8));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public static List<Dfa> readDfas(String path) throws IOException {

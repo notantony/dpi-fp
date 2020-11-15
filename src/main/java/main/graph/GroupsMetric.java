@@ -1,6 +1,7 @@
 package main.graph;
 
 import automaton.algo.compressor.RecursiveCompressor;
+import automaton.algo.compressor.RecursiveCompressorDynamic;
 import automaton.algo.compressor.RecursiveCompressorStatic;
 import automaton.algo.thompson.ThompsonModified;
 import automaton.dfa.Dfa;
@@ -63,15 +64,15 @@ public class GroupsMetric {
                 .orElse(0);
         System.out.println("Max-of-single: " + max);
 
-//        Dfa dfaSingleMin = minimizeHopcroft(convert(Nfa.union(nfasSingle)));
-//        System.out.println("Single-terminal-minimized: " + dfaSingleMin.nodesCount());
+        Dfa dfaSingleMin = minimizeHopcroft(convert(Nfa.union(nfasSingle)));
+        System.out.println("Single-terminal-minimized: " + dfaSingleMin.nodesCount());
 
-//        Dfa combined = convert(Nfa.union(nfas));
-//        System.out.println("Combined: " + combined.nodesCount());
-//        Dfa dfaMin = minimizeHopcroft(combined);
-//        System.out.println("Minimized: " + dfaMin.nodesCount());
+        Dfa combined = convert(Nfa.union(nfas));
+        System.out.println("Combined: " + combined.nodesCount());
+        Dfa dfaMin = minimizeHopcroft(combined);
+        System.out.println("Minimized: " + dfaMin.nodesCount());
 
-//        System.out.println("Minimized-cut: " + (dfaMin.cutCount() + nfas.size()));
+        System.out.println("Minimized-cut: " + (dfaMin.cutCount() + nfas.size()));
 
         Dfa modified = new ThompsonModified().run(nfas);
         System.out.println("ThompsonModified: " + modified.nodesCount());
@@ -81,11 +82,11 @@ public class GroupsMetric {
         compress(modified);
         System.out.println("ThompsonModifiedHeuristic: " + modified.nodesCount());
 
-        new RecursiveCompressorStatic().compress(modified);
+        new RecursiveCompressorDynamic().compress(modified);
         System.out.println("HeuristicThenRecursive: " + modified.nodesCount());
 
         Dfa modifiedCopy = new ThompsonModified().run(nfas);
-        new RecursiveCompressorStatic().compress(modifiedCopy);
+        new RecursiveCompressorDynamic().compress(modifiedCopy);
         System.out.println("ThompsonModifiedRecursive: " + modifiedCopy.nodesCount());
         int x = modifiedCopy.nodesCount();
         compress(modifiedCopy);
