@@ -1,4 +1,4 @@
-package graph;
+package intgraph;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -24,8 +24,19 @@ public class IntGraph {
         }
     }
 
+    public int addNode() {
+        int id = nodes.size();
+        nodes.add(new IntNode(id));
+        return id;
+    }
+
     public void addEdge(int i, int j) {
         nodes.get(i).edges.add(j);
+    }
+
+    public void addEdge2(int i, int j) {
+        nodes.get(i).edges.add(j);
+        nodes.get(j).edges.add(i);
     }
 
     public static IntGraph parseGraph(Stream<String> lines) {

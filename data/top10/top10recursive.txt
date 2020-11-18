@@ -5,9 +5,13 @@ Single-terminal-minimized: 30650
 Combined: 62049
 Minimized: 48979
 ThompsonModified: 9909
-ThompsonModifiedHeuristic: 7590
+Heuristic: 7590
 HeuristicThenRecursive: 7360
-ThompsonModifiedRecursive: 6992
+Recursive: 6992
+Recursive2: 6647
+MinRootDist: 6615
+MaxRootDist: 7261
+ChromaticNumberSimple: 8450
 
 Total 111 rules
 Sum-of-single: 8913
@@ -16,9 +20,13 @@ Single-terminal-minimized: 15301
 Combined: 19052
 Minimized: 17358
 ThompsonModified: 9963
-ThompsonModifiedHeuristic: 5918
+Heuristic: 5918
 HeuristicThenRecursive: 5918
-ThompsonModifiedRecursive: 5647
+Recursive: 5647
+Recursive2: 5671
+MinRootDist: 5906
+MaxRootDist: 5788
+ChromaticNumberSimple: 9220
 
 Total 63 rules
 Sum-of-single: 3633
@@ -27,9 +35,13 @@ Single-terminal-minimized: 2738
 Combined: 4071
 Minimized: 3486
 ThompsonModified: 236
-ThompsonModifiedHeuristic: 122
+Heuristic: 122
 HeuristicThenRecursive: 106
-ThompsonModifiedRecursive: 104
+Recursive: 104
+Recursive2: 106
+MinRootDist: 105
+MaxRootDist: 106
+ChromaticNumberSimple: 181
 
 Total 41 rules
 Sum-of-single: 2562
@@ -38,9 +50,13 @@ Single-terminal-minimized: 1922
 Combined: 4231
 Minimized: 2764
 ThompsonModified: 607
-ThompsonModifiedHeuristic: 371
+Heuristic: 371
 HeuristicThenRecursive: 366
-ThompsonModifiedRecursive: 377
+Recursive: 377
+Recursive2: 374
+MinRootDist: 377
+MaxRootDist: 379
+ChromaticNumberSimple: 582
 
 Total 29 rules
 Sum-of-single: 2706
@@ -49,9 +65,13 @@ Single-terminal-minimized: 2408
 Combined: 5633
 Minimized: 2734
 ThompsonModified: 239
-ThompsonModifiedHeuristic: 202
+Heuristic: 202
 HeuristicThenRecursive: 202
-ThompsonModifiedRecursive: 183
+Recursive: 183
+Recursive2: 202
+MinRootDist: 191
+MaxRootDist: 157
+ChromaticNumberSimple: 214
 
 Total 23 rules
 Sum-of-single: 1723
@@ -60,9 +80,13 @@ Single-terminal-minimized: 1457
 Combined: 6205
 Minimized: 1708
 ThompsonModified: 198
-ThompsonModifiedHeuristic: 163
+Heuristic: 163
 HeuristicThenRecursive: 163
-ThompsonModifiedRecursive: 163
+Recursive: 163
+Recursive2: 162
+MinRootDist: 163
+MaxRootDist: 165
+ChromaticNumberSimple: 169
 
 Total 14 rules
 Sum-of-single: 491
@@ -71,9 +95,13 @@ Single-terminal-minimized: 451
 Combined: 736
 Minimized: 464
 ThompsonModified: 19
-ThompsonModifiedHeuristic: 16
+Heuristic: 16
 HeuristicThenRecursive: 16
-ThompsonModifiedRecursive: 16
+Recursive: 16
+Recursive2: 16
+MinRootDist: 16
+MaxRootDist: 16
+ChromaticNumberSimple: 16
 
 Total 11 rules
 Sum-of-single: 1132
@@ -82,9 +110,13 @@ Single-terminal-minimized: 1104
 Combined: 1844
 Minimized: 1114
 ThompsonModified: 49
-ThompsonModifiedHeuristic: 43
+Heuristic: 43
 HeuristicThenRecursive: 43
-ThompsonModifiedRecursive: 42
+Recursive: 42
+Recursive2: 40
+MinRootDist: 38
+MaxRootDist: 43
+ChromaticNumberSimple: 44
 
 Total 10 rules
 Sum-of-single: 1413
@@ -93,9 +125,13 @@ Single-terminal-minimized: 1404
 Combined: 2725
 Minimized: 1413
 ThompsonModified: 58
-ThompsonModifiedHeuristic: 31
+Heuristic: 31
 HeuristicThenRecursive: 31
-ThompsonModifiedRecursive: 28
+Recursive: 28
+Recursive2: 28
+MinRootDist: 32
+MaxRootDist: 35
+ChromaticNumberSimple: 44
 
 Total 9 rules
 Sum-of-single: 706
@@ -104,9 +140,13 @@ Single-terminal-minimized: 684
 Combined: 846
 Minimized: 692
 ThompsonModified: 11
-ThompsonModifiedHeuristic: 10
+Heuristic: 10
 HeuristicThenRecursive: 10
-ThompsonModifiedRecursive: 10
+Recursive: 10
+Recursive2: 10
+MinRootDist: 10
+MaxRootDist: 10
+ChromaticNumberSimple: 10
 
 Total 9 rules
 Sum-of-single: 159
@@ -115,9 +155,13 @@ Single-terminal-minimized: 136
 Combined: 308
 Minimized: 144
 ThompsonModified: 11
-ThompsonModifiedHeuristic: 10
+Heuristic: 10
 HeuristicThenRecursive: 10
-ThompsonModifiedRecursive: 10
+Recursive: 10
+Recursive2: 10
+MinRootDist: 10
+MaxRootDist: 10
+ChromaticNumberSimple: 10
 
 Total 9 rules
 Sum-of-single: 246
@@ -126,9 +170,13 @@ Single-terminal-minimized: 221
 Combined: 766
 Minimized: 229
 ThompsonModified: 12
-ThompsonModifiedHeuristic: 10
+Heuristic: 10
 HeuristicThenRecursive: 10
-ThompsonModifiedRecursive: 10
+Recursive: 10
+Recursive2: 10
+MinRootDist: 10
+MaxRootDist: 10
+ChromaticNumberSimple: 10
 
 Total 9 rules
 Sum-of-single: 303
@@ -137,6 +185,10 @@ Single-terminal-minimized: 156
 Combined: 211
 Minimized: 167
 ThompsonModified: 131
-ThompsonModifiedHeuristic: 69
+Heuristic: 69
 HeuristicThenRecursive: 69
-ThompsonModifiedRecursive: 69
+Recursive: 69
+Recursive2: 69
+MinRootDist: 69
+MaxRootDist: 69
+ChromaticNumberSimple: 118

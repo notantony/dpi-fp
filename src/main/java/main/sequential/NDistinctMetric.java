@@ -1,7 +1,7 @@
 package main.sequential;
 
-import graph.GreedySplitter;
-import graph.IntGraph;
+import intgraph.GreedySplitter;
+import intgraph.IntGraph;
 import main.graph.GroupsMetric;
 import main.graph.IndGraphParallelBuilder;
 import main.io.Input;

@@ -1,19 +1,11 @@
 package main.graph;
 
-import automaton.algo.compressor.RecursiveCompressorDynamic;
-import automaton.algo.compressor.RecursiveCompressorStatic;
-import automaton.algo.thompson.ThompsonModified;
+import automaton.algo.compressor.recursive.RecursiveCompressorStatic;
 import automaton.dfa.Dfa;
-import automaton.nfa.Nfa;
-import main.Main;
-import main.io.Static;
-import util.Utils;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.List;
-import java.util.stream.Collectors;
 
 import static main.Main.compress;
 

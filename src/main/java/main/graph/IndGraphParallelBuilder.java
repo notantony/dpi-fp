@@ -1,7 +1,7 @@
 package main.graph;
 
 import automaton.nfa.Nfa;
-import graph.IntGraph;
+import intgraph.IntGraph;
 import main.Main;
 import util.Pair;
 import util.Triple;

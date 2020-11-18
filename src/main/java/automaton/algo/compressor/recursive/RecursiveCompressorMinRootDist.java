@@ -1,33 +1,31 @@
-package automaton.algo.compressor;
+package automaton.algo.compressor.recursive;
 
 import automaton.dfa.Dfa;
 import automaton.dfa.Node;
 import automaton.transition.Transitions;
-import com.google.common.collect.Sets;
 import main.io.Static;
 import util.IntMonitor;
 import util.Pair;
-import util.Utils;
 
 import java.util.*;
 import java.util.concurrent.*;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
-public class RecursiveCompressorStatic {
+public class RecursiveCompressorMinRootDist {
     private Dfa dfa;
     private Map<Node, Integer> index;
     private ArrayList<Node> nodes;
     private byte[][] distinct; // 1 <-> dependent, 0 <-> maybe independent
+    private int[] rootDist;
 
     private List<HashMap<Character, Set<Integer>>> incident;
 
 //    private Set<Pair<Node, Node>> transferDependent;
     private Map<Integer, Node> transferNodes;
 
-    private IntMonitor __debugSizeMonitor = new IntMonitor("Nodes remaining", 1, IntMonitor.Mode.LINEAR);
+    private IntMonitor __debugSizeMonitor = new IntMonitor("Nodes remaining", 100, IntMonitor.Mode.LINEAR);
 
     private boolean areDependent(int i, int j) {
         if (i < j) {
@@ -41,6 +39,24 @@ public class RecursiveCompressorStatic {
             setDependent(j, i);
         }
         distinct[i][j] = 1;
+    }
+
+    private void buildDist() {
+        Queue<Integer> queue = new ArrayDeque<>();
+        rootDist = new int[nodes.size()];
+        rootDist[index.get(dfa.getStart())] = 1;
+
+        queue.add(index.get(dfa.getStart()));
+        while (!queue.isEmpty()) {
+            int cur = queue.remove();
+            nodes.get(cur).getEdges().values().forEach(target -> {
+                int targetIndex = index.get(target);
+                if (rootDist[targetIndex] == 0) {
+                    rootDist[targetIndex] = rootDist[cur] + 1;
+                    queue.add(targetIndex);
+                }
+            });
+        }
     }
 
     private List<Pair<Integer, Integer>> buildMatrix() {
@@ -109,9 +125,7 @@ public class RecursiveCompressorStatic {
             distinct = newDistinct;
             for (int i = 0; i < nodes.size(); i++) {
                 for (int j = 0; j < i; j++) {
-                    if (distinct[i][j] == 1) {
-//                        queue.add(new Pair<>(i, j));
-                    } else {
+                    if (distinct[i][j] == 0) {
                         watchList.add(new Pair<>(i, j));
                     }
                 }
@@ -131,8 +145,14 @@ public class RecursiveCompressorStatic {
         }
 
         traverseDependence(queue);
+        buildDist();
+        watchList.sort(comparator);
         return watchList;
     }
+
+//    private Comparator<Pair<Integer, Integer>> comparator =b)], rootDist[p.getSecond()]))
+    private Comparator<Pair<Integer, Integer>> comparator =
+            Comparator.comparingInt(p -> -Integer.min(rootDist[p.getFirst()], rootDist[p.getSecond()]));
 
 
     private void printDependence() {
@@ -245,6 +265,16 @@ public class RecursiveCompressorStatic {
                     if (success != null) {
                         if (foundPair.compareAndSet(null, pair)) {
                             dsu = success;
+                        } else {
+                            while (true) {
+                                Pair<Integer, Integer> other = foundPair.get();
+                                if (comparator.compare(pair, other) < 0) {
+                                    foundPair.compareAndSet(other, pair);
+                                } else {
+                                    return;
+                                }
+                            }
+
                         }
                     } else {
                         badPairs.add(pair);

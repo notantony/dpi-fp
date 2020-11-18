@@ -1,6 +1,6 @@
 package main;
 
-import automaton.algo.compressor.DfaCompressor;
+import automaton.algo.compressor.heuristic.DfaCompressor;
 import automaton.algo.thompson.ThompsonModifiedMulti;
 import automaton.dfa.Dfa;
 import automaton.nfa.Nfa;

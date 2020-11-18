@@ -1,9 +1,7 @@
 package main.graph;
 
-import automaton.nfa.Nfa;
-import graph.GreedySplitter;
-import graph.IntGraph;
-import main.Main;
+import intgraph.GreedySplitter;
+import intgraph.IntGraph;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -11,7 +9,6 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
 import java.util.Objects;
-import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 public class MinCover {

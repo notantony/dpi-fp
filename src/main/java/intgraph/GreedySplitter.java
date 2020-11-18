@@ -1,10 +1,6 @@
-package graph;
-
-import automaton.dfa.Node;
-import util.Pair;
+package intgraph;
 
 import java.util.*;
-import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 public class GreedySplitter {

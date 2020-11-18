@@ -1,7 +1,7 @@
 package main.debug;
 
-import automaton.algo.compressor.RecursiveCompressorDynamic;
-import automaton.algo.compressor.RecursiveCompressorStatic;
+import automaton.algo.compressor.recursive.RecursiveCompressorMinRootDist;
+import automaton.algo.compressor.recursive.RecursiveCompressorStatic;
 import automaton.algo.compressor.validator.HeuristicValidator;
 import automaton.algo.compressor.validator.MergePairValidator;
 import automaton.algo.compressor.validator.RecursiveStaticValidator;
@@ -10,7 +10,6 @@ import automaton.dfa.Dfa;
 import automaton.nfa.Nfa;
 import main.Main;
 import main.io.Input;
-import main.io.Static;
 import util.Utils;
 
 import java.io.IOException;
@@ -20,24 +19,37 @@ import java.nio.file.Paths;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static main.Main.*;
 import static main.Main.compress;
 
 public class RecursiveValidate {
     public static void main(String[] args) throws IOException {
 //        for (int i = 0; i < 10; )
         Path path = Paths.get("./output/graph/validation");
-        Files.list(path)
-                .sorted()
-                .map(p -> p.resolve("./heuristic_recursive.txt").toString())
-                .map(Input::readSerialized)
-                .forEachOrdered(dfa -> RecursiveValidate.validate2(dfa, "HTR"));
+//        Files.list(path)
+//                .sorted()
+//                .map(p -> p.resolve("./heuristic_recursive.txt").toString())
+//                .map(Input::readSerialized)
+//                .forEachOrdered(dfa -> RecursiveValidate.validate2(dfa, "HTR"));
+//
+//        Files.list(path)
+//                .sorted()
+//                .map(p -> p.resolve("./recursive.txt").toString())
+//                .map(Input::readSerialized)
+//                .forEachOrdered(dfa -> RecursiveValidate.validate2(dfa, "REC"));
+
+//        Files.list(path)
+//                .sorted()
+//                .map(p -> p.resolve("./heuristic.txt").toString())
+//                .map(Input::readSerialized)
+//                .forEachOrdered(dfa -> RecursiveValidate.heuristic2validate(dfa, "HEU"));
 
         Files.list(path)
                 .sorted()
-                .map(p -> p.resolve("./recursive.txt").toString())
+                .map(p -> p.resolve("./modified.txt").toString())
                 .map(Input::readSerialized)
-                .forEachOrdered(dfa -> RecursiveValidate.validate2(dfa, "REC"));
+                .forEachOrdered(RecursiveValidate::minRootHeuristic);
+
+
 
 //        List<List<String>> groupRules = Input.readGroups(Static.FILTERED, Static.TOP_10_GROUPS);
 //        for (List<String> group : groupRules) {
@@ -47,7 +59,7 @@ public class RecursiveValidate {
 
     private static int groupId = 0;
 
-    public static void processGroup(List<String> rules) {
+    public static void validate1(List<String> rules) {
         groupId++;
         System.out.println("Group #" + groupId + " with " + rules.size() + " rules");
 
@@ -102,5 +114,20 @@ public class RecursiveValidate {
         boolean test3 = new MergePairValidator().test(dfa);
         assert test3;
         System.out.println("(3) " + name + ": " + (test3 ? "ok" : "failed"));
+    }
+
+    public static void heuristic2validate(Dfa dfa, String name) {
+        int x = dfa.nodesCount();
+        compress(dfa);
+        boolean success = dfa.nodesCount() == x;
+        assert success;
+        System.out.println("(4) " + name + ": " + (success ? "ok" : "failed"));
+    }
+
+    private static void minRootHeuristic(Dfa dfa) {
+        groupId++;
+        System.out.println("Group #" + groupId + " with " + dfa.nodesCount() + " nodes");
+        new RecursiveCompressorMinRootDist().compress(dfa);
+        System.out.println("MinRootDist: " + dfa.nodesCount());
     }
 }

@@ -1,6 +1,6 @@
 package main.debug;
 
-import automaton.algo.compressor.RecursiveCompressor;
+import automaton.algo.compressor.recursive.RecursiveCompressor;
 import automaton.algo.thompson.ThompsonModified;
 import automaton.dfa.Dfa;
 import automaton.nfa.Nfa;

@@ -1,4 +1,4 @@
-package automaton.algo.compressor;
+package automaton.algo.compressor.heuristic;
 
 import automaton.dfa.Dfa;
 import automaton.dfa.Node;

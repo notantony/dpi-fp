@@ -1,7 +1,7 @@
 package main;
 
-import automaton.algo.compressor.DfaCompressor;
-import automaton.algo.compressor.DfaCompressorMulti;
+import automaton.algo.compressor.heuristic.DfaCompressor;
+import automaton.algo.compressor.heuristic.DfaCompressorMulti;
 import automaton.algo.thompson.ThompsonModified;
 import automaton.algo.thompson.ThompsonModifiedMulti;
 import automaton.dfa.Dfa;
